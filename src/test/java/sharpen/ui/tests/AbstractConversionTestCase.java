@@ -36,10 +36,7 @@ public abstract class AbstractConversionTestCase  {
 
 	protected JavaProjectCmd _project;
 	private String projectName="DPrj";
-	//To Run from MAVEN
-	protected String projecttempLocation = System.getProperty("user.dir") + "/sharpen.core/target/testcases";
-	//To Run From Eclipse GUI
-	//protected String projecttempLocation = System.getProperty("user.dir") + "/sharpen.ui.tests/testcases";
+	protected String projectTempLocation = System.getProperty("user.dir") + "/target/testcases";
 	@Before
 	public void setUp() throws Exception {
 		Sharpen.getDefault().configuration(configuration());
@@ -62,7 +59,7 @@ public abstract class AbstractConversionTestCase  {
 	 */
 	protected String createCompilationUnit(TestCaseResource resource) throws IOException {
 		
-		String sourcePackage= projecttempLocation +"/temp/" + projectName + "/src/" + resource.packageName().replace(".", "/");
+		String sourcePackage= projectTempLocation +"/temp/" + projectName + "/src/" + resource.packageName().replace(".", "/");
 		sourcePackage =sourcePackage.replace("\\", "/");
 		File sourcePackagePath = new File(sourcePackage);
 		if (!sourcePackagePath.exists())
@@ -74,7 +71,7 @@ public abstract class AbstractConversionTestCase  {
 	
 	protected String createCompilationUnit(TestCaseResource resource, String targetProject) throws IOException  {
 		
-		String sourcePackage= projecttempLocation +"/temp/" + targetProject + "/src/" + resource.packageName().replace(".", "/");
+		String sourcePackage= projectTempLocation +"/temp/" + targetProject + "/src/" + resource.packageName().replace(".", "/");
 		sourcePackage =sourcePackage.replace("\\", "/");
 		File sourcePackagePath = new File(sourcePackage);
 		if (!sourcePackagePath.exists())
@@ -112,8 +109,8 @@ public abstract class AbstractConversionTestCase  {
 
 			String cu = createCompilationUnit(resource);
 
-			String sourceFilePath =projecttempLocation +"/temp/" +projectName + "/src";
-			String targetProject = projecttempLocation +"/temp/" +projectName + "/" +getConvertedProject();
+			String sourceFilePath = projectTempLocation +"/temp/" +projectName + "/src";
+			String targetProject = projectTempLocation +"/temp/" +projectName + "/" +getConvertedProject();
 			configuration.setSharpenNamespace("nonamespace");
 
 			final SharpenConversionBatch converter = new SharpenConversionBatch(configuration);
@@ -128,7 +125,7 @@ public abstract class AbstractConversionTestCase  {
 				targetDir ="src";
 			}
 
-			Path filePath = Paths.get(projecttempLocation, "temp", projectName, getConvertedProject(), targetDir, resource.targetSimpleName()+ ".cs");
+			Path filePath = Paths.get(projectTempLocation, "temp", projectName, getConvertedProject(), targetDir, resource.targetSimpleName()+ ".cs");
 
 			//	to reproduce old behaviour we will return empty string if file not exists
 			if(!Files.exists(filePath)){
@@ -149,7 +146,7 @@ public abstract class AbstractConversionTestCase  {
 			
 			result = result + cufile;
 		
-			String sourceFilePath =projecttempLocation +"/temp/" +projectName + "/src";
+			String sourceFilePath = projectTempLocation +"/temp/" +projectName + "/src";
 			
 
 			SharpenApplication AppCmd = new SharpenApplication();
@@ -168,7 +165,7 @@ public abstract class AbstractConversionTestCase  {
 				packageName ="src";
 			}
 			
-			result= projecttempLocation +"/temp/" +
+			result= projectTempLocation +"/temp/" +
 										projectName + "/" + 
 			                            getConvertedProject() + "/" +
 			                            packageName.replace(".", "/") + "/" +
@@ -239,7 +236,7 @@ public abstract class AbstractConversionTestCase  {
 			units = createCompilationUnits(resources);
 		}
 			
-		final String targetProject  = Paths.get(projecttempLocation, "temp", projectName,projectName + ".net").toString();
+		final String targetProject  = Paths.get(projectTempLocation, "temp", projectName,projectName + ".net").toString();
 	    
 	    configuration.setSharpenNamespace("nonamespace");
 		final SharpenConversionBatch converter = new SharpenConversionBatch(configuration);

@@ -21,11 +21,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 package sharpen.ui.tests;
 
-import java.io.IOException;
-
-import sharpen.core.SharpenConversionBatch;
-
 import org.junit.Test;
+import sharpen.core.SharpenConversionBatch;
 
 
 public class BatchConverterTestCase extends AbstractConversionTestCase {
@@ -47,49 +44,43 @@ public class BatchConverterTestCase extends AbstractConversionTestCase {
 	
 	
 	@Test
-	public void testEventInterfaceAndClassInDifferentCompilationUnits() throws Throwable, IOException, Throwable {
+	public void testEventInterfaceAndClassInDifferentCompilationUnits() throws Throwable {
 		runBatchConverterPascalCaseTestCase("events/EventInterface", "events/EventInterfaceImpl");
 	}
 	
 	
 
-	private void runBatchConverterPascalCaseTestCase(String... resourceNames) throws IOException, Throwable {
+	private void runBatchConverterPascalCaseTestCase(String... resourceNames) throws Throwable {
 		runBatchConverterTestCase(newPascalCaseIdentifiersConfiguration(), resourceNames);
 	}
 	
-	private void runBatchConverterTestCase(String... resourceNames) throws  IOException, Throwable {
+	private void runBatchConverterTestCase(String... resourceNames) throws Throwable {
 		runBatchConverterTestCase(getConfiguration(), resourceNames);
 	}
 	
 	
 	@Test
 	public void testSingleClassSimplePackageAndTargetFolder() throws Throwable {
-
 		runResourceTestCaseWithTargetProject("mp/Albatross");
 	}
 	
 	@Test
 	public void testSingleClassNestedPackageAndTargetFolder() throws Throwable {
-		
 		runResourceTestCaseWithTargetProject("mp/nested/Parrot");
-		
 	}
 
-	private void runResourceTestCaseWithTargetProject(String path)
-			throws Throwable {
+	private void runResourceTestCaseWithTargetProject(String path) throws Throwable {
 
 		TestCaseResource resource = new TestCaseResource(path);
 		String cu = createCompilationUnit(resource,"TargetProject");
 		
-		String targetProject= projecttempLocation +"/temp/" +
-				"TargetProject/TargetProject.net"; 
+		String targetProject= projectTempLocation +"/temp/" + "TargetProject/TargetProject.net";
 
-		String targetFolder =  projecttempLocation +"/temp/" +
-				"TargetProject/src";
+		String targetFolder =  projectTempLocation +"/temp/" + "TargetProject/src";
 
 		try {
 			SharpenConversionBatch converter = new SharpenConversionBatch(getConfiguration());
-			converter.setsourceFiles(new String[] {cu});
+			converter.setsourceFiles(cu);
 			converter.setTargetProject(targetProject);
 			converter.setsourcePathEntries(targetFolder);
 			converter.getConfiguration().setSharpenNamespace("nonamespace");
