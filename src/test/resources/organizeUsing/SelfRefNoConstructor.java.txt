@@ -1,0 +1,5 @@
+package organizeUsing;
+
+public class SelfRefNoConstructor {
+    private static final SelfRefNoConstructor selfRef = new SelfRefNoConstructor();
+}

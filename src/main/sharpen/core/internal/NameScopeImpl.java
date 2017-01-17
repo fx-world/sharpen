@@ -22,7 +22,9 @@ public class NameScopeImpl implements NameScope {
 		for (MethodDeclaration meth : getMethods(node)) {
 			if (SharpenAnnotations.hasIgnoreAnnotation(meth))
 				continue;
-			
+			if (meth.isConstructor()) {
+				continue;
+			}
 			_mappedMethodDeclarations.add(my(Mappings.class).mappedMethodName(meth.resolveBinding()));
 		}
 	}

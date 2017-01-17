@@ -3392,10 +3392,10 @@ public class CSharpBuilder extends ASTVisitor {
 		boolean isMappingToStaticMethod = isMappingToStaticMember(name);
 
 		List<Expression> arguments = node.arguments();
-		CSExpression expression = mapMethodTargetExpression(node);
+		CSExpression expression = isMappingToStaticMethod ? null : mapMethodTargetExpression(node);
 		CSExpression target = null;
 
-		if (null == expression || isMappingToStaticMethod) {
+		if (null == expression) {
 			target = new CSReferenceExpression(name);
 		} else {
 			if (BindingUtils.isStatic(binding) && arguments.size() > 0) {
@@ -3430,6 +3430,7 @@ public class CSharpBuilder extends ASTVisitor {
 
 		CSMethodInvocationExpression mie = new CSMethodInvocationExpression(target);
 		if (isMappingToStaticMethod && isInstanceMethod(binding)) {
+			expression = mapMethodTargetExpression(node);
 			if (null == expression) {
 				mie.addArgument(new CSThisExpression());
 			} else {
