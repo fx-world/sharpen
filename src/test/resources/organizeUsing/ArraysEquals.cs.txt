@@ -1,0 +1,7 @@
+namespace organizeUsing
+{
+	public class ArraysEquals
+	{
+		private static readonly bool b = System.Array.Equals(new int[0], new int[0]);
+	}
+}

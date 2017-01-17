@@ -1,0 +1,12 @@
+namespace organizeUsing
+{
+	public class SelfRefWithConstructor
+	{
+		private static readonly SelfRefWithConstructor selfRef = new SelfRefWithConstructor
+			();
+
+		public SelfRefWithConstructor()
+		{
+		}
+	}
+}

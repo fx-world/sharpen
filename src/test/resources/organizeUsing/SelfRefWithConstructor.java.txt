@@ -1,0 +1,8 @@
+package organizeUsing;
+
+public class SelfRefWithConstructor {
+    private static final SelfRefWithConstructor selfRef = new SelfRefWithConstructor();
+
+    public SelfRefWithConstructor() {
+    }
+}

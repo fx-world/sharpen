@@ -1,0 +1,7 @@
+namespace organizeUsing
+{
+	public class SelfRefNoConstructor
+	{
+		private static readonly SelfRefNoConstructor selfRef = new SelfRefNoConstructor();
+	}
+}
