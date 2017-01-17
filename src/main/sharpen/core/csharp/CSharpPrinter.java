@@ -158,7 +158,7 @@ public class CSharpPrinter extends CSVisitor {
 
 	public void visit(CSEnum node) {
 		writeMemberHeader(node);
-		writeLine("enum " + node.name());
+		writeLineStyled("enum " + node.name());
 		enterBody();
 		writeSeparatedList(node.values(), new Closure() {
 			public void execute() {
