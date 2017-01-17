@@ -64,7 +64,7 @@ public class SharpenConversion {
 
 	private CSharpPrinter getPrinter() {
 		if (null == _printer) {
-			_printer = new CSharpPrinter();
+			_printer = new CSharpPrinter(_configuration.intentStyleEgyptianBrackets());
 		}
 		return _printer;
 	}

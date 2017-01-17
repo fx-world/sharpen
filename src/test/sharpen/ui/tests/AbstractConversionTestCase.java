@@ -111,15 +111,13 @@ public abstract class AbstractConversionTestCase  {
 			TestCaseResource resource) throws IOException, CoreException {
 
 			String cu = createCompilationUnit(resource);
-			File cufile = new File(cu);
-
 
 			String sourceFilePath =projecttempLocation +"/temp/" +projectName + "/src";
 			String targetProject = projecttempLocation +"/temp/" +projectName + "/" +getConvertedProject();
 			configuration.setSharpenNamespace("nonamespace");
 
 			final SharpenConversionBatch converter = new SharpenConversionBatch(configuration);
-			converter.setsourceFiles(new String[] { cu });
+			converter.setsourceFiles(cu);
 			converter.setsourcePathEntries(sourceFilePath);
 			converter.setTargetProject(targetProject);
 			converter.setclassPathEntries(_project.getclassPath());

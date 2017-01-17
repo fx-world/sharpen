@@ -100,6 +100,8 @@ public abstract class Configuration {
 
 	private boolean _junitConvert;
 
+	private boolean _intentStyleEgyptianBrackets;
+
 	private boolean _flatNamespaceDirectoryStructure;
 	
 	private String _sharpenNamespace = "Sharpen";
@@ -441,6 +443,14 @@ public abstract class Configuration {
 	
 	public boolean junitConversion () {
 		return _junitConvert;
+	}
+
+	public void enableIntentStyleEgyptianBrackets () {
+		_intentStyleEgyptianBrackets = true;
+	}
+
+	public boolean intentStyleEgyptianBrackets () {
+		return _intentStyleEgyptianBrackets;
 	}
 
 	public void enableFlatNamespaceDirectoryStructure() {

@@ -30,14 +30,16 @@ import sharpen.core.io.*;
 
 public class CSharpPrinter extends CSVisitor {
 
+	private final boolean egyptianBracketsStyle;
 	protected IndentedWriter _writer;
 	protected CSTypeDeclaration _currentType;
 	private int _lastPrintedCommentIndex;
 	private List<CSComment> _comments;
 
-	public CSharpPrinter() {
+	public CSharpPrinter(boolean egyptianBracketsStyle) {
+		this.egyptianBracketsStyle = egyptianBracketsStyle;
 	}
-	
+
 	public void setWriter(Writer writer, String indentString, int maxColumns) {
 		_writer = new IndentedWriter(writer, maxColumns);
 		if (indentString != null) {
@@ -57,7 +59,7 @@ public class CSharpPrinter extends CSVisitor {
 			_comments = null;
 		}
 	}
-	
+
 	private List<CSUsing> printableUsingList(Iterable<CSUsing> usings) {
 		List<CSUsing> list = new ArrayList<CSUsing>();
 		for (CSUsing using : usings) {
@@ -67,28 +69,28 @@ public class CSharpPrinter extends CSVisitor {
 			public int compare(CSUsing a, CSUsing b) {
 				boolean ia = a.namespace().startsWith("System");
 				boolean ib = b.namespace().startsWith("System");
-				
+
 				if (ia && ib) return a.namespace().compareTo(b.namespace());
 				else if (ia) return -1;
 				else if (ib) return 1;
-				else return a.namespace().compareTo(b.namespace()); 
+				else return a.namespace().compareTo(b.namespace());
 			}
 		});
 		return list;
 	}
 
 	static final Pattern META_VARIABLE_PATTERN = Pattern.compile("\\$(\\w+)");
-	
+
 	@Override
 	public void visit(CSMacroExpression node) {
 		node.macro().accept(this);
 	}
-	
+
 	@Override
 	public void visit(CSMacroTypeReference node) {
 		node.macro().accept(this);
     }
-	
+
 	@Override
 	public void visit(CSMacro node) {
 		final String template = node.template();
@@ -96,7 +98,7 @@ public class CSharpPrinter extends CSVisitor {
 		int last = 0;
 		while (matcher.find()) {
 			write(template.substring(last, matcher.start()));
-			
+
 			Object value = node.resolveVariable(matcher.group(1));
 			// value is either a single node or a list of nodes
 			if (value instanceof CSNode) {
@@ -104,7 +106,7 @@ public class CSharpPrinter extends CSVisitor {
 			} else {
 				writeCommaSeparatedList((Iterable<CSNode>) value);
 			}
-			
+
 			last = matcher.end();
 		}
 		write(template.substring(last));
@@ -117,11 +119,11 @@ public class CSharpPrinter extends CSVisitor {
 		for (CSUsing using : usings) {
 			using.accept(this);
 		}
-		
+
 		if (usings.size() > 0) _writer.writeLine();
 
 		if (null != node.namespace()) {
-			writeLine("namespace " + node.namespace());
+			writeLineStyled("namespace " + node.namespace());
 			enterBody();
 		}
 		writeLineSeparatedList(node.types());
@@ -130,7 +132,7 @@ public class CSharpPrinter extends CSVisitor {
 		}
 		endEnclosingIfDefs(node);
 	}
-	
+
 	@Override
 	public void visit(CSRemovedExpression node) {
 	    throw new IllegalStateException("Unexpected removal of expression: " + node.toString());
@@ -153,7 +155,7 @@ public class CSharpPrinter extends CSVisitor {
 	public void visit(CSClass node) {
 		writeType(node);
 	}
-	
+
 	public void visit(CSEnum node) {
 		writeMemberHeader(node);
 		writeLine("enum " + node.name());
@@ -166,16 +168,16 @@ public class CSharpPrinter extends CSVisitor {
 		writeLine();
 		leaveBody();
 	}
-	
+
 	@Override
 	public void visit(CSEnumValue node) {
 		writeIndented(node.name());
 	}
-	
+
 	public void visit(CSStruct node) {
 		writeType(node);
 	}
-	
+
 	public void visit(CSInterface node) {
 		writeType(node);
 	}
@@ -183,7 +185,7 @@ public class CSharpPrinter extends CSVisitor {
 	public void visit(CSTypeParameter node) {
 		write(node.name());
 	}
-	
+
 	@Override
 	public void visit(final CSArrayTypeReference node) {
 		node.elementType().accept(this);
@@ -191,7 +193,7 @@ public class CSharpPrinter extends CSVisitor {
 			write("[]");
 		}
 	}
-	
+
 	public void visit(CSTypeReference node) {
 		write(node.typeName());
 		writeTypeArguments(node);
@@ -203,7 +205,7 @@ public class CSharpPrinter extends CSVisitor {
 			writeGenericParameters(typeArgs);
 		}
 	}
-	
+
 	public void visit(CSDelegate node) {
 		writeMemberHeader(node);
 		write("delegate void ");
@@ -213,7 +215,7 @@ public class CSharpPrinter extends CSVisitor {
 	}
 
 	private void writeTypeHeader(CSTypeDeclaration node) {
-		writeMemberHeader(node);		
+		writeMemberHeader(node);
 		if (node.isInterface()) {
 			if (node.partial()) _writer.write("partial ");
 			write("interface " + node.name());
@@ -268,7 +270,7 @@ public class CSharpPrinter extends CSVisitor {
 		writeTypeBody(node);
 		endEnclosingIfDefs(node);
 	}
-	
+
 	private void writeBaseTypes(CSTypeDeclaration node) {
 		List<CSTypeReferenceExpression> baseTypes = node.baseTypes();
 		if (baseTypes.isEmpty()) return;
@@ -277,7 +279,9 @@ public class CSharpPrinter extends CSVisitor {
 	}
 
 	private void writeTypeBody(CSTypeDeclaration node) {
-		writeLine();
+        if (!egyptianBracketsStyle) {
+            writeLine();
+        }
 		enterBody();
 		CSTypeDeclaration saved = _currentType;
 		_currentType = node;
@@ -289,12 +293,12 @@ public class CSharpPrinter extends CSVisitor {
 
 	private void writeVisibility(CSMember member) {
 		writeIndentation();
-		
+
 		if (member.isNewModifier())
 			write("new ");
-		
+
 		if (isExplicitMember(member)) return;
-		
+
 		CSVisibility visibility = member.visibility();
 		write(visibility.toString().toLowerCase());
 		write(" ");
@@ -303,7 +307,7 @@ public class CSharpPrinter extends CSVisitor {
 	private boolean isExplicitMember(CSMember member) {
 		return member.name().indexOf('.') != -1;
 	}
-	
+
 	public void visit(CSVariableDeclaration node) {
 		node.type().accept(this);
 		if (null != node.name()) {
@@ -315,7 +319,7 @@ public class CSharpPrinter extends CSVisitor {
 			node.initializer().accept(this);
 		}
 	}
-	
+
 	public void visit(CSConstructor node) {
 		writeDoc(node);
 		writeAttributes(node);
@@ -323,7 +327,7 @@ public class CSharpPrinter extends CSVisitor {
 			writeIndented("static ");
 		} else {
 			writeVisibility(node);
-		}		
+		}
 		write(_currentType.name());
 		writeParameterList(node);
 		if (null != node.chainedConstructorInvocation()) {
@@ -336,14 +340,14 @@ public class CSharpPrinter extends CSVisitor {
 		writeLine();
 		node.body().accept(this);
 	}
-	
+
 	public void visit(CSDestructor node) {
 		writeIndented("~");
 		write(_currentType.name());
 		writeLine("()");
 		node.body().accept(this);
 	}
-	
+
 	public void visit(CSMethod node) {
 		printPrecedingComments(node);
 		beginEnclosingIfDefs(node);
@@ -389,29 +393,31 @@ public class CSharpPrinter extends CSVisitor {
 	}
 
 	protected void writeMethodBody(CSMethod node) {
-		writeLine();
-		node.body().accept(this);
+        if (!egyptianBracketsStyle) {
+            writeLine();
+        }
+        node.body().accept(this);
 	}
 
 	protected void writeMethodName(CSMethod node) {
 		write(node.name());
 	}
-	
+
 	public void visit(CSBlock node) {
 		enterBody();
 		visitList(node.statements());
 		leaveBody();
 	}
-	
-	public void visit(CSDeclarationStatement node) {		
+
+	public void visit(CSDeclarationStatement node) {
 		printPrecedingComments(node);
-		
+
 		writeIndentation();
 		node.declaration().accept(this);
-		writeLine(";");	
-		
+		writeLine(";");
+
 	}
-	
+
 	public void visit(CSDeclarationExpression node) {
 		node.declaration().accept(this);
 	}
@@ -426,7 +432,7 @@ public class CSharpPrinter extends CSVisitor {
 		}
 		writeLine(";");
 	}
-	
+
 	@Override
 	public void visit(CSLineComment node) {
 		writeIndentedLine(node.text());
@@ -440,9 +446,9 @@ public class CSharpPrinter extends CSVisitor {
 	}
 
 	public void visit(CSReturnStatement node) {
-		
+
 		printPrecedingComments(node);
-		
+
 		if (null == node.expression()) {
 			writeIndentedLine("return;");
 		} else {
@@ -455,14 +461,14 @@ public class CSharpPrinter extends CSVisitor {
 	private void printPrecedingComments(CSNode node) {
 		printPrecedingComments(node.startPosition());
 	}
-	
+
 	private void printPrecedingComments(int startPosition) {
 		if (startPosition <= 0) return;
 		if (_lastPrintedCommentIndex >= _comments.size()) return;
 		_lastPrintedCommentIndex = printCommentsBetween(_lastPrintedCommentIndex, startPosition);
 	}
 
-	private int printCommentsBetween(int lastIndex, int endStartPosition) {		
+	private int printCommentsBetween(int lastIndex, int endStartPosition) {
 		int endIndex = commentIndexAfter(lastIndex, endStartPosition);
 		if (endIndex == -1) {
 			endIndex = _comments.size();
@@ -482,34 +488,34 @@ public class CSharpPrinter extends CSVisitor {
 
 	public void visit(CSIfStatement node) {
 		printPrecedingComments(node);
-		
+
 		writeIndented("if (");
 		node.expression().accept(this);
-		writeLine(")");
+		writeLineStyled(")");
 		node.trueBlock().accept(this);
 		if (!node.falseBlock().isEmpty()) {
 			writeIndentedLine("else");
 			node.falseBlock().accept(this);
 		}
 	}
-	
+
 	public void visit(CSLockStatement node) {
 		writeBlockStatement("lock", node);
 	}
-	
+
 	public void visit(CSWhileStatement node) {
 		writeBlockStatement("while", node);
-	} 
-	
+	}
+
 	public void visit(CSSwitchStatement node) {
 		writeIndented("switch (");
 		node.expression().accept(this);
-		writeLine(")");
+		writeLineStyled(")");
 		enterBody();
 		writeLineSeparatedList(node.caseClauses());
 		leaveBody();
 	}
-	
+
 	public void visit(CSCaseClause node) {
 		int clauses = 0;
 		for (CSExpression e : node.expressions()) {
@@ -518,29 +524,31 @@ public class CSharpPrinter extends CSVisitor {
 			e.accept(this);
 			write(":");
 		}
-		
+
 		if (node.isDefault()) {
 			if (clauses > 0) writeLine();
 			writeIndented("default:");
 		}
-		writeLine();
+		if (!egyptianBracketsStyle) {
+			writeLine();
+		}
 		node.body().accept(this);
 	}
-	
+
 	public void visit(CSForEachStatement node) {
 		printPrecedingComments(node);
-		
+
 		writeIndented("foreach (");
 		node.variable().accept(this);
 		write(" in ");
 		node.expression().accept(this);
-		writeLine(")");
+		writeLineStyled(")");
 		node.body().accept(this);
 	}
-	
+
 	public void visit(CSForStatement node) {
 		printPrecedingComments(node);
-		
+
 		writeIndented("for (");
 		writeCommaSeparatedList(node.initializers());
 		write("; ");
@@ -549,15 +557,15 @@ public class CSharpPrinter extends CSVisitor {
 		}
 		write("; ");
 		writeCommaSeparatedList(node.updaters());
-		writeLine(")");
+		writeLineStyled(")");
 		node.body().accept(this);
 	}
-	
+
 	public void visit(CSBreakStatement node) {
 		printPrecedingComments(node);
 		writeIndentedLine("break;");
 	}
-	
+
 	public void visit(CSGotoStatement node) {
 		printPrecedingComments(node);
 		if (node.target() != null) {
@@ -569,7 +577,7 @@ public class CSharpPrinter extends CSVisitor {
 		else
 			writeIndentedLine("goto " + node.label() + ";");
 	}
-	
+
 	public void visit(CSContinueStatement node) {
 		printPrecedingComments(node);
 		writeIndentedLine("continue;");
@@ -581,21 +589,27 @@ public class CSharpPrinter extends CSVisitor {
 		write(" (");
 		node.expression().accept(this);
 		write(")");
-		writeLine();
-		node.body().accept(this);
+        if (!egyptianBracketsStyle) {
+            writeLine();
+        }
+        node.body().accept(this);
 	}
-	
+
 	public void visit(CSDoStatement node) {
-		writeIndentedLine("do");
+		if (egyptianBracketsStyle) {
+			writeIndented("do");
+		} else {
+			writeIndentedLine("do");
+		}
 		node.body().accept(this);
 		writeIndented("while (");
 		node.expression().accept(this);
 		writeLine(");");
 	}
-	
+
 	public void visit(CSTryStatement node) {
 		printPrecedingComments(node);
-		
+
 		writeIndentedLine("try");
 		node.body().accept(this);
 		visitList(node.catchClauses());
@@ -604,7 +618,7 @@ public class CSharpPrinter extends CSVisitor {
 			node.finallyBlock().accept(this);
 		}
 	}
-	
+
 	public void visit(CSCatchClause node) {
 		writeIndented("catch");
 		CSVariableDeclaration ex = node.exception();
@@ -616,10 +630,10 @@ public class CSharpPrinter extends CSVisitor {
 		writeLine();
 		node.body().accept(this);
 	}
-	
+
 	public void visit(CSThrowStatement node) {
 		printPrecedingComments(node);
-		
+
 		if (null == node.expression()) {
 			writeIndentedLine("throw;");
 		} else {
@@ -628,21 +642,21 @@ public class CSharpPrinter extends CSVisitor {
 			writeLine(";");
 		}
 	}
-	
+
 	public void visit(CSExpressionStatement node) {
 		printPrecedingComments(node);
-		
+
 		writeIndentation();
 		node.expression().accept(this);
 		writeLine(";");
 	}
-	
+
 	public void visit(CSParenthesizedExpression node) {
 		write("(");
 		node.expression().accept(this);
 		write(")");
 	}
-	
+
 	public void visit(CSConditionalExpression node) {
 		node.expression().accept(this);
 		write(" ? ");
@@ -650,7 +664,7 @@ public class CSharpPrinter extends CSVisitor {
 		write(" : ");
 		node.falseExpression().accept(this);
 	}
-	
+
 	public void visit(CSInfixExpression node) {
 		node.lhs().accept(this);
 		write(" ");
@@ -658,22 +672,22 @@ public class CSharpPrinter extends CSVisitor {
 		write(" ");
 		node.rhs().accept(this);
 	}
-	
+
 	public void visit(CSPrefixExpression node) {
 		write(node.operator());
 		node.operand().accept(this);
 	}
-	
+
 	public void visit(CSPostfixExpression node) {
 		node.operand().accept(this);
 		write(node.operator());
 	}
-	
+
 	public void visit(CSConstructorInvocationExpression node) {
 		write("new ");
 		writeMethodInvocation(node);
 	}
-	
+
 	public void visit(CSMethodInvocationExpression node) {
 		writeMethodInvocation(node);
 	}
@@ -683,74 +697,74 @@ public class CSharpPrinter extends CSVisitor {
 		writeTypeArguments(node);
 		writeParameterList(node.arguments());
 	}
-	
+
 	public void visit(CSNumberLiteralExpression node) {
 		write(node.token());
 	}
-	
+
 	public void visit(CSUncheckedExpression node) {
 		write("unchecked(");
 		node.expression().accept(this);
 		write(")");
 	}
-	
+
 	public void visit(CSTypeofExpression node) {
 		write("typeof(");
 		node.type().accept(this);
 		write(")");
 	}
-	
+
 	public void visit(CSBoolLiteralExpression node) {
 		write(Boolean.toString(node.booleanValue()));
 	}
-	
+
 	public void visit(CSStringLiteralExpression node) {
 		write(node.escapedValue());
 	}
-	
+
 	public void visit(CSCharLiteralExpression node) {
 		write(node.escapedValue());
 	}
-	
+
 	public void visit(CSNullLiteralExpression node) {
 		write("null");
 	}
-	
+
 	public void visit(CSBaseExpression node) {
 		write("base");
 	}
-	
+
 	public void visit(CSThisExpression node) {
 		write("this");
 	}
-	
+
 	public void visit(CSArrayCreationExpression node) {
 		write("new ");
-		
+
 		CSharpTypeReferenceVisitor arrayElementTypeVisitor = new CSharpTypeReferenceVisitor(this);
-		
+
 		node.elementType().accept(arrayElementTypeVisitor);
-		
+
 		write("[");
 		if (null != node.length()) {
 			node.length().accept(this);
 		}
 		write("]");
-		
+
 		write(arrayElementTypeVisitor.sufix());
-		
+
 		if (null != node.initializer()) {
 			write(" ");
 			node.initializer().accept(this);
-		}		
+		}
 	}
-	
+
 	public void visit(CSArrayInitializerExpression node) {
 		write("{ ");
 		writeCommaSeparatedList(filterRemovedExpressions(node.expressions()));
 		write(" }");
 	}
-	
+
 	private Iterable<CSNode> filterRemovedExpressions(List<CSExpression> expressions) {
 	    final ArrayList<CSNode> result = new ArrayList<CSNode>(expressions.size());
 	    for (CSNode e : expressions)
@@ -765,7 +779,7 @@ public class CSharpPrinter extends CSVisitor {
 		writeCommaSeparatedList(node.indexes());
 		write("]");
 	}
-	
+
 	public void visit(CSCastExpression node) {
 		write("(");
 		node.type().accept(this);
@@ -774,11 +788,11 @@ public class CSharpPrinter extends CSVisitor {
 			node.expression().accept(this);
 		}
 	}
-	
+
 	public void visit(CSReferenceExpression node) {
 		write(node.name());
 	}
-	
+
 	public void visit(CSMemberReferenceExpression node) {
 		node.expression().accept(this);
 		write(".");
@@ -800,19 +814,19 @@ public class CSharpPrinter extends CSVisitor {
 		}
 		write(")");
 	}
-	
+
 	protected <T extends CSNode> void writeParameterList(Iterable<T> parameters) {
 		write("(");
 		writeCommaSeparatedList(parameters);
 		write(")");
 	}
-	
+
 	public void visit(CSField node) {
 		writeMemberHeader(node);
 		writeFieldModifiers(node);
 		writeDeclaration(node.type(), node.name(), node.initializer());
 	}
-	
+
 	public void visit(CSProperty node) {
 		writeMetaMemberHeader(node);
 		node.type().accept(this);
@@ -841,15 +855,15 @@ public class CSharpPrinter extends CSVisitor {
 		writeAttributes(node);
 		writeVisibility(node);
 	}
-	
+
 	public void visit(CSEvent node) {
 		writeMetaMemberHeader(node);
 		write("event ");
 		node.type().accept(this);
 		write(" ");
 		write(node.name());
-		
-		final CSBlock firstBlock = node.getAddBlock();		
+
+		final CSBlock firstBlock = node.getAddBlock();
 		if (null == firstBlock) {
 			writeLine(";");
 			return;
@@ -866,7 +880,7 @@ public class CSharpPrinter extends CSVisitor {
 		writeAttributes(node);
 		writeMethodHeader(node, node.modifier());
 	}
-	
+
 	private void writeMemberBlock(String name, CSBlock block, boolean isAbstract) {
 		writeIndented(name);
 		if (isAbstract) {
@@ -885,18 +899,18 @@ public class CSharpPrinter extends CSVisitor {
 		}
 		writeLine("]");
 	}
-	
+
 	@Override
 	public void visit(CSLabelStatement node) {
 		//labels can't be free-standing, for simplicity simply emit an empty statement
 		writeLine(node.label() + ": ;");
 	}
-	
+
 	@Override
 	public void visit(CSDocTextOverlay node) {
 		writeXmlDoc(node.text());
 	}
-	
+
 	public void visit(CSDocTextNode node) {
 		writeXmlDoc(xmlEscape(node.text()));
 	}
@@ -911,21 +925,21 @@ public class CSharpPrinter extends CSVisitor {
 			writeBlock(lines[i].trim().replace("<br>", "<br />"));
 		}
 	}
-	
+
 
 	private String xmlEscape(String text) {
 		return text.replaceAll("(<)(/?[^\\s][^>]*)(>)", ":lt:$2:gt:")
 					.replace("<", "&lt;").replace(">", "&gt;")
 					.replace(":lt:", "<")
 					.replace(":gt:", ">");
-		
+
 	}
-	
+
 	public void visit(CSDocTagNode node) {
 		String tagName = node.tagName();
 		List<CSDocAttributeNode> attributes = node.attributes();
 		List<CSDocNode> fragments = node.fragments();
-		
+
 		write("<");
 		write(tagName);
 		if (!attributes.isEmpty()) {
@@ -941,7 +955,7 @@ public class CSharpPrinter extends CSVisitor {
 			write("/");
 		}
 		write(">");
-		
+
 		if (fragments.size() > 1) {
 			writeLine();
 			for (CSDocNode f : fragments) {
@@ -955,24 +969,24 @@ public class CSharpPrinter extends CSVisitor {
 			write("</" + tagName + ">");
 		}
 	}
-	
+
 	private void writeAttributes(CSMember node) {
 		visitList(node.attributes());
 	}
-	
+
 	private void writeFieldModifiers(CSField node) {
 		for (CSFieldModifier m : node.modifiers()) {
 			write(m.toString().toLowerCase());
 			write(" ");
 		}
 	}
-	
+
 	private void writeDoc(CSMember node) {
 		List<CSDocNode> docs = node.docs();
 		if (docs.isEmpty()) {
 			return;
 		}
-		
+
 		linePrefix("/// ");
 		for (CSDocNode doc : docs) {
 			writeIndentation();
@@ -993,7 +1007,7 @@ public class CSharpPrinter extends CSVisitor {
 		}
 		return "";
 	}
-	
+
 	interface Closure {
 		void execute();
 	}
@@ -1005,11 +1019,11 @@ public class CSharpPrinter extends CSVisitor {
 			}
 		});
 	}
-	
+
 	private <T extends CSNode> void writeCommaSeparatedList(Iterable<T> nodes) {
 		writeList(nodes, ", ");
 	}
-	
+
 	private <T extends CSNode> void writeList(Iterable<T> nodes, final String separator) {
 		writeSeparatedList(nodes, new Closure() {
 			public void execute() {
@@ -1017,7 +1031,7 @@ public class CSharpPrinter extends CSVisitor {
 			}
 		});
 	}
-	
+
 	private <T extends CSNode> void writeSeparatedList(Iterable<T> nodes, Closure separator) {
 		Iterator<T> iterator = nodes.iterator();
 		if (!iterator.hasNext()) return;
@@ -1027,7 +1041,7 @@ public class CSharpPrinter extends CSVisitor {
 			iterator.next().accept(this);
 		}
 	}
-	
+
 	private String classModifier(CSClassModifier modifier) {
 		switch (modifier) {
 		case Abstract: return "abstract ";
@@ -1038,23 +1052,26 @@ public class CSharpPrinter extends CSVisitor {
 	}
 
     protected void enterBody() {
-//		writeLine();
-        writeIndentedLine("{");
+        if (egyptianBracketsStyle) {
+            writeLine(" {");
+        } else {
+            writeIndentedLine("{");
+        }
         indent();
 	}
 
     private void indent() {
     	_writer.indent();
 	}
-    
+
     private void outdent() {
     	_writer.outdent();
 	}
-    
+
     private void writeIndentation() {
 		_writer.writeIndentation();
 	}
-    
+
     private void writeIndented(String s) {
 		_writer.writeIndented(s);
 	}
@@ -1062,19 +1079,19 @@ public class CSharpPrinter extends CSVisitor {
 	private void writeIndentedLine(String s) {
 		_writer.writeIndentedLine(s);
 	}
-	
+
 	private void write(String s) {
 		_writer.write(s);
 	}
-	
+
 	private void linePrefix(String s) {
     	_writer.linePrefix(s);
 	}
-	
+
 	private void writeBlock(String s) {
     	_writer.writeBlock(s);
 	}
-	
+
 	private void writeLine(String s) {
     	_writer.writeLine(s);
 	}
@@ -1083,38 +1100,46 @@ public class CSharpPrinter extends CSVisitor {
     	_writer.writeLine();
 	}
 
+	private void writeLineStyled(String s) {
+		if (egyptianBracketsStyle) {
+			write(s);
+		} else {
+			writeLine(s);
+		}
+	}
+
 	protected void leaveBody() {
 		outdent();
         writeIndentedLine("}");
 	}
-	
+
 	class CSharpTypeReferenceVisitor extends CSVisitor {
 		private CSVisitor _delegate;
 		private StringBuffer _sb = new StringBuffer();
-		
+
 		CSharpTypeReferenceVisitor(CSVisitor delegate) {
 			_delegate = delegate;
 		}
-		
+
 		@Override
 		public void visit(CSArrayTypeReference node) {
 			node.elementType().accept(_delegate);
-			
+
 			for (int i=0; i < node.dimensions(); ++i) {
 				_sb.append("[]");
-			}		
+			}
 		}
-		
+
 		public void visit(CSTypeReferenceExpression node) {
 			node.accept(_delegate);
 		}
-		
+
 		public void visit(CSTypeReference node) {
 			node.accept(_delegate);
 		}
-		
+
 		String sufix() {
-			return _sb.toString(); 
+			return _sb.toString();
 		}
-	}	
+	}
 }
