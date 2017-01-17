@@ -116,6 +116,8 @@ public class MappingsImpl implements Mappings {
 		if (!hasMapping(type)) {
 			pos = nameSpaceLength(type, fullName, pos);
 		}
+		if (pos == -1)
+			return fullName;
 
 		String namespace = fullName.substring(0, pos);
 		registerNamespace(namespace);
