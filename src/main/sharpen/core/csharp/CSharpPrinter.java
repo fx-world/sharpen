@@ -337,7 +337,9 @@ public class CSharpPrinter extends CSVisitor {
 			writeMethodInvocation(node.chainedConstructorInvocation());
 			outdent();
 		}
-		writeLine();
+		if (!egyptianBracketsStyle) {
+			writeLine();
+		}
 		node.body().accept(this);
 	}
 

@@ -60,6 +60,14 @@ namespace formattings {
 
 			public long field2;
 
+			public InnerClass() {
+			}
+
+			public InnerClass(long field1, long field2) {
+				this.field1 = field1;
+				this.field2 = field2;
+			}
+
 			public virtual void method1(long v) {
 				field1 = v;
 			}
