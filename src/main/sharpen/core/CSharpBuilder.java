@@ -2192,17 +2192,21 @@ public class CSharpBuilder extends ASTVisitor {
 		        || isRemoved(invocation.resolveMethodBinding());
 
 	}
-	
-	public boolean isEnumOrdinalMethodInvocation (MethodInvocation node) {
-		return node.getName().getIdentifier().equals("ordinal") && 
-			node.getExpression() != null &&
-			node.getExpression().resolveTypeBinding().isEnum();
+
+	public boolean isEnumOrdinalMethodInvocation(MethodInvocation node) {
+		return node.getName().getIdentifier().equals("ordinal") && isEnumNodeMethodInvocation(node);
 	}
 
-	public boolean isEnumNameMethodInvocation (MethodInvocation node) {
-		return node.getName().getIdentifier().equals("name") && 
-			node.getExpression() != null &&
-			node.getExpression().resolveTypeBinding().isEnum();
+	public boolean isEnumNameMethodInvocation(MethodInvocation node) {
+		return node.getName().getIdentifier().equals("name") && isEnumNodeMethodInvocation(node);
+	}
+
+	public static boolean isEnumNodeMethodInvocation(MethodInvocation node) {
+		if (node.getExpression() == null) {
+			return false;
+		}
+		ITypeBinding binding = node.getExpression().resolveTypeBinding();
+		return binding.isEnum() || "java.lang.Enum".equals(binding.getQualifiedName());
 	}
 
 	public boolean visit(IfStatement node) {

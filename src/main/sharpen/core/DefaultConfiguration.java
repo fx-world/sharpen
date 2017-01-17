@@ -27,7 +27,8 @@ public class DefaultConfiguration extends Configuration {
 		
 		setUpPrimitiveMappings();
 		setUpAnnotationMappings();
-	
+
+		mapType("java.lang.Enum", "object");
 		mapType("java.lang.System", runtimeTypeName);
 		mapType("java.lang.Math", "System.Math");
 		mapMethod("java.lang.System.exit", "System.Environment.Exit");
