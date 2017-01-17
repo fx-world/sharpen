@@ -121,17 +121,11 @@
     <testOutputDirectory>src/target/testcases</testOutputDirectory>
     <sourceDirectory>src/main</sourceDirectory>
     <scriptSourceDirectory>src/main/resources</scriptSourceDirectory>
-    <testSourceDirectory>src/test</testSourceDirectory>
     <resources>
       <resource>
         <directory>src/test/resources</directory>
       </resource>
     </resources>
-    <testResources>
-      <testResource>
-        <directory>src/test/resources</directory>
-      </testResource>
-    </testResources>
     
     <plugins>
       

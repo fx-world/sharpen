@@ -19,34 +19,15 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
 
-/* Copyright (C) 2004 - 2006 Versant Inc. http://www.db4o.com */
-
 package sharpen.ui.tests;
 
-import java.io.*;
-import java.net.*;
-
-import sharpen.util.*;
-
-
-public class ResourceUtility {
-	
-	public static String getStringContents(String resourceName) throws IOException {
-		return getStringContents(resourceName, ResourceUtility.class);
+public class BindingTestCaseSubject {
+	public interface Foo {
+		void bar();
 	}
-
-	public static String getStringContents(String resourceName, Class<?> relativeTo) throws IOException {
-		return ResourceLoader.getStringContents(relativeTo, "/" + resourceName);
-	}	
-
-	public static String getResourceUri(String resourceName) {
-		final URL url = ResourceUtility.class.getResource("/" + resourceName);
-		if (null == url) ResourceLoader.resourceNotFound(resourceName);
-		try {
-			return url.toURI().toString();
-		} catch (URISyntaxException e) {
-			throw new RuntimeException(e);
+	
+	public static class Baz implements Foo {
+		public void bar() {
 		}
 	}
-
 }

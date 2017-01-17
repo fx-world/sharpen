@@ -67,7 +67,6 @@ public class TestCaseResource {
 	}
 	
 	public void assertExpectedContent(String actualContents) throws IOException {
-
 		StringAssert.assertEqualLines(expectedStringContents(), actualContents);
 	}
 	
@@ -76,11 +75,14 @@ public class TestCaseResource {
 	}
 	
 	public String actualStringContents() throws IOException {
-		return ResourceUtility.getStringContents(_originalPath + actualPathSuffix(), getClass());
-	}
-	
-	public String actualStringContents(String pathofTestResource) throws IOException {
-		return ResourceUtility.getStringContents(pathofTestResource + "/" + _originalPath + actualPathSuffix(), getClass());
+		String content = ResourceUtility.getStringContents(_originalPath + ".java", getClass());
+		if (content == null) {
+			content = ResourceUtility.getStringContents(_originalPath + actualPathSuffix(), getClass());
+		}
+		if (content == null) {
+			ResourceLoader.resourceNotFound(_originalPath);
+		}
+		return content;
 	}
 
 	protected String actualPathSuffix() {
@@ -88,7 +90,14 @@ public class TestCaseResource {
 	}
 	
 	public String expectedStringContents() throws IOException {
-		return ResourceUtility.getStringContents(_expectedPath + expectedPathSuffix(), getClass());
+		String content = ResourceUtility.getStringContents(_expectedPath + ".cs", getClass());
+		if (content == null) {
+			content = ResourceUtility.getStringContents(_expectedPath + expectedPathSuffix(), getClass());
+		}
+		if (content == null) {
+			ResourceLoader.resourceNotFound(_expectedPath);
+		}
+		return content;
 	}
 
 	protected String expectedPathSuffix() {

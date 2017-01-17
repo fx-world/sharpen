@@ -19,15 +19,16 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
 
-package sharpen.ui.tests;
+/* Copyright (C) 2004 - 2006 Versant Inc. http://www.db4o.com */
 
-public class BindingTestCaseSubject {
-	public interface Foo {
-		void bar();
+package sharpen.ui.tests;
+import org.junit.Test;
+
+public class UnwrapTestCase extends AbstractConversionTestCase {
+
+	@Test
+	public void testUnwrapMethod() throws Throwable {
+		runResourceTestCase("unwrap/Unwrap");
 	}
-	
-	public static class Baz implements Foo {
-		public void bar() {
-		}
-	}
+
 }
