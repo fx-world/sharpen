@@ -94,5 +94,6 @@ public class SharpenCommandLine {
     public boolean flatNamespaceDirectoryStructure;
     public String outputFolder;
     public String sharpenNamespace;
+    public boolean egyptianBrackets;
     public boolean help;
 }

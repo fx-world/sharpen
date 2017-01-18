@@ -156,7 +156,10 @@ class SharpenCommandLineParser extends CommandLineParser {
             _cmdLine.sharpenNamespace = consumeNext();
         } else if (areEqual(arg, "-help")) {
             _cmdLine.help = true;
+        } else if (areEqual(arg, "-egyptianBrackets")) {
+            _cmdLine.egyptianBrackets = true;
         } else {
+            System.out.println("Unknown arg:" + arg);
             _cmdLine.help = true;
         }
     }

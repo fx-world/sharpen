@@ -2,7 +2,7 @@ package formattings;
 
 import java.util.Arrays;
 
-public class IntentStyleEgyptianBrackets {
+public class IndentStyleEgyptianBrackets {
 
     public int field1;
     public long field2;

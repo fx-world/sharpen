@@ -16,7 +16,7 @@ public class EnumsTestCase extends AbstractConversionTestCase {
     @Test
     public void testEnumSimple() throws Throwable {
         Configuration configuration = configuration();
-        configuration.enableIntentStyleEgyptianBrackets();
+        configuration.enableIndentStyleEgyptianBrackets();
         runResourceTestCase(configuration, "EnumSimple");
     }
 
