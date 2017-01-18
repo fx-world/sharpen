@@ -1,11 +1,20 @@
 namespace enums {
 	public class EnumSimple {
-		public enum VEnum {
-			VALUE0,
-			VALUE1,
-			VALUE2,
-			VALUE3,
-			VALUE4
+		[System.Serializable]
+		public sealed class VEnum : nonamespace.EnumBase {
+			public static readonly enums.EnumSimple.VEnum VALUE0 = new enums.EnumSimple.VEnum(0, "VALUE0");
+
+			public static readonly enums.EnumSimple.VEnum VALUE1 = new enums.EnumSimple.VEnum(1, "VALUE1");
+
+			public static readonly enums.EnumSimple.VEnum VALUE2 = new enums.EnumSimple.VEnum(2, "VALUE2");
+
+			public static readonly enums.EnumSimple.VEnum VALUE3 = new enums.EnumSimple.VEnum(3, "VALUE3");
+
+			public static readonly enums.EnumSimple.VEnum VALUE4 = new enums.EnumSimple.VEnum(4, "VALUE4");
+
+			private VEnum(int ordinal, string name)
+				: base(ordinal, name) {
+			}
 		}
 
 		public static void work() {
@@ -15,11 +24,11 @@ namespace enums {
 		}
 
 		public static void printConcreteEnum(enums.EnumSimple.VEnum e1) {
-			System.Console.Out.WriteLine((int)(e1) + ": " + e1.ToString());
+			System.Console.Out.WriteLine(e1.ordinal() + ": " + e1.name());
 		}
 
-		public static void printAnyEnum(object e2) {
-			System.Console.Out.WriteLine((int)(e2) + ": " + e2.ToString());
+		public static void printAnyEnum(Sharpen.EnumBase e2) {
+			System.Console.Out.WriteLine(e2.ordinal() + ": " + e2.name());
 		}
 	}
 }

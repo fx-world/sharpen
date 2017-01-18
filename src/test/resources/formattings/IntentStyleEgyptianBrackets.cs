@@ -77,10 +77,17 @@ namespace formattings {
 			}
 		}
 
-		public enum MyEnum1 {
-			VALUE1,
-			VALUE2,
-			VALUE3
+		[System.Serializable]
+		public sealed class MyEnum1 : nonamespace.EnumBase {
+			public static readonly formattings.IntentStyleEgyptianBrackets.MyEnum1 VALUE1 = new formattings.IntentStyleEgyptianBrackets.MyEnum1(0, "VALUE1");
+
+			public static readonly formattings.IntentStyleEgyptianBrackets.MyEnum1 VALUE2 = new formattings.IntentStyleEgyptianBrackets.MyEnum1(1, "VALUE2");
+
+			public static readonly formattings.IntentStyleEgyptianBrackets.MyEnum1 VALUE3 = new formattings.IntentStyleEgyptianBrackets.MyEnum1(2, "VALUE3");
+
+			private MyEnum1(int ordinal, string name)
+				: base(ordinal, name) {
+			}
 		}
 	}
 }

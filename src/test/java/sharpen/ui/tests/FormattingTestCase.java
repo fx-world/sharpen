@@ -17,6 +17,7 @@ public class FormattingTestCase extends AbstractConversionTestCase {
     public void testIntentStyleEgyptianBrackets() throws Throwable {
         Configuration configuration = configuration();
         configuration.enableIntentStyleEgyptianBrackets();
+        configuration.setMaxColumns(256);
         runResourceTestCase(configuration, "IntentStyleEgyptianBrackets");
     }
 

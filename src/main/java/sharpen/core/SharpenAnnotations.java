@@ -29,8 +29,6 @@ import sharpen.core.framework.JavadocUtility;
 
 public class SharpenAnnotations {
 
-    static final String SHARPEN_ENUM = "@sharpen.enum";
-
     public static final String SHARPEN_RENAME = "@sharpen.rename";
 
     static final String SHARPEN_PUBLIC = "@sharpen.public";

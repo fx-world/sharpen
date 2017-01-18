@@ -197,10 +197,6 @@ public class CSharpBuilder extends ASTVisitor {
             return false;
         }
 
-        if (processEnumType(node)) {
-            return false;
-        }
-
         try {
             my(NameScope.class).enterTypeDeclaration(node);
             _ignoreExtends.using(ignoreExtends(node), new Runnable() {
@@ -316,10 +312,6 @@ public class CSharpBuilder extends ASTVisitor {
             return false;
         }
 
-        if (processEnumType(node)) {
-            return false;
-        }
-
         try {
             my(NameScope.class).enterTypeDeclaration(node);
 
@@ -347,72 +339,8 @@ public class CSharpBuilder extends ASTVisitor {
         return false;
     }
 
-    private boolean processEnumType(TypeDeclaration node) {
-        if (!isEnum(node)) {
-            return false;
-        }
-
-        return buildEnumType(node);
-    }
-
-    private boolean processEnumType(EnumDeclaration node) {
-        try {
-            return buildEnumType(node);
-        } catch (IllegalArgumentException ex) {
-            if (isEnum(node)) {
-                // the user explicitly used the @sharpen.enum annotation
-                throw ex;
-            }
-
-            return false;
-        }
-    }
-
-    private boolean buildEnumType(final AbstractTypeDeclaration typeNode) {
-        final CSEnum theEnum = new CSEnum(typeName(typeNode));
-        typeNode.accept(new ASTVisitor() {
-            public boolean visit(EnumConstantDeclaration node) {
-                if (!(typeNode instanceof EnumDeclaration)) {
-                    unsupportedConstruct(node, "Only enum types can contain enum constants.");
-                    return false;
-                }
-
-                theEnum.addValue(identifier(node.getName()));
-                return false;
-            }
-
-            public boolean visit(VariableDeclarationFragment node) {
-                if (typeNode instanceof EnumDeclaration) {
-                    unsupportedConstruct(node, "Enum types cannot contain variable declarations.");
-                    return false;
-                }
-
-                theEnum.addValue(identifier(node.getName()));
-                return false;
-            }
-
-            @Override
-            public boolean visit(MethodDeclaration node) {
-                if (node.isConstructor() && isPrivate(node) && node.parameters().isEmpty()) {
-                    return false;
-                }
-                unsupportedConstruct(node, "Enum can contain only fields and a private constructor.");
-                return false;
-            }
-        });
-
-        mapVisibility(typeNode, theEnum);
-        mapJavadoc(typeNode, theEnum);
-        addType(typeNode.resolveBinding(), theEnum);
-        return true;
-    }
-
     protected boolean isPrivate(MethodDeclaration node) {
         return Modifier.isPrivate(node.getModifiers());
-    }
-
-    private boolean isEnum(AbstractTypeDeclaration node) {
-        return containsJavadoc(node, SharpenAnnotations.SHARPEN_ENUM);
     }
 
     private boolean processIgnoredType(AbstractTypeDeclaration node) {
@@ -465,6 +393,18 @@ public class CSharpBuilder extends ASTVisitor {
         processConversionJavadocTags(node, type);
 
         mapMembers(node, type, auxillaryType);
+
+        if (node instanceof EnumDeclaration) {
+            CSConstructor constructor = new CSConstructor(CSVisibility.Private);
+            constructor.addParameter(new CSVariableDeclaration("ordinal", new CSTypeReference("int")));
+            constructor.addParameter(new CSVariableDeclaration("name", new CSTypeReference("string")));
+            CSConstructorInvocationExpression cie = new CSConstructorInvocationExpression(new CSBaseExpression());
+            cie.addArgument(new CSReferenceExpression("ordinal"));
+            cie.addArgument(new CSReferenceExpression("name"));
+            constructor.chainedConstructorInvocation(cie);
+            type.addMember(constructor);
+        }
+
         autoImplementCloneable(node, type);
 
         moveInitializersDependingOnThisReferenceToConstructor(type);
@@ -821,6 +761,11 @@ public class CSharpBuilder extends ASTVisitor {
     private void mapSuperClass(AbstractTypeDeclaration node, CSTypeDeclaration type) {
         if (handledExtends(node, type))
             return;
+
+        if (node instanceof EnumDeclaration) {
+            type.addBaseType(new CSTypeReference(_configuration.sharpenNamespace() + ".EnumBase"));
+            return;
+        }
 
         if (!(node instanceof TypeDeclaration)) {
             return;
@@ -2196,22 +2141,6 @@ public class CSharpBuilder extends ASTVisitor {
 
     }
 
-    public boolean isEnumOrdinalMethodInvocation(MethodInvocation node) {
-        return node.getName().getIdentifier().equals("ordinal") && isEnumNodeMethodInvocation(node);
-    }
-
-    public boolean isEnumNameMethodInvocation(MethodInvocation node) {
-        return node.getName().getIdentifier().equals("name") && isEnumNodeMethodInvocation(node);
-    }
-
-    public static boolean isEnumNodeMethodInvocation(MethodInvocation node) {
-        if (node.getExpression() == null) {
-            return false;
-        }
-        ITypeBinding binding = node.getExpression().resolveTypeBinding();
-        return binding.isEnum() || "java.lang.Enum".equals(binding.getQualifiedName());
-    }
-
     public boolean visit(IfStatement node) {
         Expression expression = node.getExpression();
 
@@ -2235,7 +2164,7 @@ public class CSharpBuilder extends ASTVisitor {
     }
 
     private boolean isTrue(Object constValue) {
-        return ((Boolean) constValue).booleanValue();
+        return (Boolean) constValue;
     }
 
     private Object constValue(Expression expression) {
@@ -2824,7 +2753,10 @@ public class CSharpBuilder extends ASTVisitor {
         CSMethodInvocationExpression initializer;
         Configuration.MemberMapping mappedConstructor = effectiveMappingFor(node.resolveConstructorBinding());
         if (null == mappedConstructor) {
+            int ordinal = ((EnumDeclaration) node.getParent()).enumConstants().indexOf(node);
             initializer = new CSConstructorInvocationExpression(mappedTypeReference(fieldType));
+            initializer.addArgument(new CSNumberLiteralExpression(ordinal + ""));
+            initializer.addArgument(new CSStringLiteralExpression("\"" + node.getName().getIdentifier() + "\""));
         } else {
             final String mappedName = mappedConstructor.name;
             if (mappedName.length() == 0) {
@@ -3097,16 +3029,6 @@ public class CSharpBuilder extends ASTVisitor {
             return;
         }
 
-        if (isEnumOrdinalMethodInvocation(node)) {
-            processEnumOrdinalMethodInvocation(node);
-            return;
-        }
-
-        if (isEnumNameMethodInvocation(node)) {
-            processEnumNameMethodInvocation(node);
-            return;
-        }
-
         processOrdinaryMethodInvocation(node);
     }
 
@@ -3193,16 +3115,6 @@ public class CSharpBuilder extends ASTVisitor {
 
         String exchangeValue = JavadocUtility.singleTextFragmentFrom(element);
         pushExpression(new CSReferenceExpression(exchangeValue));
-    }
-
-    private void processEnumOrdinalMethodInvocation(MethodInvocation node) {
-        CSExpression exp = mapExpression(node.getExpression());
-        pushExpression(new CSCastExpression(new CSTypeReference("int"), new CSParenthesizedExpression(exp)));
-    }
-
-    private void processEnumNameMethodInvocation(MethodInvocation node) {
-        CSExpression exp = mapExpression(node.getExpression());
-        pushExpression(new CSMethodInvocationExpression(new CSMemberReferenceExpression(exp, "ToString")));
     }
 
     private void mapMethodInvocationArguments(CSMethodInvocationExpression mie, MethodInvocation node) {
