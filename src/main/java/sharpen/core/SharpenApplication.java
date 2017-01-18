@@ -143,7 +143,7 @@ public class SharpenApplication {
         converter.setProgressMonitor(newProgressMonitor());
         converter.setTargetProject(targetFolder);
         converter.setsourceFiles(units);
-        converter.setsourcePathEntries(project.getSourceFolder());
+        converter.setsourcePathEntries(project.getSourceFolders());
         converter.setclassPathEntries(project.getclassPath());
         converter.run();
     }
@@ -276,7 +276,7 @@ public class SharpenApplication {
         JavaProjectCmd jpCmd = new JavaProjectCmd();
         jpCmd.setProjectName(_args.project);
         jpCmd.setProjectPath(_args.projectPath);
-        jpCmd.setSourceFolder(_args.sourceFolders);
+        jpCmd.setSourceFolders(_args.sourceFolders);
         jpCmd.setclassPath(_args.classpath);
         return jpCmd;
     }

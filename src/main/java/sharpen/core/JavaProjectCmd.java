@@ -12,19 +12,18 @@ import java.util.List;
 
 public class JavaProjectCmd {
     private String projectName;
-    private String sourceFolder;
+    private List<String> sourceFolders = new ArrayList<>();
     private String projectPath;
     private List<String> classPath = new ArrayList<String>();
 
 
     public JavaProjectCmd(String args) {
-        sourceFolder = args;
+        sourceFolders.add(args);
         projectPath = args.substring(0, args.lastIndexOf("/"));
         projectName = projectPath.substring(projectPath.lastIndexOf("/") + 1);
     }
 
     public JavaProjectCmd() {
-        sourceFolder = "";
         projectPath = "";
         projectName = "";
     }
@@ -37,13 +36,14 @@ public class JavaProjectCmd {
         this.projectName = projectName;
     }
 
-    public String getSourceFolder() {
-        return sourceFolder;
+    public List<String> getSourceFolders() {
+        return sourceFolders;
     }
 
-    public void setSourceFolder(Iterable<String> sourceFolders) {
+    public void setSourceFolders(Iterable<String> sourceFolders) {
+        this.sourceFolders.clear();
         for (String srcFolder : sourceFolders) {
-            sourceFolder = projectPath + "/" + srcFolder;
+            this.sourceFolders.add(projectPath + "/" + srcFolder);
         }
     }
 
@@ -67,11 +67,12 @@ public class JavaProjectCmd {
     }
 
     List<String> getAllCompilationUnits() throws JavaModelException {
-        String pathForsourcefile = sourceFolder;
-        if (!new File(pathForsourcefile).exists())
-            throw new IllegalArgumentException("'" + pathForsourcefile + "' not found.");
         List<String> units = new ArrayList<String>();
-        getAllfile(pathForsourcefile, units);
+        for (String pathForsourcefile : sourceFolders) {
+            if (!new File(pathForsourcefile).exists())
+                throw new IllegalArgumentException("'" + pathForsourcefile + "' not found.");
+            getAllfile(pathForsourcefile, units);
+        }
         return units;
     }
 
@@ -100,7 +101,7 @@ public class JavaProjectCmd {
         }
         String sourcefileName = pathForsourcefile + "/" + cuName;
         projectPath = packageName.substring(0, packageName.lastIndexOf("/src"));
-        sourceFolder = projectPath + "/src";
+        sourceFolders.add(projectPath + "/src");
         projectName = projectPath.substring(projectPath.lastIndexOf("/") + 1);
         File sourcefile = new File(sourcefileName);
         sourcefile.createNewFile();
