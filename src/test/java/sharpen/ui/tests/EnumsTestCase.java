@@ -1,7 +1,6 @@
 package sharpen.ui.tests;
 
 import org.eclipse.core.runtime.CoreException;
-import org.junit.Ignore;
 import org.junit.Test;
 import sharpen.core.Configuration;
 
@@ -23,10 +22,8 @@ public class EnumsTestCase extends AbstractConversionTestCase {
     }
 
     @Test
-    @Ignore
     public void testEnumComplex() throws Throwable {
         runResourceTestCase("EnumComplex");
     }
-
 
 }

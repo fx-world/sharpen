@@ -393,31 +393,11 @@ public class CSharpBuilder extends ASTVisitor {
         mapMembers(node, type, auxillaryType);
 
         if (node instanceof EnumDeclaration) {
-            EnumDeclaration enumNode = (EnumDeclaration) node;
-
-            CSConstructor constructor = new CSConstructor(CSVisibility.Private);
-            constructor.addParameter(new CSVariableDeclaration("ordinal", new CSTypeReference("int")));
-            constructor.addParameter(new CSVariableDeclaration("name", new CSTypeReference("string")));
-            CSConstructorInvocationExpression cie = new CSConstructorInvocationExpression(new CSBaseExpression());
-            cie.addArgument(new CSReferenceExpression("ordinal"));
-            cie.addArgument(new CSReferenceExpression("name"));
-            constructor.chainedConstructorInvocation(cie);
-            type.addMember(constructor);
-
-            CSMethod method = new CSMethod("values");
-            method.visibility(CSVisibility.Public);
-            method.modifier(CSMethodModifier.Static);
-            CSTypeReference returnType = new CSTypeReference(node.getName().getIdentifier());
-            method.returnType(new CSArrayTypeReference(returnType, 1));
-            CSArrayCreationExpression arrayCreationExpression = new CSArrayCreationExpression(returnType);
-            CSArrayInitializerExpression arrayInitializerExpression = new CSArrayInitializerExpression();
-            for (Object o : enumNode.enumConstants()) {
-                EnumConstantDeclaration constantDeclaration = (EnumConstantDeclaration) o;
-                arrayInitializerExpression.addExpression(new CSReferenceExpression(constantDeclaration.getName().getIdentifier()));
+            if (!hasConstructorMethod(node)) {
+                implementDefaultEnumConstructor(type);
             }
-            arrayCreationExpression.initializer(arrayInitializerExpression);
-            method.body().addStatement(new CSReturnStatement(-1, arrayCreationExpression));
-            type.addMember(method);
+
+            implementEnumValuesMethod((EnumDeclaration) node, type);
         }
 
         autoImplementCloneable(node, type);
@@ -578,6 +558,59 @@ public class CSharpBuilder extends ASTVisitor {
         final CSConstructor ctor = CSharpCode.newPublicConstructor();
         type.addMember(ctor);
         return ctor;
+    }
+
+    private boolean hasConstructorMethod(AbstractTypeDeclaration node) {
+        for (Object o : node.bodyDeclarations()) {
+            if (o instanceof MethodDeclaration && ((MethodDeclaration) o).isConstructor()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void implementDefaultEnumConstructor(CSTypeDeclaration type) {
+        CSConstructor constructor = new CSConstructor(CSVisibility.Private);
+        addEnumBaseConstructorParameters(constructor);
+        implementEnumBaseConstructorInvocation(constructor);
+        type.addMember(constructor);
+    }
+
+    private boolean isEnumConstructor(MethodDeclaration node) {
+        return node.isConstructor() && node.getParent() instanceof EnumDeclaration;
+    }
+
+    private void addEnumBaseConstructorParameters(CSParameterized constructor) {
+        constructor.addParameter(new CSVariableDeclaration("ordinal", new CSTypeReference("int")));
+        constructor.addParameter(new CSVariableDeclaration("name", new CSTypeReference("string")));
+    }
+
+    private void implementEnumBaseConstructorInvocation(CSConstructor constructor) {
+        CSConstructorInvocationExpression cie = new CSConstructorInvocationExpression(new CSBaseExpression());
+        cie.addArgument(new CSReferenceExpression("ordinal"));
+        cie.addArgument(new CSReferenceExpression("name"));
+        constructor.chainedConstructorInvocation(cie);
+    }
+
+    private void implementEnumValuesMethod(EnumDeclaration enumNode, CSTypeDeclaration type) {
+        CSTypeReference enumType = new CSTypeReference(enumNode.getName().getIdentifier());
+
+        CSMethod method = new CSMethod("values");
+        method.visibility(CSVisibility.Public);
+        method.modifier(CSMethodModifier.Static);
+        method.returnType(new CSArrayTypeReference(enumType, 1));
+
+        CSArrayInitializerExpression arrayInitializerExpression = new CSArrayInitializerExpression();
+        for (Object o : enumNode.enumConstants()) {
+            EnumConstantDeclaration constantDeclaration = (EnumConstantDeclaration) o;
+            arrayInitializerExpression.addExpression(new CSReferenceExpression(constantDeclaration.getName().getIdentifier()));
+        }
+
+        CSArrayCreationExpression arrayCreationExpression = new CSArrayCreationExpression(enumType);
+        arrayCreationExpression.initializer(arrayInitializerExpression);
+        method.body().addStatement(new CSReturnStatement(-1, arrayCreationExpression));
+
+        type.addMember(method);
     }
 
     private void autoImplementCloneable(AbstractTypeDeclaration node, CSTypeDeclaration type) {
@@ -1766,18 +1799,24 @@ public class CSharpBuilder extends ASTVisitor {
         mapParameters(node, method);
         mapAnnotations(node, method);
         mapDocumentation(node, method);
+        if (isEnumConstructor(node)) {
+            implementEnumBaseConstructorInvocation((CSConstructor) method);
+        }
         visitBodyDeclarationBlock(node, node.getBody(), method);
 
         IMethodBinding overriden = getOverridedMethod(node);
-        if (!node.isConstructor() && overriden != null) {
+        if (isEnumConstructor(node)) {
+            method.visibility(CSVisibility.Private);
+        } else if (!node.isConstructor() && overriden != null) {
             CSVisibility vis = mapVisibility(overriden.getModifiers());
             if (vis == CSVisibility.ProtectedInternal && !overriden.getDeclaringClass().isFromSource())
                 vis = CSVisibility.Protected;
             method.visibility(vis);
-        } else if (node.resolveBinding().getDeclaringClass().isInterface())
+        } else if (node.resolveBinding().getDeclaringClass().isInterface()) {
             method.visibility(CSVisibility.Public);
-        else
+        } else {
             mapVisibility(node, method);
+        }
     }
 
     private String mappedMethodDeclarationName(MethodDeclaration node) {
@@ -1792,6 +1831,9 @@ public class CSharpBuilder extends ASTVisitor {
         if (method instanceof CSMethod) {
             mapMethodParameters(node, (CSMethod) method);
             return;
+        }
+        if (isEnumConstructor(node)) {
+            addEnumBaseConstructorParameters(method);
         }
         for (Object p : node.parameters()) {
             mapParameter((SingleVariableDeclaration) p, method);
@@ -3480,11 +3522,6 @@ public class CSharpBuilder extends ASTVisitor {
                 ITypeBinding cls = vb.getDeclaringClass();
                 if (cls != null) {
                     if (isStaticImport(vb, _ast.imports())) {
-                        if (cls != null) {
-                            pushExpression(new CSMemberReferenceExpression(mappedTypeReference(cls), ident));
-                            return false;
-                        }
-                    } else if (cls.isEnum() && ident.indexOf('.') == -1) {
                         pushExpression(new CSMemberReferenceExpression(mappedTypeReference(cls), ident));
                         return false;
                     } else if (_configuration.separateInterfaceConstants() && cls.isInterface() && ident.indexOf('.') == -1) {
