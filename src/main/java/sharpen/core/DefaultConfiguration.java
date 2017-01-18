@@ -39,6 +39,8 @@ public class DefaultConfiguration extends Configuration {
         setUpCollectionMappings();
 
         mapType("java.lang.Cloneable", "System.ICloneable");
+        mapType("java.lang.Comparable", "IComparable");
+        mapType("java.lang.Comparable<>", "IComparable");
 
         mapType("java.util.Date", "System.DateTime");
 
@@ -59,6 +61,14 @@ public class DefaultConfiguration extends Configuration {
         mapMethod("java.lang.Object.notify", runtimeMethod("notify"));
         mapMethod("java.lang.Object.notifyAll", runtimeMethod("notifyAll"));
         mapMethod("java.lang.Object.getClass", runtimeMethod("getClassForObject"));
+
+        mapMethod("java.lang.Math.min", "Math.Min");
+        mapMethod("java.lang.Math.max", "Math.Max");
+        mapMethod("java.lang.Math.abs", "Math.Abs");
+        mapMethod("java.lang.Math.floor", "Math.Floor");
+        mapMethod("java.lang.Math.atan2", "Math.Atan2");
+        mapMethod("java.lang.Math.log10", "Math.Log10");
+        mapMethod("java.lang.Math.pow", "Math.Pow");
 
         mapMethod("length", "Length");    // see qualifiedName(IVariableBinding)
         setUpPrimitiveWrappers();
@@ -262,6 +272,8 @@ public class DefaultConfiguration extends Configuration {
         mapMethod("java.lang.Boolean.booleanValue", "");
         mapMethod("java.lang.Float.floatToIntBits", runtimeMethod("floatToIntBits"));
         mapMethod("java.lang.Float.intBitsToFloat", runtimeMethod("intBitsToFloat"));
+        mapMethod("java.lang.Float.isInfinite", "float.IsInfinity");
+        mapMethod("java.lang.Double.isInfinite", "double.IsInfinity");
     }
 
     public boolean isIgnoredExceptionType(String exceptionType) {

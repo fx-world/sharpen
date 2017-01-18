@@ -497,7 +497,7 @@ public class CSharpPrinter extends CSVisitor {
         writeLineStyled(")");
         node.trueBlock().accept(this);
         if (!node.falseBlock().isEmpty()) {
-            writeIndentedLine("else");
+            writeIntendedLineStyled("else");
             node.falseBlock().accept(this);
         }
     }
@@ -598,11 +598,7 @@ public class CSharpPrinter extends CSVisitor {
     }
 
     public void visit(CSDoStatement node) {
-        if (egyptianBracketsStyle) {
-            writeIndented("do");
-        } else {
-            writeIndentedLine("do");
-        }
+        writeIntendedLineStyled("do");
         node.body().accept(this);
         writeIndented("while (");
         node.expression().accept(this);
@@ -612,11 +608,11 @@ public class CSharpPrinter extends CSVisitor {
     public void visit(CSTryStatement node) {
         printPrecedingComments(node);
 
-        writeIndentedLine("try");
+        writeIntendedLineStyled("try");
         node.body().accept(this);
         visitList(node.catchClauses());
         if (null != node.finallyBlock()) {
-            writeIndentedLine("finally");
+            writeIntendedLineStyled("finally");
             node.finallyBlock().accept(this);
         }
     }
@@ -629,7 +625,9 @@ public class CSharpPrinter extends CSVisitor {
             ex.accept(this);
             write(")");
         }
-        writeLine();
+        if (!egyptianBracketsStyle) {
+            writeLine();
+        }
         node.body().accept(this);
     }
 
@@ -1116,6 +1114,14 @@ public class CSharpPrinter extends CSVisitor {
             write(s);
         } else {
             writeLine(s);
+        }
+    }
+
+    private void writeIntendedLineStyled(String s) {
+        if (egyptianBracketsStyle) {
+            writeIndented(s);
+        } else {
+            writeIndentedLine(s);
         }
     }
 

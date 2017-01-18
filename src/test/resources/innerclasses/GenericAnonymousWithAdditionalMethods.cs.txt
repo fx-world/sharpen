@@ -2,14 +2,14 @@ namespace innerclasses
 {
 	public class GenericAnonymousWithAdditionalMethods<T>
 	{
-		public static java.lang.Comparable run(object obj)
+		public static IComparable run(object obj)
 		{
-			return new _Comparable_5();
+			return new _IComparable_5();
 		}
 
-		private sealed class _Comparable_5 : java.lang.Comparable
+		private sealed class _IComparable_5 : IComparable
 		{
-			public _Comparable_5()
+			public _IComparable_5()
 			{
 			}
 

@@ -19,11 +19,20 @@ public class IndentStyleEgyptianBrackets {
         for (long i = 0; i < field2; i++) {
             if (i % 100 == 0) {
                 field1++;
+            } else {
+                field2--;
             }
         }
-        do {
-            field1--;
-        } while (field1 > 10);
+
+        try {
+            do {
+                field1--;
+            } while (field1 > 10);
+        } catch (Exception e) {
+            System.out.println(e);
+        } finally {
+            System.out.println("done");
+        }
 
         for (Integer v : Arrays.asList(1, 2, 3)) {
             System.out.println(v);

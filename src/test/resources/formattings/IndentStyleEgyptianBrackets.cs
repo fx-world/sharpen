@@ -17,11 +17,22 @@ namespace formattings {
                 if (i % 100 == 0) {
                     field1++;
                 }
+                else {
+                    field2--;
+                }
             }
-            do {
-                field1--;
+            try {
+                do {
+                    field1--;
+                }
+                while (field1 > 10);
             }
-            while (field1 > 10);
+            catch (System.Exception e) {
+                System.Console.Out.WriteLine(e);
+            }
+            finally {
+                System.Console.Out.WriteLine("done");
+            }
             foreach (int v in java.util.Arrays.asList(1, 2, 3)) {
                 System.Console.Out.WriteLine(v);
                 switch (v) {
