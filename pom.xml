@@ -101,8 +101,6 @@
   
   <build>
     <finalName>${finalName}</finalName>
-    <sourceDirectory>src/main</sourceDirectory>
-    <scriptSourceDirectory>src/main/resources</scriptSourceDirectory>
 
     <plugins>
       
