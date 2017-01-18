@@ -452,8 +452,7 @@ public class CSharpBuilder extends ASTVisitor {
     private CSBlock mapInitializer(Initializer node) {
         final CSConstructor template = new CSConstructor();
         visitBodyDeclarationBlock(node, node.getBody(), template);
-        final CSBlock body = template.body();
-        return body;
+        return template.body();
     }
 
     private boolean hasChainedThisInvocation(CSConstructor ctor) {
@@ -725,7 +724,7 @@ public class CSharpBuilder extends ASTVisitor {
                 } else {
                     return new CSInterface(processInterfaceName(node));
                 }
-            } else if (!valid && auxillary) {
+            } else if (auxillary) {
                 return new CSClass(processInterfaceConstantsName(node), CSClassModifier.Static);
             } else {
                 warningHandler().warning(node, "Java interface converted to C# class.");
@@ -1011,7 +1010,7 @@ public class CSharpBuilder extends ASTVisitor {
         if (node instanceof CSTypeDeclaration) {
             return processTypeDocumentationOverlay((CSTypeDeclaration) node);
         }
-        return processMemberDocumentationOverlay((CSMember) node);
+        return processMemberDocumentationOverlay(node);
     }
 
     private boolean processMemberDocumentationOverlay(CSMember node) {
@@ -1345,8 +1344,7 @@ public class CSharpBuilder extends ASTVisitor {
 
     private CSDocNode invalidTagWithCRef(CSMember member, final ASTNode linkTarget, String tagName, TagElement element) {
         warning(linkTarget, "Tag '" + element.getTagName() + "' demands a valid cref target.");
-        CSDocNode newTag = createTagNode(member, tagName, element, false);
-        return newTag;
+        return createTagNode(member, tagName, element, false);
     }
 
     private CSDocTagNode newTagWithCRef(String tagName, String cref) {
@@ -1382,7 +1380,7 @@ public class CSharpBuilder extends ASTVisitor {
 
         CSDocTagNode param = isPropertyNode(documentedNodeAttachedTo(element))
                 ? new CSDocTagNode("value")
-                : newCSDocTag(fixIdentifierNameFor(identifier(name), element));
+                : newCSDocTag(fixIdentifierNameFor(identifier(name)));
 
         collectFragments(member, param, fragments, 1);
         return param;
@@ -1403,7 +1401,7 @@ public class CSharpBuilder extends ASTVisitor {
         return isProperty((MethodDeclaration) node);
     }
 
-    private String fixIdentifierNameFor(String identifier, TagElement element) {
+    private String fixIdentifierNameFor(String identifier) {
         return removeAtSign(identifier);
     }
 
@@ -1698,8 +1696,7 @@ public class CSharpBuilder extends ASTVisitor {
         final CSTypeReferenceExpression propertyType = isGetter(node)
                 ? mappedReturnType(node)
                 : mappedTypeReference(lastParameter(node).getType());
-        CSProperty p = new CSProperty(propName, propertyType);
-        return p;
+        return new CSProperty(propName, propertyType);
     }
 
     private CSBlock mapBody(MethodDeclaration node) {
@@ -2438,7 +2435,7 @@ public class CSharpBuilder extends ASTVisitor {
     }
 
     String fixEscapedNumbers(String literal) {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         for (int n = 0; n < literal.length(); n++) {
             if (literal.charAt(n) == '\\') {
                 int i = n + 1;
@@ -2451,7 +2448,7 @@ public class CSharpBuilder extends ASTVisitor {
                     i++;
                 if (i != n + 1) {
                     int num = Integer.parseInt(literal.substring(n + 1, i));
-                    s.append("\\x" + Integer.toHexString(num));
+                    s.append("\\x").append(Integer.toHexString(num));
                     n = i - 1;
                     continue;
                 }
@@ -2848,7 +2845,7 @@ public class CSharpBuilder extends ASTVisitor {
 
         if (node.getOperator() == Assignment.Operator.RIGHT_SHIFT_UNSIGNED_ASSIGN) {
             String type = lhsType.getQualifiedName();
-            if (type == "byte") {
+            if ("byte".equals(type)) {
                 pushExpression(new CSInfixExpression(">>", mapExpression(lhs), mapExpression(lhs
                         .resolveTypeBinding(), rhs)));
             } else {
@@ -2994,7 +2991,7 @@ public class CSharpBuilder extends ASTVisitor {
     public boolean visit(MethodInvocation node) {
 
         IMethodBinding binding = originalMethodBinding(node.resolveMethodBinding());
-        Configuration.MemberMapping mapping = mappingForInvocation(node, binding);
+        Configuration.MemberMapping mapping = mappingForInvocation(binding);
 
         if (null != mapping) {
             processMappedMethodInvocation(node, binding, mapping);
@@ -3011,7 +3008,7 @@ public class CSharpBuilder extends ASTVisitor {
         }
 
         IMethodBinding binding = originalMethodBinding(node.resolveMethodBinding());
-        Configuration.MemberMapping mapping = mappingForInvocation(node, binding);
+        Configuration.MemberMapping mapping = mappingForInvocation(binding);
         CSExpression target = new CSMemberReferenceExpression(new CSBaseExpression(), mappedMethodName(binding));
 
         if (mapping != null && mapping.kind != MemberKind.Method) {
@@ -3025,7 +3022,7 @@ public class CSharpBuilder extends ASTVisitor {
         return false;
     }
 
-    private Configuration.MemberMapping mappingForInvocation(ASTNode node, IMethodBinding binding) {
+    private Configuration.MemberMapping mappingForInvocation(IMethodBinding binding) {
         Configuration.MemberMapping mapping = effectiveMappingFor(binding);
 
         if (null == mapping) {
@@ -3345,7 +3342,7 @@ public class CSharpBuilder extends ASTVisitor {
                                                Configuration.MemberMapping mapping) {
 
         if (mapping.kind == MemberKind.Indexer) {
-            processIndexerInvocation(node, binding, mapping);
+            processIndexerInvocation(node);
             return;
         }
 
@@ -3362,7 +3359,7 @@ public class CSharpBuilder extends ASTVisitor {
 
         List<Expression> arguments = node.arguments();
         CSExpression expression = isMappingToStaticMethod ? null : mapMethodTargetExpression(node);
-        CSExpression target = null;
+        CSExpression target;
 
         if (null == expression) {
             target = new CSReferenceExpression(name);
@@ -3411,7 +3408,7 @@ public class CSharpBuilder extends ASTVisitor {
         pushExpression(mie);
     }
 
-    private void processIndexerInvocation(MethodInvocation node, IMethodBinding binding, MemberMapping mapping) {
+    private void processIndexerInvocation(MethodInvocation node) {
         if (node.arguments().size() == 1) {
             processIndexerGetter(node);
         } else {
@@ -3675,15 +3672,11 @@ public class CSharpBuilder extends ASTVisitor {
     }
 
     private void unsupportedConstruct(ASTNode node, Exception cause) {
-        unsupportedConstruct(node, "failed to map: '" + node + "'", cause);
+        throw new IllegalArgumentException(sourceInformation(node) + ": " + ("failed to map: '" + node + "'"), cause);
     }
 
     private void unsupportedConstruct(ASTNode node, String message) {
-        unsupportedConstruct(node, message, null);
-    }
-
-    private void unsupportedConstruct(ASTNode node, final String message, Exception cause) {
-        throw new IllegalArgumentException(sourceInformation(node) + ": " + message, cause);
+        throw new IllegalArgumentException(sourceInformation(node) + ": " + message);
     }
 
     private ITypeBinding pushExpectedType(ITypeBinding type) {
