@@ -15,6 +15,21 @@ public class IndentStyleEgyptianBrackets {
             if (field1 % 10 == 0) {
                 break;
             }
+            if (field1 % 2 == 0) {
+                field2 += 2;
+            } else if (field1 % 3 == 0) {
+                field2 += 3;
+            } else if (field1 % 4 == 0) {
+                if (field2 == 1) {
+                    field2 += 4;
+                } else if (field2 == 2) {
+                    field2 += 5;
+                } else {
+                    field2 += 6;
+                }
+            } else {
+                field2 += 7;
+            }
         }
         for (long i = 0; i < field2; i++) {
             if (i % 100 == 0) {

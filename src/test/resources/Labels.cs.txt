@@ -32,12 +32,9 @@ mylabel_break: ;
 			{
 				break;
 			}
-			else
+			else if (j == 2)
 			{
-				if (j == 2)
-				{
-					goto mylabel_break;
-				}
+				goto mylabel_break;
 			}
 			goto mylabel_break;
 mylabel_continue: ;
@@ -53,12 +50,9 @@ mylabel_break: ;
 			{
 				break;
 			}
-			else
+			else if (j == 2)
 			{
-				if (j == 2)
-				{
-					goto mylabel_break;
-				}
+				goto mylabel_break;
 			}
 			goto mylabel_break;
 mylabel_continue: ;
@@ -99,16 +93,13 @@ mylabel1_break: ;
 			{
 				continue;
 			}
-			else
+			else if (j == 2)
 			{
-				if (j == 2)
+				for (int j = 0; j < 10; j++)
 				{
-					for (int j = 0; j < 10; j++)
-					{
-					}
-					// no labels here please
-					goto mylabel_continue;
 				}
+				// no labels here please
+				goto mylabel_continue;
 			}
 			goto mylabel_continue;
 mylabel_continue: ;
@@ -124,16 +115,13 @@ mylabel_break: ;
 			{
 				continue;
 			}
-			else
+			else if (j == 2)
 			{
-				if (j == 2)
+				for (int j = 0; j < 10; j++)
 				{
-					for (int j = 0; j < 10; j++)
-					{
-					}
-					// no labels here please
-					goto mylabel_continue;
 				}
+				// no labels here please
+				goto mylabel_continue;
 			}
 mylabel_continue: ;
 		}
@@ -149,15 +137,12 @@ mylabel_break: ;
 			{
 				continue;
 			}
-			else
+			else if (j == 2)
 			{
-				if (j == 2)
+				for (int j = 0; j < 10; j++)
 				{
-					for (int j = 0; j < 10; j++)
-					{
-					}
-					goto mylabel_continue;
 				}
+				goto mylabel_continue;
 			}
 mylabel_continue: ;
 		}

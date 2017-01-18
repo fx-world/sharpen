@@ -491,14 +491,23 @@ public class CSharpPrinter extends CSVisitor {
 
     public void visit(CSIfStatement node) {
         printPrecedingComments(node);
+        writeIndented("if");
+        writeIfClause(node);
+    }
 
-        writeIndented("if (");
+    private void writeIfClause(CSIfStatement node) {
+        write(" (");
         node.expression().accept(this);
         writeLineStyled(")");
         node.trueBlock().accept(this);
         if (!node.falseBlock().isEmpty()) {
-            writeIntendedLineStyled("else");
-            node.falseBlock().accept(this);
+            if (node.falseBlock().statements().size() == 1 && node.falseBlock().statements().get(0) instanceof CSIfStatement) {
+                writeIndented("else if");
+                writeIfClause((CSIfStatement) node.falseBlock().statements().get(0));
+            } else {
+                writeIntendedLineStyled("else");
+                node.falseBlock().accept(this);
+            }
         }
     }
 
