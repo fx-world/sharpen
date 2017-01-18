@@ -234,6 +234,10 @@ public class SharpenApplication {
         if (_args.configJarFilePath != null) {
             ods("Specified configuration jar file: " + _args.configJarFilePath);
         }
+        if (_args.egyptianBrackets) {
+            ods("Indent style 'Egyptian Brackets' mode on.");
+            configuration.enableIndentStyleEgyptianBrackets();
+        }
         configuration.mapEventAdds(_args.eventAddMappings);
         configuration.mapEvents(_args.eventMappings);
         configuration.mapNamespaces(_args.namespaceMappings);

@@ -70,7 +70,7 @@ public class SharpenConversion {
 
     private CSharpPrinter getPrinter() {
         if (null == _printer) {
-            _printer = new CSharpPrinter(_configuration.intentStyleEgyptianBrackets());
+            _printer = new CSharpPrinter(_configuration.indentStyleEgyptianBrackets());
         }
         return _printer;
     }

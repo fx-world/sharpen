@@ -100,7 +100,7 @@ public abstract class Configuration {
 
     private boolean _junitConvert;
 
-    private boolean _intentStyleEgyptianBrackets;
+    private boolean _indentStyleEgyptianBrackets;
 
     private boolean _flatNamespaceDirectoryStructure;
 
@@ -445,12 +445,12 @@ public abstract class Configuration {
         return _junitConvert;
     }
 
-    public void enableIntentStyleEgyptianBrackets() {
-        _intentStyleEgyptianBrackets = true;
+    public void enableIndentStyleEgyptianBrackets() {
+        _indentStyleEgyptianBrackets = true;
     }
 
-    public boolean intentStyleEgyptianBrackets() {
-        return _intentStyleEgyptianBrackets;
+    public boolean indentStyleEgyptianBrackets() {
+        return _indentStyleEgyptianBrackets;
     }
 
     public void enableFlatNamespaceDirectoryStructure() {
