@@ -1,4 +1,3 @@
-
 package sharpen.ui.tests;
 
 import org.eclipse.core.runtime.CoreException;

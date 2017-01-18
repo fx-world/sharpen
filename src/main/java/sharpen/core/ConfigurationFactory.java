@@ -37,92 +37,92 @@ import java.nio.file.Paths;
 
 public class ConfigurationFactory {
 
-	public static final String DEFAULT_RUNTIME_TYPE_NAME = "Sharpen.Runtime";
+    public static final String DEFAULT_RUNTIME_TYPE_NAME = "Sharpen.Runtime";
 
-	private ConfigurationFactory() {
-	}
+    private ConfigurationFactory() {
+    }
 
-	public static Configuration defaultConfiguration() {
-		return newConfiguration(null);
-	}
+    public static Configuration defaultConfiguration() {
+        return newConfiguration(null);
+    }
 
-	public static Configuration newConfiguration(String configurationClass) {
-		return newConfiguration(configurationClass, DEFAULT_RUNTIME_TYPE_NAME);
-	}
+    public static Configuration newConfiguration(String configurationClass) {
+        return newConfiguration(configurationClass, DEFAULT_RUNTIME_TYPE_NAME);
+    }
 
-	public static Configuration newConfiguration(String configurationClass, String runtimeTypeName) {
-		runtimeTypeName = evalRuntimeType(runtimeTypeName);
+    public static Configuration newConfiguration(String configurationClass, String runtimeTypeName) {
+        runtimeTypeName = evalRuntimeType(runtimeTypeName);
 
-		if (configurationClass == null) {
-			return new DefaultConfiguration(runtimeTypeName);
-		}
+        if (configurationClass == null) {
+            return new DefaultConfiguration(runtimeTypeName);
+        }
 
-		try {
-			Constructor<?> ctor = Class.forName(configurationClass).getDeclaredConstructor(String.class);
-			ctor.setAccessible(true);
-			return (Configuration) ctor.newInstance(runtimeTypeName);
-		} catch (Exception e) {
-			throw new IllegalArgumentException("Cannot instantiate configuration class: " + configurationClass, e);
-		}
-	}
+        try {
+            Constructor<?> ctor = Class.forName(configurationClass).getDeclaredConstructor(String.class);
+            ctor.setAccessible(true);
+            return (Configuration) ctor.newInstance(runtimeTypeName);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Cannot instantiate configuration class: " + configurationClass, e);
+        }
+    }
 
-	public static Configuration newExternalConfiguration(String configurationClass, String runtimeTypeName,
-			IProgressMonitor progressMonitor) throws Exception {
-		return newExternalConfiguration(null, configurationClass, runtimeTypeName, progressMonitor);
-	}
+    public static Configuration newExternalConfiguration(String configurationClass, String runtimeTypeName,
+                                                         IProgressMonitor progressMonitor) throws Exception {
+        return newExternalConfiguration(null, configurationClass, runtimeTypeName, progressMonitor);
+    }
 
-	public static Configuration newExternalConfiguration(String jarPath, String configurationClass,
-			String runtimeTypeName, IProgressMonitor progressMonitor) throws Exception {
-		if (configurationClass == null) {
-			return null;
-		}
+    public static Configuration newExternalConfiguration(String jarPath, String configurationClass,
+                                                         String runtimeTypeName, IProgressMonitor progressMonitor) throws Exception {
+        if (configurationClass == null) {
+            return null;
+        }
 
-		runtimeTypeName = evalRuntimeType(runtimeTypeName);
+        runtimeTypeName = evalRuntimeType(runtimeTypeName);
 
-		try {
+        try {
 
-			URI jarURI = null;
+            URI jarURI = null;
 
-			if (jarPath != null && Files.exists(Paths.get(jarPath), LinkOption.NOFOLLOW_LINKS)) {
-				jarURI = Paths.get(jarPath).toUri();
-			} else {
-				String configJar = NameUtility.unqualify(configurationClass) + ".sharpenconfig.jar";
-				URI currentDirectoryURI = getCurrentDirectoryURI();
-				File currentDirectory = new File(currentDirectoryURI);
-				Path configPath = Paths.get(currentDirectory.getPath(), configJar);
-				jarURI = configPath.toUri();
-				File configFile = configPath.toFile();
-				if (!configFile.exists()) {
-					progressMonitor.subTask("Configuration library " + configJar + " not found");
-					return null;
-				}
-			}
-			return createConfigFromJar(jarURI, configurationClass, runtimeTypeName);
-		} catch (Exception ex) {
-			throw new Exception("External configuration library error : " + ex.getMessage(), ex);
-		}
-	}
+            if (jarPath != null && Files.exists(Paths.get(jarPath), LinkOption.NOFOLLOW_LINKS)) {
+                jarURI = Paths.get(jarPath).toUri();
+            } else {
+                String configJar = NameUtility.unqualify(configurationClass) + ".sharpenconfig.jar";
+                URI currentDirectoryURI = getCurrentDirectoryURI();
+                File currentDirectory = new File(currentDirectoryURI);
+                Path configPath = Paths.get(currentDirectory.getPath(), configJar);
+                jarURI = configPath.toUri();
+                File configFile = configPath.toFile();
+                if (!configFile.exists()) {
+                    progressMonitor.subTask("Configuration library " + configJar + " not found");
+                    return null;
+                }
+            }
+            return createConfigFromJar(jarURI, configurationClass, runtimeTypeName);
+        } catch (Exception ex) {
+            throw new Exception("External configuration library error : " + ex.getMessage(), ex);
+        }
+    }
 
-	public static URI getCurrentDirectoryURI() throws URISyntaxException {
-		return ConfigurationFactory.class.getProtectionDomain().getCodeSource().getLocation().toURI();
-	}
+    public static URI getCurrentDirectoryURI() throws URISyntaxException {
+        return ConfigurationFactory.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+    }
 
-	private static String evalRuntimeType(String runtimeTypeName) {
-		return runtimeTypeName == null ? DEFAULT_RUNTIME_TYPE_NAME : runtimeTypeName;
-	}
+    private static String evalRuntimeType(String runtimeTypeName) {
+        return runtimeTypeName == null ? DEFAULT_RUNTIME_TYPE_NAME : runtimeTypeName;
+    }
 
-	private static Configuration createConfigFromJar(URI jarURI, String className, String runtimeTypeName)
-			throws Exception {
-		URLClassLoader classLoader = new URLClassLoader(new URL[] { jarURI.toURL() },
-				ConfigurationFactory.class.getClassLoader());
-		Class configurationClass = Class.forName(className, true, classLoader);
-		if (!Configuration.class.isAssignableFrom(configurationClass)) {
-			throw new Exception("Configuration class must extend " + Configuration.class.getName());
-		}
-		Constructor<?> ctor = configurationClass.getDeclaredConstructor(String.class);
-		if (!Modifier.isPublic(ctor.getModifiers())) {
-			throw new Exception("Configuration class constructor must have public modifier");
-		}
-		return (Configuration) ctor.newInstance(runtimeTypeName);
-	}
+    private static Configuration createConfigFromJar(URI jarURI, String className, String runtimeTypeName)
+            throws Exception {
+        URLClassLoader classLoader = new URLClassLoader(new URL[]{jarURI.toURL()},
+                ConfigurationFactory.class.getClassLoader());
+        Class configurationClass = Class.forName(className, true, classLoader);
+        if (!Configuration.class.isAssignableFrom(configurationClass)) {
+            throw new Exception("Configuration class must extend " + Configuration.class.getName());
+        }
+        Constructor<?> ctor = configurationClass.getDeclaredConstructor(String.class);
+        if (!Modifier.isPublic(ctor.getModifiers())) {
+            throw new Exception("Configuration class constructor must have public modifier");
+        }
+        return (Configuration) ctor.newInstance(runtimeTypeName);
+    }
 }
