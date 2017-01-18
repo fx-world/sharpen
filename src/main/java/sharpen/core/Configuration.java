@@ -26,6 +26,7 @@ import sharpen.core.framework.NameUtility;
 import java.util.*;
 
 public abstract class Configuration {
+    public static final String INDENT_4_SPACES = "    ";
 
     public static class MemberMapping {
         public String name;
@@ -343,10 +344,17 @@ public abstract class Configuration {
     }
 
     public String mappedTypeName(String typeName, String defaultValue) {
+        if (typeName.equals("java.lang.Enum")) {
+            return baseEnumType();
+        }
         String mappedName = _typeMappings.get(typeName);
         return (null != mappedName)
                 ? mappedName
                 : mappedNamespace(defaultValue);
+    }
+
+    public String baseEnumType() {
+        return sharpenNamespace() + ".EnumBase";
     }
 
     private String applyNamespaceMappings(String typeName) {
@@ -369,7 +377,7 @@ public abstract class Configuration {
     }
 
     public boolean typeHasMapping(String type) {
-        return _typeMappings.containsKey(type);
+        return type.equals("java.lang.Enum") || _typeMappings.containsKey(type);
     }
 
     public void mapField(String fromQualifiedName, String to) {

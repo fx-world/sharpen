@@ -11,8 +11,9 @@ public class EnumSimple {
     }
 
     public static void work() {
-        printConcreteEnum(VEnum.VALUE0);
-        printConcreteEnum(VEnum.VALUE1);
+        for (VEnum e : VEnum.values()) {
+            printConcreteEnum(e);
+        }
         printAnyEnum(VEnum.VALUE2);
     }
 

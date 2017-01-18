@@ -162,8 +162,6 @@ public class CSharpBuilder extends ASTVisitor {
         return false;
     }
 
-    ;
-
     private String getText(int startPosition, int length) {
         try {
             ICompilationUnit cu = (ICompilationUnit) _ast.getJavaElement();
@@ -395,6 +393,8 @@ public class CSharpBuilder extends ASTVisitor {
         mapMembers(node, type, auxillaryType);
 
         if (node instanceof EnumDeclaration) {
+            EnumDeclaration enumNode = (EnumDeclaration) node;
+
             CSConstructor constructor = new CSConstructor(CSVisibility.Private);
             constructor.addParameter(new CSVariableDeclaration("ordinal", new CSTypeReference("int")));
             constructor.addParameter(new CSVariableDeclaration("name", new CSTypeReference("string")));
@@ -403,6 +403,21 @@ public class CSharpBuilder extends ASTVisitor {
             cie.addArgument(new CSReferenceExpression("name"));
             constructor.chainedConstructorInvocation(cie);
             type.addMember(constructor);
+
+            CSMethod method = new CSMethod("values");
+            method.visibility(CSVisibility.Public);
+            method.modifier(CSMethodModifier.Static);
+            CSTypeReference returnType = new CSTypeReference(node.getName().getIdentifier());
+            method.returnType(new CSArrayTypeReference(returnType, 1));
+            CSArrayCreationExpression arrayCreationExpression = new CSArrayCreationExpression(returnType);
+            CSArrayInitializerExpression arrayInitializerExpression = new CSArrayInitializerExpression();
+            for (Object o : enumNode.enumConstants()) {
+                EnumConstantDeclaration constantDeclaration = (EnumConstantDeclaration) o;
+                arrayInitializerExpression.addExpression(new CSReferenceExpression(constantDeclaration.getName().getIdentifier()));
+            }
+            arrayCreationExpression.initializer(arrayInitializerExpression);
+            method.body().addStatement(new CSReturnStatement(-1, arrayCreationExpression));
+            type.addMember(method);
         }
 
         autoImplementCloneable(node, type);
@@ -763,7 +778,7 @@ public class CSharpBuilder extends ASTVisitor {
             return;
 
         if (node instanceof EnumDeclaration) {
-            type.addBaseType(new CSTypeReference(_configuration.sharpenNamespace() + ".EnumBase"));
+            type.addBaseType(new CSTypeReference(_configuration.baseEnumType()));
             return;
         }
 
