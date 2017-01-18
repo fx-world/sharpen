@@ -17,6 +17,18 @@ public class EnumSimple {
         printAnyEnum(VEnum.VALUE2);
     }
 
+    public static int getValue(VEnum e) {
+        switch (e) {
+            case VALUE0:
+            case VALUE1:
+                return 10;
+            case VALUE2:
+                return 20;
+            default:
+                return -1;
+        }
+    }
+
     public static void printConcreteEnum(VEnum e1) {
         System.out.println(e1.ordinal() + ": " + e1.name());
     }

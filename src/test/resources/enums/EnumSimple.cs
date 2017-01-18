@@ -28,6 +28,23 @@ namespace enums {
             printAnyEnum(enums.EnumSimple.VEnum.VALUE2);
         }
 
+        public static int getValue(enums.EnumSimple.VEnum e) {
+            switch (e.ordinal()) {
+                case 0:
+                case 1: {
+                    return 10;
+                }
+
+                case 2: {
+                    return 20;
+                }
+
+                default: {
+                    return -1;
+                }
+            }
+        }
+
         public static void printConcreteEnum(enums.EnumSimple.VEnum e1) {
             System.Console.Out.WriteLine(e1.ordinal() + ": " + e1.name());
         }

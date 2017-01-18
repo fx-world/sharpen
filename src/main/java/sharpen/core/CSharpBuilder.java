@@ -559,6 +559,17 @@ public class CSharpBuilder extends ASTVisitor {
         return ctor;
     }
 
+    private int getEnumOrdinal(EnumDeclaration enumDecl, String name) {
+        List constants = enumDecl.enumConstants();
+        for (int i = 0; i < constants.size(); i++) {
+            EnumConstantDeclaration constantDeclaration = (EnumConstantDeclaration) constants.get(i);
+            if (constantDeclaration.getName().getIdentifier().equals(name)) {
+                return i;
+            }
+        }
+        throw new IllegalArgumentException("No enum const " + name + " in " + constants);
+    }
+
     private boolean hasConstructorMethod(AbstractTypeDeclaration node) {
         for (Object o : node.bodyDeclarations()) {
             if (o instanceof MethodDeclaration && ((MethodDeclaration) o).isConstructor()) {
@@ -2642,7 +2653,14 @@ public class CSharpBuilder extends ASTVisitor {
         CSBlock saved = _currentBlock;
 
         ITypeBinding switchType = node.getExpression().resolveTypeBinding();
-        CSSwitchStatement mappedNode = new CSSwitchStatement(node.getStartPosition(), mapExpression(node.getExpression()));
+        CSSwitchStatement mappedNode;
+        if (switchType.isEnum()) {
+            CSExpression enumExpression = mapExpression(node.getExpression());
+            CSMethodInvocationExpression ordinalInvocation = new CSMethodInvocationExpression(new CSMemberReferenceExpression(enumExpression, "ordinal"));
+            mappedNode = new CSSwitchStatement(node.getStartPosition(), ordinalInvocation);
+        } else {
+            mappedNode = new CSSwitchStatement(node.getStartPosition(), mapExpression(node.getExpression()));
+        }
         addStatement(mappedNode);
 
         CSCaseClause defaultClause = null;
@@ -2669,12 +2687,20 @@ public class CSharpBuilder extends ASTVisitor {
                     if (openCaseBlock != null)
                         openCaseBlock.addStatement(new CSGotoStatement(Integer.MIN_VALUE, "default"));
                 } else {
-                    ITypeBinding stype = pushExpectedType(switchType);
-                    CSExpression caseExpression = mapExpression(sc.getExpression());
+                    CSExpression caseExpression;
+                    if (switchType.isEnum()) {
+                        EnumDeclaration enumDecl = findDeclaringNode(switchType);
+                        int ordinal = getEnumOrdinal(enumDecl, ((SimpleName) sc.getExpression()).getIdentifier());
+                        caseExpression = new CSNumberLiteralExpression(ordinal + "");
+                    } else {
+                        ITypeBinding stype = pushExpectedType(switchType);
+                        caseExpression = mapExpression(sc.getExpression());
+                        popExpectedType(stype);
+                    }
                     current.addExpression(caseExpression);
-                    popExpectedType(stype);
-                    if (openCaseBlock != null)
+                    if (openCaseBlock != null) {
                         openCaseBlock.addStatement(new CSGotoStatement(Integer.MIN_VALUE, caseExpression));
+                    }
                 }
                 openCaseBlock = null;
             } else {
@@ -2807,7 +2833,7 @@ public class CSharpBuilder extends ASTVisitor {
         CSMethodInvocationExpression initializer;
         Configuration.MemberMapping mappedConstructor = effectiveMappingFor(node.resolveConstructorBinding());
         if (null == mappedConstructor) {
-            int ordinal = ((EnumDeclaration) node.getParent()).enumConstants().indexOf(node);
+            int ordinal = getEnumOrdinal((EnumDeclaration) node.getParent(), node.getName().getIdentifier());
             initializer = new CSConstructorInvocationExpression(mappedTypeReference(fieldType));
             initializer.addArgument(new CSNumberLiteralExpression(ordinal + ""));
             initializer.addArgument(new CSStringLiteralExpression("\"" + node.getName().getIdentifier() + "\""));
