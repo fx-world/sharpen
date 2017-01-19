@@ -189,6 +189,14 @@ public abstract class AbstractConversionTestCase {
         return ConfigurationFactory.defaultConfiguration();
     }
 
+    protected Configuration newConfigurationEgyptian() {
+        Configuration configuration = newConfiguration();
+        configuration.setMaxColumns(500);
+        configuration.enableIndentStyleEgyptianBrackets();
+        configuration.setIndentString(Configuration.INDENT_4_SPACES);
+        return configuration;
+    }
+
     protected Configuration newPascalCaseIdentifiersConfiguration() {
         Configuration configuration = newConfiguration();
         configuration.setNamingStrategy(new PascalCaseIdentifiersNamingStrategy());

@@ -9,10 +9,12 @@ import java.io.IOException;
 public class EnumsTestCase extends AbstractConversionTestCase {
 
     @Override
+    protected Configuration getConfiguration() {
+        return newConfigurationEgyptian();
+    }
+
+    @Override
     protected void runResourceTestCase(Configuration configuration, String resourceName) throws IOException, CoreException {
-        configuration.enableIndentStyleEgyptianBrackets();
-        configuration.setMaxColumns(256);
-        configuration.setIndentString(Configuration.INDENT_4_SPACES);
         super.runResourceTestCase(configuration, "enums/" + resourceName);
     }
 

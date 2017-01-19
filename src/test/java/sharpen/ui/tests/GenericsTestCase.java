@@ -95,7 +95,8 @@ public class GenericsTestCase extends AbstractConversionTestCase {
         runResourceTestCase("GenericMethods");
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testNested() throws Throwable {
         runResourceTestCase("GenericNested");
     }
@@ -103,6 +104,12 @@ public class GenericsTestCase extends AbstractConversionTestCase {
     @Test
     public void testMultipleConstraint() throws Throwable {
         runResourceTestCase("GenericMultipleConstraint");
+    }
+
+    @Test
+    @Ignore
+    public void testGenericMapAny() throws Throwable {
+        runResourceTestCase(newConfigurationEgyptian(), "generics/GenericMapAny");
     }
 
     @Override
