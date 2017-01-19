@@ -144,6 +144,7 @@ public abstract class Configuration {
         mapMethod("java.lang.StringBuffer.insert", "Insert");
         //"append" is also defined in an interface, and that must be mapped as well
         //(so that it works with all JREs):
+        mapType("java.lang.StringBuilder", "System.Text.StringBuilder");
         mapMethod("java.lang.Appendable.append", "Append");
         mapMethod("java.lang.AbstractStringBuilder.append", "Append");
         mapMethod("java.lang.AbstractStringBuilder.insert", "Insert");
