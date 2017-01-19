@@ -24,6 +24,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 package sharpen.ui.tests;
 
 import org.eclipse.core.runtime.CoreException;
+import org.junit.Ignore;
 import org.junit.Test;
 import sharpen.core.Configuration;
 
@@ -92,6 +93,11 @@ public class GenericsTestCase extends AbstractConversionTestCase {
     @Test
     public void testGenericMethods() throws Throwable {
         runResourceTestCase("GenericMethods");
+    }
+
+    @Test @Ignore
+    public void testNested() throws Throwable {
+        runResourceTestCase("GenericNested");
     }
 
     @Override
