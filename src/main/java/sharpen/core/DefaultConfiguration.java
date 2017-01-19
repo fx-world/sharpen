@@ -148,6 +148,20 @@ public class DefaultConfiguration extends Configuration {
 
         mapProperty("java.util.List.size", "Count");
         mapIndexer("java.util.List.get");
+        mapMethod("java.util.Collection.clear", "Clear");
+        mapMethod("java.util.Map.clear", "Clear");
+        mapMethod("java.util.Collection.contains", "Contains");
+
+        mapMethod("java.util.Collections.max", "System.Linq.Enumerable.Max");
+        mapMethod("java.util.Collections.min", "System.Linq.Enumerable.Min");
+        mapMethodToMacro("java.util.Map.isEmpty", "($expression.Count == 0)");
+        mapMethodToMacro("java.util.Collection.isEmpty", "($expression.Count == 0)");
+        mapMethodToMacro("java.util.Arrays.asList", "System.Linq.Enumerable.ToList(new [] {$arguments})");
+        mapMethodToMacro("java.util.Collections.singletonList", "System.Linq.Enumerable.ToList(new [] {$arg_0})");
+        mapMethodToMacro("java.util.Collections.emptyMap", "new System.Collections.Generic.Dictionary<$type_0, $type_1>()");
+        mapMethodToMacro("java.util.Collections.emptyList", "new System.Collections.Generic.List<$type_0>()");
+        mapMethodToMacro("java.util.Collections.emptySet", "new System.Collections.Generic.HashSet<$type_0>()");
+
         mapMethod("java.util.Collection.addAll", collectionRuntimeMethod("AddAll"));
         mapMethod("java.util.Collection.toArray", collectionRuntimeMethod("ToArray"));
 
@@ -160,7 +174,7 @@ public class DefaultConfiguration extends Configuration {
             mapProperty("java.util.Iterator.next", "Current");
         }
         mapMethod("java.util.Map.remove", collectionRuntimeMethod("Remove"));
-        mapMethod("java.util.Map.containsKey", "Contains");
+        mapMethod("java.util.Map.containsKey", "ContainsKey");
         mapMethod("java.util.Map.entrySet", "");
         mapProperty("java.util.Map.Entry.getKey", "Key");
         mapProperty("java.util.Map.Entry.getValue", "Value");

@@ -128,6 +128,8 @@ public abstract class Configuration {
     private Map<String, String> _conditionalCompilations = new HashMap<String, String>();
 
 
+    private final Map<String, String> _mappedMethodToMacro = new HashMap<String, String>();
+
     public Configuration(String runtimeTypeName) {
 
         _runtimeTypeName = runtimeTypeName;
@@ -572,6 +574,15 @@ public abstract class Configuration {
 
         return null;
     }
+
+    public void mapMethodToMacro(String methodName, String macro) {
+        _mappedMethodToMacro.put(methodName, macro);
+    }
+
+    public String getMappedMacro(String methodName) {
+        return _mappedMethodToMacro.get(methodName);
+    }
+
 
     private boolean isSubPackage(String parentPackage, String packageName) {
         return packageName.startsWith(parentPackage);

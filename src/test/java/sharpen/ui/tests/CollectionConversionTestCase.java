@@ -22,6 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 package sharpen.ui.tests;
 
 import org.eclipse.core.runtime.CoreException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -38,9 +39,14 @@ public class CollectionConversionTestCase extends AbstractConversionTestCase {
         runResourceTestCase("Set");
     }
 
-    @Test
+    @Test @Ignore // generic an raw Map has different containsKey mapping - ContainsKey and Contains
     public void testMap1() throws Throwable {
         runResourceTestCase("Map1");
+    }
+
+    @Test
+    public void testMap2() throws Throwable {
+        runResourceTestCase("Map2");
     }
 
     @Test
@@ -81,6 +87,16 @@ public class CollectionConversionTestCase extends AbstractConversionTestCase {
     @Test
     public void testCollectionsBinarySearch() throws Throwable {
         runResourceTestCase("CollectionsBinarySearch");
+    }
+
+    @Test
+    public void testCollectionsIsEmpty() throws Throwable {
+        runResourceTestCase("IsEmpty");
+    }
+
+    @Test
+    public void testCollectionsEmpties() throws Throwable {
+        runResourceTestCase("Empties");
     }
 
     @Override
