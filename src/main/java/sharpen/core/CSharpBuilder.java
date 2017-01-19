@@ -3123,6 +3123,10 @@ public class CSharpBuilder extends ASTVisitor {
 
         code.addVariable("expression", mapExpression(node.getExpression()));
         code.addVariable("arguments", mapExpressions(node.arguments()));
+        List arguments = node.arguments();
+        for (int i = 0; i < arguments.size(); i++) {
+            code.addVariable("arg_" + i, mapExpression((Expression) arguments.get(i)));
+        }
 
         pushExpression(new CSMacroExpression(code));
     }
