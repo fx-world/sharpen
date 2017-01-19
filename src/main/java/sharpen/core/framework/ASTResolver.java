@@ -25,5 +25,9 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.IBinding;
 
 public interface ASTResolver {
+
     ASTNode findDeclaringNode(IBinding binding);
+
+    String resolveRename(IBinding binding, String originalName);
+
 }

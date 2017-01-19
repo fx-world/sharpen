@@ -393,7 +393,7 @@ public class CSharpBuilder extends ASTVisitor {
         mapMembers(node, type, auxillaryType);
 
         if (node instanceof EnumDeclaration) {
-            if (!hasConstructorMethod(node)) {
+            if (!ASTUtility.hasConstructorMethod(node)) {
                 implementDefaultEnumConstructor(type);
             }
 
@@ -557,26 +557,6 @@ public class CSharpBuilder extends ASTVisitor {
         final CSConstructor ctor = CSharpCode.newPublicConstructor();
         type.addMember(ctor);
         return ctor;
-    }
-
-    private int getEnumOrdinal(EnumDeclaration enumDecl, String name) {
-        List constants = enumDecl.enumConstants();
-        for (int i = 0; i < constants.size(); i++) {
-            EnumConstantDeclaration constantDeclaration = (EnumConstantDeclaration) constants.get(i);
-            if (constantDeclaration.getName().getIdentifier().equals(name)) {
-                return i;
-            }
-        }
-        throw new IllegalArgumentException("No enum const " + name + " in " + constants);
-    }
-
-    private boolean hasConstructorMethod(AbstractTypeDeclaration node) {
-        for (Object o : node.bodyDeclarations()) {
-            if (o instanceof MethodDeclaration && ((MethodDeclaration) o).isConstructor()) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void implementDefaultEnumConstructor(CSTypeDeclaration type) {
@@ -1492,7 +1472,10 @@ public class CSharpBuilder extends ASTVisitor {
         if (fragment.getExtraDimensions() > 0) {
             fieldType = new CSArrayTypeReference(fieldType, fragment.getExtraDimensions());
         }
-        CSField field = new CSField(fieldName(fragment), fieldType, fieldVisibility, mapFieldInitializer(fragment));
+        String fieldName = fieldName(fragment);
+        fieldName = _resolver.resolveRename(fragment.resolveBinding(), fieldName);
+
+        CSField field = new CSField(fieldName, fieldType, fieldVisibility, mapFieldInitializer(fragment));
         if (isConstField(node, fragment)) {
             field.addModifier(CSFieldModifier.Const);
         } else {
@@ -2690,7 +2673,7 @@ public class CSharpBuilder extends ASTVisitor {
                     CSExpression caseExpression;
                     if (switchType.isEnum()) {
                         EnumDeclaration enumDecl = findDeclaringNode(switchType);
-                        int ordinal = getEnumOrdinal(enumDecl, ((SimpleName) sc.getExpression()).getIdentifier());
+                        int ordinal = ASTUtility.getEnumOrdinal(enumDecl, ((SimpleName) sc.getExpression()).getIdentifier());
                         caseExpression = new CSNumberLiteralExpression(ordinal + "");
                     } else {
                         ITypeBinding stype = pushExpectedType(switchType);
@@ -2833,7 +2816,7 @@ public class CSharpBuilder extends ASTVisitor {
         CSMethodInvocationExpression initializer;
         Configuration.MemberMapping mappedConstructor = effectiveMappingFor(node.resolveConstructorBinding());
         if (null == mappedConstructor) {
-            int ordinal = getEnumOrdinal((EnumDeclaration) node.getParent(), node.getName().getIdentifier());
+            int ordinal = ASTUtility.getEnumOrdinal((EnumDeclaration) node.getParent(), node.getName().getIdentifier());
             initializer = new CSConstructorInvocationExpression(mappedTypeReference(fieldType));
             initializer.addArgument(new CSNumberLiteralExpression(ordinal + ""));
             initializer.addArgument(new CSStringLiteralExpression("\"" + node.getName().getIdentifier() + "\""));
@@ -3507,6 +3490,7 @@ public class CSharpBuilder extends ASTVisitor {
 
     public boolean visit(FieldAccess node) {
         String name = mappedFieldName(node);
+        name = _resolver.resolveRename(node.resolveFieldBinding(), name);
         if (null == node.getExpression()) {
             pushExpression(new CSReferenceExpression(name));
         } else {
@@ -3515,7 +3499,7 @@ public class CSharpBuilder extends ASTVisitor {
         return false;
     }
 
-    String mapVariableName(String name) {
+    private String mapVariableName(String name) {
         if (_renamedVariables.size() > 0) {
             String vname = name;
             if (vname.startsWith("@"))
@@ -3544,6 +3528,7 @@ public class CSharpBuilder extends ASTVisitor {
         } else if (_currentExpression == null) {
             String ident = mapVariableName(identifier(node));
             IBinding b = node.resolveBinding();
+            ident = _resolver.resolveRename(b, ident);
             IVariableBinding vb = b instanceof IVariableBinding ? (IVariableBinding) b : null;
             if (vb != null) {
                 ITypeBinding cls = vb.getDeclaringClass();

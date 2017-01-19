@@ -96,7 +96,7 @@ public abstract class ConversionBatch {
     }
 
     public void setclassPathEntries(List<String> classPathEntries) {
-        if (null != classPathEntries || classPathEntries.isEmpty() == false) {
+        if (null != classPathEntries || !classPathEntries.isEmpty()) {
             _classPathEntries = classPathEntries.toArray(new String[classPathEntries.size()]);
         }
     }
@@ -121,7 +121,12 @@ public abstract class ConversionBatch {
         }
 
         final ArrayList<CompilationUnitPair> pairs = parseCompilationUnits();
-        final ASTResolver resolver = new DefaultASTResolver(pairs);
+
+        PreConvertVisitor preConvertVisitor = new PreConvertVisitor();
+        for (final CompilationUnitPair pair : pairs) {
+            pair.ast.accept(preConvertVisitor);
+        }
+        final ASTResolver resolver = new DefaultASTResolver(pairs, preConvertVisitor.getRenamingMap());
 
         _progressMonitor.beginTask("converting", pairs.size());
         for (final CompilationUnitPair pair : pairs) {
@@ -134,8 +139,7 @@ public abstract class ConversionBatch {
                     throw ex;
                 }
 
-                if (ex instanceof IllegalArgumentException
-                        || ex instanceof ClassCastException) {
+                if (ex instanceof IllegalArgumentException || ex instanceof ClassCastException) {
                     // we still want to notify the user about the problem
                     ex.printStackTrace(System.err);
                 } else {
@@ -146,8 +150,7 @@ public abstract class ConversionBatch {
         }
     }
 
-    private void convertPair(final ASTResolver resolver, final CompilationUnitPair pair) throws CoreException,
-            IOException {
+    private void convertPair(final ASTResolver resolver, final CompilationUnitPair pair) throws CoreException, IOException {
         try {
             _progressMonitor.subTask(pair.source.replace("\\", "/"));
             convertCompilationUnit(resolver, pair.source.replace("\\", "/"), pair.ast);
@@ -156,8 +159,7 @@ public abstract class ConversionBatch {
         }
     }
 
-    protected abstract void convertCompilationUnit(ASTResolver resolver, String sourceFiles,
-                                                   CompilationUnit ast) throws CoreException, IOException;
+    protected abstract void convertCompilationUnit(ASTResolver resolver, String sourceFiles, CompilationUnit ast) throws CoreException, IOException;
 
     private ArrayList<CompilationUnitPair> parseCompilationUnits() {
         final ArrayList<CompilationUnitPair> pairs = new ArrayList<CompilationUnitPair>(_sourceFiles.length);

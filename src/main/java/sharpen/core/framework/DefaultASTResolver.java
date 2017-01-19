@@ -25,13 +25,16 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.IBinding;
 
 import java.util.List;
+import java.util.Map;
 
 public class DefaultASTResolver implements ASTResolver {
 
     private final List<CompilationUnitPair> _pairs;
+    private final Map<String, String> renamingMap;
 
-    public DefaultASTResolver(List<CompilationUnitPair> pairs) {
+    public DefaultASTResolver(List<CompilationUnitPair> pairs, Map<String, String> renamingMap) {
         _pairs = pairs;
+        this.renamingMap = renamingMap;
     }
 
     public ASTNode findDeclaringNode(IBinding binding) {
@@ -42,4 +45,11 @@ public class DefaultASTResolver implements ASTResolver {
 
         return null;
     }
+
+    @Override
+    public String resolveRename(IBinding binding, String originalName) {
+        return renamingMap.getOrDefault(binding.getKey(), originalName);
+    }
+
+
 }

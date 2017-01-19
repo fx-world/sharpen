@@ -175,7 +175,6 @@ public abstract class AbstractConversionTestCase {
             byte[] encoded = Files.readAllBytes(Paths.get(result));
             return new String(encoded);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             result = result + e.toString();
         }
@@ -186,7 +185,7 @@ public abstract class AbstractConversionTestCase {
         return newConfiguration();
     }
 
-    private Configuration newConfiguration() {
+    protected Configuration newConfiguration() {
         return ConfigurationFactory.defaultConfiguration();
     }
 
@@ -202,7 +201,7 @@ public abstract class AbstractConversionTestCase {
         return configuration;
     }
 
-    protected void runBatchConverterTestCase(Configuration configuration, String... resourceNames) throws IOException, Throwable {
+    protected void runBatchConverterTestCase(Configuration configuration, String... resourceNames) throws Throwable {
         runBatchConverterTestCase(configuration, toTestCaseResources(resourceNames));
     }
 
@@ -214,10 +213,7 @@ public abstract class AbstractConversionTestCase {
         return resources;
     }
 
-    protected void runBatchConverterTestCase(Configuration configuration,
-                                             TestCaseResource... resources) throws
-            IOException, Throwable {
-
+    protected void runBatchConverterTestCase(Configuration configuration, TestCaseResource... resources) throws Throwable {
         try {
             runBatchConverterTestCaseWithTargetProject(configuration, resources);
         } finally {
@@ -225,8 +221,7 @@ public abstract class AbstractConversionTestCase {
         }
     }
 
-    private void runBatchConverterTestCaseWithTargetProject(
-            Configuration configuration, TestCaseResource... resources) throws IOException, Throwable {
+    private void runBatchConverterTestCaseWithTargetProject(Configuration configuration, TestCaseResource... resources) throws Throwable {
         String projectName = "MultipleSource";
         String[] units;
         if (resources.length > 0) {
@@ -249,12 +244,11 @@ public abstract class AbstractConversionTestCase {
             if (resource.isSupportingLibrary()) {
                 continue;
             }
-            checkConversionResult(configuration, targetProject, resource);
+            checkConversionResult(targetProject, resource);
         }
     }
 
-    private String[] createCompilationUnits(
-            TestCaseResource... resources) throws IOException {
+    private String[] createCompilationUnits(TestCaseResource... resources) throws IOException {
         final String[] units = new String[resources.length];
         for (int i = 0; i < resources.length; ++i) {
             units[i] = createCompilationUnit(resources[i]);
@@ -262,8 +256,7 @@ public abstract class AbstractConversionTestCase {
         return units;
     }
 
-    private String[] createCompilationUnits(String projectName,
-                                            TestCaseResource... resources) throws IOException {
+    private String[] createCompilationUnits(String projectName, TestCaseResource... resources) throws IOException {
         final String[] units = new String[resources.length];
         for (int i = 0; i < resources.length; ++i) {
             if (resources.length > 1)
@@ -275,7 +268,6 @@ public abstract class AbstractConversionTestCase {
     }
 
     /**
-     * @param configuration
      * @param targetFolder
      * @param cu
      * @param resource
@@ -283,7 +275,7 @@ public abstract class AbstractConversionTestCase {
      * @throws IOException
      * @throws Throwable
      */
-    private void checkConversionResult(Configuration configuration, String targetFolder, TestCaseResource resource) throws Throwable {
+    private void checkConversionResult(String targetFolder, TestCaseResource resource) throws Throwable {
 
         String targetDir = resource.getTargetDir();
         if (targetDir.isEmpty()) {

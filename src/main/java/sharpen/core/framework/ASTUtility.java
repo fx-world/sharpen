@@ -25,8 +25,9 @@ package sharpen.core.framework;
 
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.compiler.IProblem;
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.*;
+
+import java.util.List;
 
 /**
  * @exclude
@@ -84,4 +85,34 @@ public class ASTUtility {
         }
         return hasErrors;
     }
+
+    public static int getEnumOrdinal(EnumDeclaration enumDeclaration, String name) {
+        List constants = enumDeclaration.enumConstants();
+        for (int i = 0; i < constants.size(); i++) {
+            EnumConstantDeclaration constantDeclaration = (EnumConstantDeclaration) constants.get(i);
+            if (constantDeclaration.getName().getIdentifier().equals(name)) {
+                return i;
+            }
+        }
+        throw new IllegalArgumentException("No enum const " + name + " in " + constants);
+    }
+
+    public static boolean hasConstructorMethod(AbstractTypeDeclaration node) {
+        for (Object o : node.bodyDeclarations()) {
+            if (o instanceof MethodDeclaration && ((MethodDeclaration) o).isConstructor()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean hasMethodWithName(TypeDeclaration typeDeclaration, String methodName) {
+        for (MethodDeclaration methodDeclaration : typeDeclaration.getMethods()) {
+            if (methodDeclaration.getName().getIdentifier().equals(methodName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

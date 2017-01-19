@@ -42,11 +42,7 @@ public class SharpenConversion {
     protected String _source;
     protected Writer _writer;
     protected final Configuration _configuration;
-    private ASTResolver _resolver = new ASTResolver() {
-        public ASTNode findDeclaringNode(IBinding binding) {
-            return null;
-        }
-    };
+    private ASTResolver _resolver;
 
     public SharpenConversion(Configuration configuration) {
         _configuration = configuration;

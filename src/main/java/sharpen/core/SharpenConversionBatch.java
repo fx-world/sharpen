@@ -65,9 +65,8 @@ public class SharpenConversionBatch extends ConversionBatch {
         _targetProjectPath = projectPath;
     }
 
-    //@Override
-    protected void convertCompilationUnit(ASTResolver resolver, String source, CompilationUnit ast)
-            throws CoreException, IOException {
+    @Override
+    protected void convertCompilationUnit(ASTResolver resolver, String source, CompilationUnit ast) throws CoreException, IOException {
         SharpenConversion converter = new SharpenConversion(_configuration);
         final StringWriter writer = new StringWriter();
         converter.setTargetWriter(writer);
