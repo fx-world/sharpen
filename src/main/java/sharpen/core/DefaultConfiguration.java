@@ -113,6 +113,8 @@ public class DefaultConfiguration extends Configuration {
             mapType("java.lang.Iterable", "System.Collections.IEnumerable");
             mapType("java.lang.Iterable<>", "System.Collections.Generic.IEnumerable");
         }
+        mapType("java.util.HashSet<>", "System.Collections.Generic.HashSet");
+
         mapType("java.util.Map", "System.Collections.IDictionary");
         mapType("java.util.Map<,>", "System.Collections.Generic.IDictionary");
         mapType("java.util.Map.Entry", "System.Collections.DictionaryEntry");
