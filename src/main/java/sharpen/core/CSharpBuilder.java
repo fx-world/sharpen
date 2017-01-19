@@ -1834,20 +1834,31 @@ public class CSharpBuilder extends ASTVisitor {
     private void mapParameter(SingleVariableDeclaration parameter, CSParameterized method) {
         if (method instanceof CSMethod) {
             IVariableBinding vb = parameter.resolveBinding();
-            ITypeBinding[] ta = vb.getType().getTypeArguments();
-            //	we need to check that generic class is not Class<?>
-            if (ta.length > 0 && ta[0].getName().startsWith("?") && !isJavaLangClass(parameter.resolveBinding().getType())) {
-                CSMethod met = (CSMethod) method;
-                String genericArg = "_T" + met.typeParameters().size();
-                CSTypeParameter tp = new CSTypeParameter(genericArg);
-                for (ITypeBinding binding : mapTypeParameterExtendedType(ta[0])) {
-                    tp.superClass(mappedTypeReference(binding));
-                }
-                met.addTypeParameter(tp);
+            ITypeBinding[] arguments = vb.getType().getTypeArguments();
+            if (arguments.length > 0 && !isMacroType(findDeclaringNode(vb.getType()))) {
+                CSMethod csMethod = (CSMethod) method;
+                CSTypeReference type = new CSTypeReference(mappedTypeName(vb.getType()));
 
-                CSTypeReference tr = new CSTypeReference(mappedTypeName(vb.getType()));
-                tr.addTypeArgument(new CSTypeReference(genericArg));
-                method.addParameter(new CSVariableDeclaration(identifier(vb.getName()), tr));
+                // we need to check that generic class is not Class<?>
+                if (!isJavaLangClass(vb.getType())) {
+                    int argNameNum = 0;
+                    for (ITypeBinding argument : arguments) {
+                        if (argument.getName().startsWith("?")) {
+                            String genericArg = "_T" + argNameNum++;
+                            CSTypeParameter methodTypeParameter = new CSTypeParameter(genericArg);
+                            for (ITypeBinding binding : mapTypeParameterExtendedType(argument)) {
+                                methodTypeParameter.superClass(mappedTypeReference(binding));
+                            }
+                            csMethod.addTypeParameter(methodTypeParameter);
+
+                            type.addTypeArgument(new CSTypeReference(genericArg));
+                        } else {
+                            type.addTypeArgument(mappedTypeReference(argument));
+                        }
+                    }
+                }
+
+                method.addParameter(new CSVariableDeclaration(identifier(vb.getName()), type));
                 return;
             }
         }
@@ -1860,9 +1871,7 @@ public class CSharpBuilder extends ASTVisitor {
         if (superc != null && !superc.getQualifiedName().equals("java.lang.Object") && !superc.getQualifiedName().equals("java.lang.Enum<?>")) {
             result.add(superc);
         }
-        for (ITypeBinding binding : tb.getInterfaces()) {
-            result.add(binding);
-        }
+        Collections.addAll(result, tb.getInterfaces());
         return result;
     }
 
@@ -2044,6 +2053,7 @@ public class CSharpBuilder extends ASTVisitor {
         return my(Annotations.class).effectiveAnnotationFor(node, annotation);
     }
 
+    @SuppressWarnings("unchecked")
     private <T extends ASTNode> T findDeclaringNode(IBinding binding) {
         return (T) my(Bindings.class).findDeclaringNode(binding);
     }
@@ -2166,8 +2176,7 @@ public class CSharpBuilder extends ASTVisitor {
             for (Set<String> s : _blockVariables)
                 s.add(name);
         }
-        return new CSVariableDeclaration(identifier(name), mappedTypeReference(binding.getType()),
-                initializer);
+        return new CSVariableDeclaration(identifier(name), mappedTypeReference(binding.getType()), initializer);
     }
 
     public boolean visit(ExpressionStatement node) {
@@ -2406,7 +2415,7 @@ public class CSharpBuilder extends ASTVisitor {
                 int n = Integer.parseInt(token, 8);
                 if (n != 0)
                     literal = new CSNumberLiteralExpression("0x" + Integer.toHexString(n));
-            } catch (NumberFormatException ex) {
+            } catch (NumberFormatException ignore) {
             }
         }
 
@@ -4151,10 +4160,6 @@ public class CSharpBuilder extends ASTVisitor {
     @SuppressWarnings("deprecation")
     protected int lineNumber(ASTNode node) {
         return _ast.lineNumber(node.getStartPosition());
-    }
-
-    public void setASTResolver(ASTResolver resolver) {
-        _resolver = resolver;
     }
 
     private String mappedNamespace(String namespace) {
