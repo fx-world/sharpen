@@ -48,7 +48,8 @@ public class BindingUtils {
 
     /**
      * Finds the method in the given <code>type</code> that is overrideen by the specified <code>method<code> . Returns <code>null</code> if no such method exits.
-     * @param type The type to search the method in
+     *
+     * @param type   The type to search the method in
      * @param method The specified method that would override the result
      * @return the method binding representing the method oevrriding the specified <code>method<code>
      */
@@ -82,7 +83,8 @@ public class BindingUtils {
     /**
      * Finds a method in the hierarchy of <code>type</code> that is overridden by </code>binding</code>.
      * Returns <code>null</code> if no such method exists. First the super class is examined and than the implemented interfaces.
-     * @param type The type to search the method in
+     *
+     * @param type    The type to search the method in
      * @param binding The method that overrides
      * @return the method binding overridden the method
      */
@@ -120,7 +122,8 @@ public class BindingUtils {
 
     /**
      * Finds the method that is defines the given method. The returned method might not be visible.
-     * @param method The method to find
+     *
+     * @param method       The method to find
      * @param typeResolver TODO
      * @return the method binding representing the method
      */
@@ -233,6 +236,33 @@ public class BindingUtils {
 
     public static boolean isStatic(MethodInvocation invocation) {
         return isStatic(invocation.resolveMethodBinding());
+    }
+
+    public static boolean isJavaLangClass(ITypeBinding type) {
+        return "java.lang.Class".equals(type.getErasure().getQualifiedName());
+    }
+
+    public static boolean hasWildcardInGenerics(ITypeBinding type) {
+        if (isJavaLangClass(type)) {
+            return false;
+        }
+        if (isWildcard(type)) {
+            return true;
+        }
+        for (ITypeBinding generic : type.getTypeArguments()) {
+            if (isWildcard(type)) {
+                return true;
+            }
+            boolean has = hasWildcardInGenerics(generic);
+            if (has) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isWildcard(ITypeBinding type) {
+        return type.getName().contains("?") || (!type.isAnonymous() && type.getName().equals(""));
     }
 
 }

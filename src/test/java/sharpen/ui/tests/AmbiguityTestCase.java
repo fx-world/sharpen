@@ -10,11 +10,7 @@ public class AmbiguityTestCase extends AbstractConversionTestCase {
 
     @Override
     protected Configuration getConfiguration() {
-        Configuration configuration = newConfiguration();
-        configuration.enableIndentStyleEgyptianBrackets();
-        configuration.setMaxColumns(256);
-        configuration.setIndentString(Configuration.INDENT_4_SPACES);
-        return configuration;
+        return newConfigurationEgyptian();
     }
 
     @Test
