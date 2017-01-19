@@ -24,7 +24,7 @@ namespace nativeTypeSystem
 
 		public virtual void runAll(System.Type[] classes)
 		{
-			foreach (System.Type c in classes)
+			foreach (var c in classes)
 			{
 				run(c);
 			}
@@ -43,7 +43,7 @@ namespace nativeTypeSystem
 			bool isInterface = clazz.IsInterface;
 			try
 			{
-				object o = System.Activator.CreateInstance(clazz);
+				var o = System.Activator.CreateInstance(clazz);
 			}
 			catch (System.MemberAccessException x)
 			{

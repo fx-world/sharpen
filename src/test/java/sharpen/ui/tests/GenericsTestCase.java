@@ -107,9 +107,8 @@ public class GenericsTestCase extends AbstractConversionTestCase {
     }
 
     @Test
-    @Ignore
-    public void testGenericMapAny() throws Throwable {
-        runResourceTestCase(newConfigurationEgyptian(), "generics/GenericMapAny");
+    public void testGenericMapWildcard() throws Throwable {
+        runResourceTestCase(newConfigurationEgyptian(), "generics/GenericMapWildcard");
     }
 
     @Override

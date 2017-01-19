@@ -1840,7 +1840,7 @@ public class CSharpBuilder extends ASTVisitor {
                 CSTypeReference type = new CSTypeReference(mappedTypeName(vb.getType()));
 
                 // we need to check that generic class is not Class<?>
-                if (!isJavaLangClass(vb.getType())) {
+                if (!BindingUtils.isJavaLangClass(vb.getType())) {
                     int argNameNum = 0;
                     for (ITypeBinding argument : arguments) {
                         if (argument.getName().startsWith("?")) {
@@ -2148,7 +2148,11 @@ public class CSharpBuilder extends ASTVisitor {
     public boolean visit(VariableDeclarationStatement node) {
         for (Object f : node.fragments()) {
             VariableDeclarationFragment variable = (VariableDeclarationFragment) f;
-            addStatement(new CSDeclarationStatement(node.getStartPosition(), createVariableDeclaration(variable)));
+            CSVariableDeclaration variableDeclaration = createVariableDeclaration(variable);
+            if (variable.getInitializer() != null && BindingUtils.hasWildcardInGenerics(variable.getInitializer().resolveTypeBinding())) {
+                variableDeclaration.type(new CSTypeReference("var"));
+            }
+            addStatement(new CSDeclarationStatement(node.getStartPosition(), variableDeclaration));
         }
         return false;
     }
@@ -2596,7 +2600,11 @@ public class CSharpBuilder extends ASTVisitor {
     @Override
     public boolean visit(EnhancedForStatement node) {
         CSForEachStatement stmt = new CSForEachStatement(node.getStartPosition(), mapExpression(node.getExpression()));
-        stmt.variable(createParameter(node.getParameter()));
+        if (BindingUtils.hasWildcardInGenerics(node.getParameter().getType().resolveBinding()) || BindingUtils.hasWildcardInGenerics(node.getExpression().resolveTypeBinding())) {
+            stmt.variable(new CSVariableDeclaration(node.getParameter().getName().getIdentifier(), new CSTypeReference("var")));
+        } else {
+            stmt.variable(createParameter(node.getParameter()));
+        }
         visitBlock(stmt.body(), node.getBody());
         addStatement(stmt);
         return false;
@@ -3454,10 +3462,7 @@ public class CSharpBuilder extends ASTVisitor {
 
     private void processIndexerGetter(MethodInvocation node) {
         final Expression singleArgument = (Expression) node.arguments().get(0);
-        pushExpression(
-                new CSIndexedExpression(
-                        mapIndexerTarget(node),
-                        mapExpression(singleArgument)));
+        pushExpression(new CSIndexedExpression(mapIndexerTarget(node), mapExpression(singleArgument)));
     }
 
     private CSExpression mapIndexerTarget(MethodInvocation node) {
@@ -4041,7 +4046,7 @@ public class CSharpBuilder extends ASTVisitor {
         }
 
         final CSTypeReference typeRef = new CSTypeReference(mappedTypeName(type));
-        if (isJavaLangClass(type)) {
+        if (BindingUtils.isJavaLangClass(type)) {
             return typeRef;
         }
 
@@ -4049,14 +4054,6 @@ public class CSharpBuilder extends ASTVisitor {
             typeRef.addTypeArgument(mappedTypeReference(arg));
         }
         return typeRef;
-    }
-
-    private boolean isJavaLangClass(ITypeBinding type) {
-        return type.getErasure() == javaLangClassBinding();
-    }
-
-    private ITypeBinding javaLangClassBinding() {
-        return resolveWellKnownType("java.lang.Class");
     }
 
     private CSTypeReferenceExpression mappedWildcardTypeReference(ITypeBinding type) {
