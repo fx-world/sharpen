@@ -83,6 +83,16 @@ public class CollectionConversionTestCase extends AbstractConversionTestCase {
         runResourceTestCase("CollectionsBinarySearch");
     }
 
+    @Test
+    public void testCollectionsIsEmpty() throws Throwable {
+        runResourceTestCase("IsEmpty");
+    }
+
+    @Test
+    public void testCollectionsEmpties() throws Throwable {
+        runResourceTestCase("Empties");
+    }
+
     @Override
     protected void runResourceTestCase(String resourceName) throws IOException, CoreException {
         super.runResourceTestCase(resourcePath(resourceName));

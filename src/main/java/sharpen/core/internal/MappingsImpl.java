@@ -309,4 +309,14 @@ public class MappingsImpl implements Mappings {
     private String mappedTypeName(String typeName, String defaultValue) {
         return _configuration.mappedTypeName(typeName, defaultValue);
     }
+
+    public String configuredMacroFor(final IMethodBinding binding) {
+        final IMethodBinding actual = originalMethodBinding(binding);
+        final String mapping = _configuration.getMappedMacro(BindingUtils.qualifiedSignature(actual));
+        if (null != mapping)
+            return mapping;
+
+        return _configuration.getMappedMacro(qualifiedName(actual));
+    }
+
 }

@@ -3097,19 +3097,37 @@ public class CSharpBuilder extends ASTVisitor {
     }
 
     private boolean isMacro(MethodInvocation node) {
-        return isTaggedMethodInvocation(node, SharpenAnnotations.SHARPEN_MACRO);
+        return isTaggedMethodInvocation(node, SharpenAnnotations.SHARPEN_MACRO) ||
+                my(Mappings.class).configuredMacroFor(node.resolveMethodBinding()) != null;
     }
 
     private void processMacroInvocation(MethodInvocation node) {
-        final MethodDeclaration declaration = (MethodDeclaration) declaringNode(node.resolveMethodBinding());
-        final TagElement macro = effectiveAnnotationFor(declaration, SharpenAnnotations.SHARPEN_MACRO);
-        final CSMacro code = new CSMacro(JavadocUtility.singleTextFragmentFrom(macro));
-
-        code.addVariable("expression", mapExpression(node.getExpression()));
-        code.addVariable("arguments", mapExpressions(node.arguments()));
+        IMethodBinding binding = node.resolveMethodBinding();
+        String mappedMacro = my(Mappings.class).configuredMacroFor(binding);
+        if (mappedMacro == null) {
+            final MethodDeclaration declaration = (MethodDeclaration) declaringNode(binding);
+            final TagElement macro = effectiveAnnotationFor(declaration, SharpenAnnotations.SHARPEN_MACRO);
+            mappedMacro = JavadocUtility.singleTextFragmentFrom(macro);
+        }
+        final CSMacro code = new CSMacro(mappedMacro);
+        ITypeBinding[] typeArguments = binding.getReturnType().getTypeArguments();
+        for (int i = 0; i < typeArguments.length; i++) {
+            ITypeBinding typeBinding = typeArguments[i];
+            if (mappedMacro.contains("$type_" + i)) {
+                code.addVariable("type_" + i, mappedTypeReference(typeBinding));
+            }
+        }
+        if (mappedMacro.contains("$expression")) {
+            code.addVariable("expression", mapExpression(node.getExpression()));
+        }
+        if (mappedMacro.contains("$arguments")) {
+            code.addVariable("arguments", mapExpressions(node.arguments()));
+        }
         List arguments = node.arguments();
         for (int i = 0; i < arguments.size(); i++) {
-            code.addVariable("arg_" + i, mapExpression((Expression) arguments.get(i)));
+            if (mappedMacro.contains("$arg_" + i)) {
+                code.addVariable("arg_" + i, mapExpression((Expression) arguments.get(i)));
+            }
         }
 
         pushExpression(new CSMacroExpression(code));

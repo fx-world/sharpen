@@ -16,4 +16,5 @@ public interface Mappings {
 
     MemberMapping effectiveMappingFor(IMethodBinding binding);
 
+    String configuredMacroFor(IMethodBinding binding);
 }
