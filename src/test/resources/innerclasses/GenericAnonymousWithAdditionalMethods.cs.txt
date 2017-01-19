@@ -2,18 +2,18 @@ namespace innerclasses
 {
 	public class GenericAnonymousWithAdditionalMethods<T>
 	{
-		public static IComparable run(object obj)
+		public static System.IComparable run(object obj)
 		{
 			return new _IComparable_5();
 		}
 
-		private sealed class _IComparable_5 : IComparable
+		private sealed class _IComparable_5 : System.IComparable
 		{
 			public _IComparable_5()
 			{
 			}
 
-			public int compareTo(object target)
+			public int CompareTo(object target)
 			{
 				return this.result(target);
 			}
