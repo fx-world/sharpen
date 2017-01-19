@@ -39,8 +39,9 @@ public class DefaultConfiguration extends Configuration {
         setUpCollectionMappings();
 
         mapType("java.lang.Cloneable", "System.ICloneable");
-        mapType("java.lang.Comparable", "IComparable");
-        mapType("java.lang.Comparable<>", "IComparable");
+        mapType("java.lang.Comparable", "System.IComparable");
+        mapType("java.lang.Comparable<>", "System.IComparable");
+        mapMethod("java.lang.Comparable.compareTo", "CompareTo");
 
         mapType("java.util.Date", "System.DateTime");
 
@@ -62,13 +63,16 @@ public class DefaultConfiguration extends Configuration {
         mapMethod("java.lang.Object.notifyAll", runtimeMethod("notifyAll"));
         mapMethod("java.lang.Object.getClass", runtimeMethod("getClassForObject"));
 
-        mapMethod("java.lang.Math.min", "Math.Min");
-        mapMethod("java.lang.Math.max", "Math.Max");
-        mapMethod("java.lang.Math.abs", "Math.Abs");
-        mapMethod("java.lang.Math.floor", "Math.Floor");
-        mapMethod("java.lang.Math.atan2", "Math.Atan2");
-        mapMethod("java.lang.Math.log10", "Math.Log10");
-        mapMethod("java.lang.Math.pow", "Math.Pow");
+        mapMethod("java.lang.Math.min", "System.Math.Min");
+        mapMethod("java.lang.Math.max", "System.Math.Max");
+        mapMethod("java.lang.Math.abs", "System.Math.Abs");
+        mapMethod("java.lang.Math.floor", "System.Math.Floor");
+        mapMethod("java.lang.Math.atan2", "System.Math.Atan2");
+        mapMethod("java.lang.Math.log10", "System.Math.Log10");
+        mapMethod("java.lang.Math.pow", "System.Math.Pow");
+        mapMethod("java.lang.Math.round", "System.Math.Round");
+        mapMethod("java.lang.Math.atan2", "System.Math.Atan2");
+        mapMethod("java.lang.Math.signum", "System.Math.Sign");
 
         mapMethod("length", "Length");    // see qualifiedName(IVariableBinding)
 
