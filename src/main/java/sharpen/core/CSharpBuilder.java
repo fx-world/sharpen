@@ -707,9 +707,9 @@ public class CSharpBuilder extends ASTVisitor {
         CSTypeParameter tp = new CSTypeParameter(identifier(item.getName()));
         ITypeBinding tb = item.resolveBinding();
         if (tb != null) {
-            ITypeBinding superc = mapTypeParameterExtendedType(tb);
-            if (superc != null)
-                tp.superClass(mappedTypeReference(superc));
+            for (ITypeBinding binding : mapTypeParameterExtendedType(tb)) {
+                tp.superClass(mappedTypeReference(binding));
+            }
         }
         return tp;
     }
@@ -1854,12 +1854,12 @@ public class CSharpBuilder extends ASTVisitor {
             ITypeBinding[] ta = vb.getType().getTypeArguments();
             //	we need to check that generic class is not Class<?>
             if (ta.length > 0 && ta[0].getName().startsWith("?") && !isJavaLangClass(parameter.resolveBinding().getType())) {
-                ITypeBinding extended = mapTypeParameterExtendedType(ta[0]);
                 CSMethod met = (CSMethod) method;
                 String genericArg = "_T" + met.typeParameters().size();
                 CSTypeParameter tp = new CSTypeParameter(genericArg);
-                if (extended != null)
-                    tp.superClass(mappedTypeReference(extended));
+                for (ITypeBinding binding : mapTypeParameterExtendedType(ta[0])) {
+                    tp.superClass(mappedTypeReference(binding));
+                }
                 met.addTypeParameter(tp);
 
                 CSTypeReference tr = new CSTypeReference(mappedTypeName(vb.getType()));
@@ -1871,15 +1871,16 @@ public class CSharpBuilder extends ASTVisitor {
         method.addParameter(createParameter(parameter));
     }
 
-    ITypeBinding mapTypeParameterExtendedType(ITypeBinding tb) {
+    List<ITypeBinding> mapTypeParameterExtendedType(ITypeBinding tb) {
+        List<ITypeBinding> result = new ArrayList<>();
         ITypeBinding superc = tb.getSuperclass();
         if (superc != null && !superc.getQualifiedName().equals("java.lang.Object") && !superc.getQualifiedName().equals("java.lang.Enum<?>")) {
-            return superc;
+            result.add(superc);
         }
-        ITypeBinding[] ints = tb.getInterfaces();
-        if (ints.length > 0)
-            return ints[0];
-        return null;
+        for (ITypeBinding binding : tb.getInterfaces()) {
+            result.add(binding);
+        }
+        return result;
     }
 
     private void mapMethodParameters(MethodDeclaration node, CSMethod method) {

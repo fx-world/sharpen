@@ -24,10 +24,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 package sharpen.core.csharp.ast;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CSTypeParameter extends CSNode {
 
     private final String _name;
-    private CSTypeReferenceExpression _type;
+    private List<CSTypeReferenceExpression> _type = new ArrayList<>();
 
     public CSTypeParameter(String name) {
         _name = name;
@@ -43,11 +46,11 @@ public class CSTypeParameter extends CSNode {
     }
 
 
-    public CSTypeReferenceExpression superClass() {
+    public List<CSTypeReferenceExpression> superClass() {
         return _type;
     }
 
     public void superClass(CSTypeReferenceExpression type) {
-        _type = type;
+        _type.add(type);
     }
 }

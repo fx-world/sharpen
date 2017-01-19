@@ -100,6 +100,11 @@ public class GenericsTestCase extends AbstractConversionTestCase {
         runResourceTestCase("GenericNested");
     }
 
+    @Test
+    public void testMultipleConstraint() throws Throwable {
+        runResourceTestCase("GenericMultipleConstraint");
+    }
+
     @Override
     protected void runResourceTestCase(String resourceName) throws IOException, CoreException {
         super.runResourceTestCase("generics/" + resourceName);
