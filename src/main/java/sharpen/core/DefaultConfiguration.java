@@ -71,6 +71,10 @@ public class DefaultConfiguration extends Configuration {
         mapMethod("java.lang.Math.pow", "Math.Pow");
 
         mapMethod("length", "Length");    // see qualifiedName(IVariableBinding)
+
+        mapType("java.util.function.Function<,>", "System.Func");
+        mapMethod("java.util.function.Function.apply", "Invoke");
+
         setUpPrimitiveWrappers();
     }
 
