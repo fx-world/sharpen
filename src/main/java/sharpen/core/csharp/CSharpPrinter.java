@@ -247,12 +247,19 @@ public class CSharpPrinter extends CSVisitor {
     private void writeTypeParameterConstraints(List<CSTypeParameter> parameters) {
         if (parameters.isEmpty()) return;
         for (CSTypeParameter tp : parameters) {
-            if (tp.superClass() != null) {
+            if (!tp.superClass().isEmpty()) {
                 writeLine();
                 indent();
                 writeIndented("where ");
                 write(tp.name() + " : ");
-                tp.superClass().accept(this);
+                boolean first = true;
+                for (CSTypeReferenceExpression expression : tp.superClass()) {
+                    if (!first) {
+                        write(", ");
+                    }
+                    first = false;
+                    expression.accept(this);
+                }
                 outdent();
             }
         }

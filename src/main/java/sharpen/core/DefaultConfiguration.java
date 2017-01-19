@@ -73,6 +73,7 @@ public class DefaultConfiguration extends Configuration {
         mapMethod("java.lang.Math.round", "System.Math.Round");
         mapMethod("java.lang.Math.atan2", "System.Math.Atan2");
         mapMethod("java.lang.Math.signum", "System.Math.Sign");
+        mapMethod("java.lang.Math.sqrt", "System.Math.Sqrt");
 
         mapMethod("length", "Length");    // see qualifiedName(IVariableBinding)
 
