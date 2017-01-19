@@ -140,6 +140,7 @@ public class DefaultConfiguration extends Configuration {
 
         mapType("java.util.Comparator", "System.Collections.IComparer");
         mapMethod("java.util.Collections.sort", "Sort");
+        mapMethod("java.util.Collections.binarySearch", "BinarySearch");
 
         mapProperty("java.util.Collection.size", "Count");
         mapProperty("java.util.Map.size", "Count");

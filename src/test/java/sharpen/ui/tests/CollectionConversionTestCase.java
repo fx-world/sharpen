@@ -73,6 +73,16 @@ public class CollectionConversionTestCase extends AbstractConversionTestCase {
         runResourceTestCase("CollectionToArray");
     }
 
+    @Test
+    public void testCollectionsSort() throws Throwable {
+        runResourceTestCase("CollectionsSort");
+    }
+
+    @Test
+    public void testCollectionsBinarySearch() throws Throwable {
+        runResourceTestCase("CollectionsBinarySearch");
+    }
+
     @Override
     protected void runResourceTestCase(String resourceName) throws IOException, CoreException {
         super.runResourceTestCase(resourcePath(resourceName));
