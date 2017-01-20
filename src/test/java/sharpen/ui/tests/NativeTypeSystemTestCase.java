@@ -31,6 +31,11 @@ public class NativeTypeSystemTestCase extends AbstractConversionTestCase {
     }
 
     @Test
+    public void testClassCast() throws Throwable {
+        runResourceTestCase("nativeTypeSystem/ClassCast");
+    }
+
+    @Test
     public void testStringMethods() throws Throwable {
         runResourceTestCase("nativeTypeSystem/StringMethods1");
     }
