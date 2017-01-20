@@ -94,10 +94,6 @@ public class CSharpBuilder extends ASTVisitor {
 
     private List<Initializer> _instanceInitializers = new ArrayList<Initializer>();
 
-    private Stack<Set<String>> _blockVariables = new Stack<Set<String>>();
-    private Stack<Set<String>> _localBlockVariables = new Stack<Set<String>>();
-    private Stack<HashMap<String, String>> _renamedVariables = new Stack<HashMap<String, String>>();
-
     private ITypeBinding _currentExpectedType;
 
 
@@ -2167,19 +2163,6 @@ public class CSharpBuilder extends ASTVisitor {
 
     private CSVariableDeclaration createVariableDeclaration(IVariableBinding binding, CSExpression initializer) {
         String name = binding.getName();
-        if (_blockVariables.size() > 0) {
-            if (_blockVariables.peek().contains(name)) {
-                int count = 1;
-                while (_blockVariables.peek().contains(name + "_" + count)) {
-                    count++;
-                }
-                _renamedVariables.peek().put(name, name + "_" + count);
-                name = name + "_" + count;
-            }
-            _localBlockVariables.peek().add(name);
-            for (Set<String> s : _blockVariables)
-                s.add(name);
-        }
         return new CSVariableDeclaration(identifier(name), mappedTypeReference(binding.getType()), initializer);
     }
 
@@ -2320,9 +2303,6 @@ public class CSharpBuilder extends ASTVisitor {
             CheckVariableUseVisitor check = new CheckVariableUseVisitor(_currentExceptionVariable);
             node.getBody().accept(check);
 
-            // The exception variable is declared in a new scope
-            pushScope();
-
             CSCatchClause clause;
             if (isEmptyCatch(node, check)) {
                 clause = new CSCatchClause();
@@ -2334,7 +2314,6 @@ public class CSharpBuilder extends ASTVisitor {
             return clause;
         } finally {
             _currentExceptionVariable = oldExceptionVariable;
-            popScope();
         }
     }
 
@@ -3533,14 +3512,6 @@ public class CSharpBuilder extends ASTVisitor {
     }
 
     private String mapVariableName(String name) {
-        if (_renamedVariables.size() > 0) {
-            String vname = name;
-            if (vname.startsWith("@"))
-                vname = vname.substring(1);
-            String newName = _renamedVariables.peek().get(vname);
-            if (newName != null)
-                return newName;
-        }
         return name;
     }
 
@@ -4190,7 +4161,6 @@ public class CSharpBuilder extends ASTVisitor {
             parent.addStatement(_currentBlock);
         }
         _currentContinueLabel = null;
-        pushScope();
         return super.visit(node);
     }
 
@@ -4199,7 +4169,6 @@ public class CSharpBuilder extends ASTVisitor {
         if (isBlockInsideBlock(node)) {
             _currentBlock = (CSBlock) _currentBlock.parent();
         }
-        popScope();
         super.endVisit(node);
     }
 
@@ -4207,25 +4176,4 @@ public class CSharpBuilder extends ASTVisitor {
         return node.getParent() instanceof Block;
     }
 
-    void pushScope() {
-        HashSet<String> newLocalVars = new HashSet<String>();
-        if (_localBlockVariables.size() > 0)
-            newLocalVars.addAll(_localBlockVariables.peek());
-        _localBlockVariables.push(newLocalVars);
-
-        HashSet<String> newBlockVars = new HashSet<String>();
-        newBlockVars.addAll(newLocalVars);
-        _blockVariables.push(newBlockVars);
-
-        HashMap<String, String> newRenamed = new HashMap<String, String>();
-        if (_renamedVariables.size() > 0)
-            newRenamed.putAll(_renamedVariables.peek());
-        _renamedVariables.push(newRenamed);
-    }
-
-    void popScope() {
-        _blockVariables.pop();
-        _localBlockVariables.pop();
-        _renamedVariables.pop();
-    }
 }

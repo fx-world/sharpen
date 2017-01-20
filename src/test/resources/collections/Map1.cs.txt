@@ -9,7 +9,7 @@ namespace collections
 			{
 				object value = map["foo"];
 			}
-			foreach (object value_1 in map.Values)
+			foreach (object value in map.Values)
 			{
 			}
 			foreach (object key in map.Keys)
