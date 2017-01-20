@@ -3128,6 +3128,10 @@ public class CSharpBuilder extends ASTVisitor {
         }
         final CSMacro code = new CSMacro(mappedMacro);
         ITypeBinding[] typeArguments = binding.getReturnType().getTypeArguments();
+        if (mappedMacro.contains("$type")) {
+            code.addVariable("type", mappedTypeReference(binding.getReturnType()));
+        }
+
         for (int i = 0; i < typeArguments.length; i++) {
             ITypeBinding typeBinding = typeArguments[i];
             if (mappedMacro.contains("$type_" + i)) {

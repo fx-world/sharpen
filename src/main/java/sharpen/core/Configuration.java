@@ -299,6 +299,7 @@ public abstract class Configuration {
         mapType("java.lang.reflect.Constructor", "System.Reflection.ConstructorInfo");
 
         mapMethod("java.lang.String.valueOf", "ToString");
+        mapMethodToMacro("java.lang.Class.cast", "(($type)$arguments)");
     }
 
     private void mapJavaLangClassProperty(String methodName, String propertyName) {
