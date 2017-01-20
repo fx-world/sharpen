@@ -52,11 +52,12 @@ public class SharpenApplication {
             if (_args.outputFolder != null && !_args.outputFolder.isEmpty()) {
                 this.requestedOutputFolder = _args.outputFolder;
             }
-            System.err.println("Configuration Class: " + _args.configurationClass);
-            System.err.println("Configuration Class: " + _args.runtimeTypeName);
+            System.out.println("Configuration Class: " + _args.configurationClass);
+            System.out.println("Configuration Class: " + _args.runtimeTypeName);
             Configuration config = ConfigurationFactory.newExternalConfiguration(_args.configJarFilePath, _args.configurationClass, _args.runtimeTypeName, newProgressMonitor());
-            if (config == null)
+            if (config == null) {
                 config = ConfigurationFactory.newConfiguration(_args.configurationClass, _args.runtimeTypeName);
+            }
             Sharpen.getDefault().configuration(config);
             safeRun();
         } catch (Exception x) {

@@ -41,22 +41,17 @@ import static sharpen.core.framework.StaticImports.staticImportMethodBinding;
 public class CSharpBuilder extends ASTVisitor {
 
     private static final String JAVA_LANG_VOID_TYPE = "java.lang.Void.TYPE";
-
     private static final String JAVA_LANG_BOOLEAN_TYPE = "java.lang.Boolean.TYPE";
-
     private static final String JAVA_LANG_CHARACTER_TYPE = "java.lang.Character.TYPE";
-
     private static final String JAVA_LANG_INTEGER_TYPE = "java.lang.Integer.TYPE";
-
     private static final String JAVA_LANG_LONG_TYPE = "java.lang.Long.TYPE";
-
     private static final String JAVA_LANG_BYTE_TYPE = "java.lang.Byte.TYPE";
-
     private static final String JAVA_LANG_SHORT_TYPE = "java.lang.Short.TYPE";
-
     private static final String JAVA_LANG_FLOAT_TYPE = "java.lang.Float.TYPE";
-
     private static final String JAVA_LANG_DOUBLE_TYPE = "java.lang.Double.TYPE";
+
+    private static final Pattern SUMMARY_CLOSURE_PATTERN = Pattern.compile("\\.(\\s|$)");
+    private static final Pattern HTML_ANCHOR_PATTERN = Pattern.compile("<([aA])\\s+.+>");
 
     private static final CSTypeReference OBJECT_TYPE_REFERENCE = new CSTypeReference("object");
 
@@ -77,10 +72,6 @@ public class CSharpBuilder extends ASTVisitor {
     protected BodyDeclaration _currentBodyDeclaration;
 
     private CSLabelStatement _currentContinueLabel;
-
-    private static final Pattern SUMMARY_CLOSURE_PATTERN = Pattern.compile("\\.(\\s|$)");
-
-    private static final Pattern HTML_ANCHOR_PATTERN = Pattern.compile("<([aA])\\s+.+>");
 
     protected CompilationUnit _ast;
 
