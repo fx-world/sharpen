@@ -1,6 +1,7 @@
 bin/
 bin-testcases/
 target/
+.idea/
 *.class
 *.byecycle
 
