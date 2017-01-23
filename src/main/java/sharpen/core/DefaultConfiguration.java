@@ -140,6 +140,8 @@ public class DefaultConfiguration extends Configuration {
         mapProperty("java.util.LinkedList<>.getFirst", "First");
 
         mapType("java.util.Comparator", "System.Collections.IComparer");
+        mapType("java.util.Comparator<>", "System.Collections.Generic.IComparer");
+        mapMethod("java.util.Comparator.compare", "Compare");
         mapMethod("java.util.Collections.sort", "Sort");
         mapMethod("java.util.Collections.binarySearch", "BinarySearch");
 
