@@ -17,4 +17,12 @@ public class MappingsTestCase extends AbstractConversionTestCase {
         return config;
     }
 
+    @Test
+    public void testRenameParentChildMethods() throws Throwable {
+        Configuration configuration = newConfigurationEgyptian();
+        configuration.mapMethod("mappings.RenameParentChildMethods.Parent.parentMethod", "parentMethod2");
+        configuration.mapMethod("mappings.RenameParentChildMethods.Child.childMethod", "childMethod2");
+        runResourceTestCase(configuration, "mappings/RenameParentChildMethods");
+    }
+
 }
