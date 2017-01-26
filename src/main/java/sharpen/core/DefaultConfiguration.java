@@ -111,7 +111,8 @@ public class DefaultConfiguration extends Configuration {
         // collection framework
         mapType("java.util.Collection", "System.Collections.ICollection");
         mapType("java.util.Collection<>", "System.Collections.Generic.ICollection");
-        mapType("java.util.Set<>", "System.Collections.Generic.ICollection");
+        mapType("java.util.Set", "System.Collections.Generic.HashSet<object>");
+        mapType("java.util.Set<>", "System.Collections.Generic.HashSet");
         if (mapIteratorToEnumerator()) {
             mapType("java.util.Iterator", "System.Collections.IEnumerator");
             mapType("java.util.Iterator<>", "System.Collections.Generic.IEnumerator");
@@ -120,20 +121,20 @@ public class DefaultConfiguration extends Configuration {
         }
         mapType("java.util.HashSet<>", "System.Collections.Generic.HashSet");
 
-        mapType("java.util.Map", "System.Collections.IDictionary");
+        mapType("java.util.Map", "System.Collections.Generic.IDictionary<object, object>");
         mapType("java.util.Map<,>", "System.Collections.Generic.IDictionary");
         mapType("java.util.Map.Entry", "System.Collections.DictionaryEntry");
         mapType("java.util.Map.Entry<,>", "System.Collections.Generic.KeyValuePair");
-        mapType("java.util.HashMap", "System.Collections.Hashtable");
+        mapType("java.util.HashMap", "System.Collections.Generic.Dictionary<object, object>");
         mapType("java.util.HashMap<,>", "System.Collections.Generic.Dictionary");
-        mapType("java.util.TreeMap", "System.Collections.SortedList");
+        mapType("java.util.TreeMap", "System.Collections.Generic.SortedDictionary<object, object>");
         mapType("java.util.TreeMap<,>", "System.Collections.Generic.SortedDictionary");
         mapType("java.util.SortedMap<,>", "System.Collections.Generic.SortedDictionary");
-        mapType("java.util.List", "System.Collections.IList");
+        mapType("java.util.List", "System.Collections.Generic.IList<object>");
         mapType("java.util.List<>", "System.Collections.Generic.IList");
-        mapType("java.util.ArrayList", "System.Collections.ArrayList");
+        mapType("java.util.ArrayList", "System.Collections.Generic.List<>");
         mapType("java.util.ArrayList<>", "System.Collections.Generic.List");
-        mapType("java.util.LinkedList", "System.Collections.ArrayList");
+        mapType("java.util.LinkedList", "System.Collections.Generic.LinkedList<>");
         mapType("java.util.LinkedList<>", "System.Collections.Generic.LinkedList");
         mapType("java.util.Stack", "System.Collections.Stack");
 

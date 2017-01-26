@@ -7,7 +7,7 @@ namespace Collections
 			return string.CompareOrdinal(x.ToString(), y.ToString());
 		}
 
-		public virtual void Sort(System.Collections.ArrayList list)
+		public virtual void Sort(System.Collections.Generic.List<> list)
 		{
 			list.Sort(this);
 		}

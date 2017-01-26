@@ -8,7 +8,7 @@ namespace collections
 				string>();
 			System.Collections.Generic.ICollection<string> collection = new System.Collections.Generic.List<
 				string>();
-			System.Collections.Generic.ICollection<string> set = new System.Collections.Generic.HashSet<
+			System.Collections.Generic.HashSet<string> set = new System.Collections.Generic.HashSet<
 				string>();
 			System.Collections.Generic.ICollection<string> collection2 = new System.Collections.Generic.HashSet<
 				string>();

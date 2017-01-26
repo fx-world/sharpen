@@ -1,9 +1,9 @@
 namespace collections
 {
 	[System.Serializable]
-	internal abstract class MyMap : System.Collections.Hashtable
+	internal abstract class MyMap : System.Collections.Generic.Dictionary<object, object>
 	{
-		public override java.util.Set entrySet()
+		public override System.Collections.Generic.HashSet<object> entrySet()
 		{
 			return null;
 		}
@@ -18,7 +18,8 @@ namespace collections
 
 	public class EntrySet1
 	{
-		internal static void printAll(System.Collections.IDictionary items)
+		internal static void printAll(System.Collections.Generic.IDictionary<object, object>
+			 items)
 		{
 			foreach (object entry in items)
 			{

@@ -20,14 +20,16 @@ namespace collections
 			map["foo"] = "bar";
 		}
 
-		internal static System.Collections.IDictionary genericSortedMap()
+		internal static System.Collections.Generic.IDictionary<object, object> genericSortedMap
+			()
 		{
 			return new System.Collections.Generic.SortedDictionary<string, string>();
 		}
 
-		internal static System.Collections.IDictionary sortedMap()
+		internal static System.Collections.Generic.IDictionary<object, object> sortedMap(
+			)
 		{
-			return new System.Collections.SortedList();
+			return new System.Collections.Generic.SortedDictionary<object, object>();
 		}
 	}
 }

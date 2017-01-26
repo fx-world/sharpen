@@ -1,5 +1,5 @@
 #if !SILVERLIGHT
-using System.Collections;
+using System.Collections.Generic;
 
 namespace disable
 {
@@ -7,7 +7,7 @@ namespace disable
 	{
 		private void foo()
 		{
-			ArrayList arrayList = new ArrayList();
+			List<> arrayList = new List<>();
 		}
 
 		private void bar()

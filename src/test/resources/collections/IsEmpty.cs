@@ -10,7 +10,7 @@ namespace collections
 			System.Collections.Generic.HashSet<int> hashSet = new System.Collections.Generic.HashSet
 				<int>();
 			java.util.TreeSet<int> treeSet = new java.util.TreeSet<int>();
-			System.Collections.Generic.ICollection<int> set = hashSet;
+			System.Collections.Generic.HashSet<int> set = hashSet;
 			System.Collections.Generic.Dictionary<int, string> hashMap = new System.Collections.Generic.Dictionary
 				<int, string>();
 			System.Collections.Generic.SortedDictionary<int, string> treeMap = new System.Collections.Generic.SortedDictionary
