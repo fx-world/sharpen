@@ -385,6 +385,7 @@ public class CSharpBuilder extends ASTVisitor {
             }
 
             implementEnumValuesMethod((EnumDeclaration) node, type);
+            implementEnumRegisterValuesStaticConstructor((EnumDeclaration) node, type);
         }
 
         autoImplementCloneable(node, type);
@@ -588,6 +589,15 @@ public class CSharpBuilder extends ASTVisitor {
         method.body().addStatement(new CSReturnStatement(-1, arrayCreationExpression));
 
         type.addMember(method);
+    }
+
+    private void implementEnumRegisterValuesStaticConstructor(EnumDeclaration enumNode, CSTypeDeclaration type) {
+        CSConstructor staticConstructor = new CSConstructor(CSConstructorModifier.Static);
+        CSMethodInvocationExpression methodInvocationExpression = new CSMethodInvocationExpression(new CSReferenceExpression("RegisterValues"));
+        methodInvocationExpression.addTypeArgument(new CSTypeReference(enumNode.getName().getIdentifier()));
+        methodInvocationExpression.addArgument(new CSMethodInvocationExpression(new CSReferenceExpression("values")));
+        staticConstructor.body().addStatement(methodInvocationExpression);
+        type.addMember(staticConstructor);
     }
 
     private void autoImplementCloneable(AbstractTypeDeclaration node, CSTypeDeclaration type) {

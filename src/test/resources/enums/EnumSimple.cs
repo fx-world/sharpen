@@ -19,6 +19,10 @@ namespace enums {
             public static VEnum[] values() {
                 return new VEnum[] { VALUE0, VALUE1, VALUE2, VALUE3, VALUE4 };
             }
+
+            static VEnum() {
+                RegisterValues<VEnum>(values());
+            }
         }
 
         public static void work() {
