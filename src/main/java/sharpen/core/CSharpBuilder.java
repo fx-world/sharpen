@@ -1876,15 +1876,7 @@ public class CSharpBuilder extends ASTVisitor {
         for (Object o : node.parameters()) {
             SingleVariableDeclaration p = (SingleVariableDeclaration) o;
             ITypeBinding parameterType = p.getType().resolveBinding();
-            if (isGenericRuntimeParameterIdiom(node.resolveBinding(), parameterType)) {
-
-                // System.Type <p.name> = typeof(<T>);
-                method.body().addStatement(
-                        new CSDeclarationStatement(p.getStartPosition(), new CSVariableDeclaration(identifier(p
-                                .getName()), new CSTypeReference("System.Type"), new CSTypeofExpression(
-                                genericRuntimeTypeIdiomType(parameterType)))));
-
-            } else {
+            if (!isGenericRuntimeParameterIdiom(node.resolveBinding(), parameterType)) {
                 mapParameter(p, method);
             }
         }
@@ -3403,8 +3395,9 @@ public class CSharpBuilder extends ASTVisitor {
 
         if (mapping.kind != MemberKind.Method) {
             IMethodBinding originalBinding = node.resolveMethodBinding();
-            if (binding != originalBinding && originalBinding.getReturnType() != binding.getReturnType() && !(node.getParent() instanceof ExpressionStatement))
+            if (binding != originalBinding && originalBinding.getReturnType() != binding.getReturnType() && !(node.getParent() instanceof ExpressionStatement)) {
                 target = new CSParenthesizedExpression(new CSCastExpression(mappedTypeReference(originalBinding.getReturnType()), target));
+            }
             switch (arguments.size()) {
                 case 0:
                     pushExpression(target);
@@ -3534,6 +3527,11 @@ public class CSharpBuilder extends ASTVisitor {
             ident = _resolver.resolveRename(b, ident);
             IVariableBinding vb = b instanceof IVariableBinding ? (IVariableBinding) b : null;
             if (vb != null) {
+                ITypeBinding vbType = vb.getType();
+                if ("java.lang.Class".equals(qualifiedName(vbType)) && vbType.getTypeArguments().length > 0 && !vbType.getTypeArguments()[0].getName().equals("?")) {
+                    pushExpression(new CSTypeofExpression(genericRuntimeTypeIdiomType(vbType)));
+                    return false;
+                }
                 ITypeBinding cls = vb.getDeclaringClass();
                 if (cls != null) {
                     if (isStaticImport(vb, _ast.imports())) {

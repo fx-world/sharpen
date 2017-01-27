@@ -4,8 +4,7 @@ namespace Generics
 	{
 		internal static System.Collections.Generic.IEnumerable<T> Query<T>()
 		{
-			System.Type clazz = typeof(T);
-			Print(clazz.FullName);
+			Print(typeof(T).FullName);
 			return null;
 		}
 
