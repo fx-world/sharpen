@@ -123,6 +123,10 @@ namespace formattings {
             public static MyEnum1[] values() {
                 return new MyEnum1[] { VALUE1, VALUE2, VALUE3 };
             }
+
+            static MyEnum1() {
+                RegisterValues<MyEnum1>(values());
+            }
         }
     }
 }

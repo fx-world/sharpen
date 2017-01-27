@@ -24,6 +24,10 @@ namespace enums {
             public static Color[] values() {
                 return new Color[] { RED, GREEN, BLUE, YELLOW };
             }
+
+            static Color() {
+                RegisterValues<Color>(values());
+            }
         }
 
         public static void work() {
