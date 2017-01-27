@@ -1875,7 +1875,6 @@ public class CSharpBuilder extends ASTVisitor {
                                 genericRuntimeTypeIdiomType(parameterType)))));
 
             } else {
-
                 mapParameter(p, method);
             }
         }
@@ -3202,8 +3201,7 @@ public class CSharpBuilder extends ASTVisitor {
         final ITypeBinding[] originalTypes = originalMethod.getParameterTypes();
         for (int i = 0; i < arguments.size(); ++i) {
             final Expression arg = (Expression) arguments.get(i);
-            if (i < originalTypes.length && isGenericRuntimeParameterIdiom(originalMethod, originalTypes[i])
-                    && isClassLiteral(arg)) {
+            if (i < originalTypes.length && isGenericRuntimeParameterIdiom(originalMethod, originalTypes[i])) {
                 mie.addTypeArgument(genericRuntimeTypeIdiomType(actualTypes[i]));
             } else {
                 addArgument(mie, arg, i < actualTypes.length ? actualTypes[i] : null);
@@ -3254,10 +3252,6 @@ public class CSharpBuilder extends ASTVisitor {
                 }
             }
         }
-    }
-
-    private boolean isClassLiteral(Expression arg) {
-        return arg.getNodeType() == ASTNode.TYPE_LITERAL;
     }
 
     private void processEventSubscription(MethodInvocation node) {

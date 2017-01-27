@@ -41,6 +41,14 @@ public class GenericsTestCase extends AbstractConversionTestCase {
     }
 
     @Test
+    public void testGenericRuntimeTypeParametersNested() throws Throwable {
+        Configuration config = newConfigurationEgyptian();
+        config.enableNativeTypeSystem();
+        runResourceTestCase(config, "generics/GenericRuntimeTypeParametersNested");
+    }
+
+
+    @Test
     public void testCollectionMappings() throws Throwable {
         runResourceTestCase("CollectionMappings");
     }
