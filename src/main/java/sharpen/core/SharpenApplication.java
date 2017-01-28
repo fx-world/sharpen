@@ -39,8 +39,9 @@ public class SharpenApplication {
 
     public void start(String[] args) throws Exception {
         try {
+            System.out.println("Sharpen started. Working dir: " + new File(".").getCanonicalPath());
             _args = SharpenCommandLine.parse(args);
-            if (_args.help == true) {
+            if (_args.help) {
                 displayHelp();
                 return;
             }
