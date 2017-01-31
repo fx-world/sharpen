@@ -106,6 +106,18 @@ namespace Sharpen {
         }
     }
 
+    public static class Lists {
+        public static void Add<T>(this IList<T> list, int index, T value) {
+            list.Insert(index, value);
+        }
+
+        public static T RemoveAtReturningValue <T>(this IList<T> list, int index) {
+            T value = list[index];
+            list.RemoveAt(index);
+            return value;
+        }
+    }
+
     public static class Maps {
 
         public static V GetOrDefault<K, V>(this IDictionary<K, V> map, K key, V defaultValue) {

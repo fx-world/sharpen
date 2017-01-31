@@ -157,6 +157,11 @@ public class DefaultConfiguration extends Configuration {
         mapMethod("java.util.Map.clear", "Clear");
         mapMethod("java.util.Collection.contains", "Contains");
 
+        mapMethod("java.util.Collection.remove", "Remove");
+        mapMethod("java.util.Collection.add", "Add");
+        mapMethod("java.util.List.add", "Add");
+        mapMethod("java.util.List.remove", "RemoveAtReturningValue");
+
         mapMethod("java.util.Collections.max", "System.Linq.Enumerable.Max");
         mapMethod("java.util.Collections.min", "System.Linq.Enumerable.Min");
         mapMethodToMacro("java.util.Map.isEmpty", "($expression.Count == 0)");
