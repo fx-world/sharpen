@@ -79,9 +79,9 @@ public class BatchConverterTestCase extends AbstractConversionTestCase {
 
         try {
             SharpenConversionBatch converter = new SharpenConversionBatch(getConfiguration());
-            converter.setsourceFiles(cu);
+            converter.setSourceFiles(cu);
             converter.setTargetProject(targetProject);
-            converter.setsourcePathEntries(targetFolder);
+            converter.setSourcePathEntries(targetFolder);
             converter.getConfiguration().setSharpenNamespace("nonamespace");
             converter.run();
 

@@ -50,14 +50,14 @@ public abstract class ConversionBatch {
      *
      * @param source iterator of sourceFiles instances
      */
-    public void setsourceFiles(String... sourceFiles) {
+    public void setSourceFiles(String... sourceFiles) {
         if (null == sourceFiles || 0 == sourceFiles.length) {
             throw new IllegalArgumentException("sourceFiles");
         }
         _sourceFiles = sourceFiles;
     }
 
-    public void setsourceFiles(List<String> sourceFiles) {
+    public void setSourceFiles(List<String> sourceFiles) {
         if (null == sourceFiles || sourceFiles.isEmpty()) {
             throw new IllegalArgumentException("sourceFiles");
         }
@@ -69,14 +69,14 @@ public abstract class ConversionBatch {
      *
      * @param source iterator of sourcePathEntries instances
      */
-    public void setsourcePathEntries(String... sourcePathEntries) {
+    public void setSourcePathEntries(String... sourcePathEntries) {
         if (null == sourcePathEntries || 0 == sourcePathEntries.length) {
             throw new IllegalArgumentException("sourcePathEntries");
         }
         _sourcePathEntries = sourcePathEntries;
     }
 
-    public void setsourcePathEntries(List<String> sourcePathEntries) {
+    public void setSourcePathEntries(List<String> sourcePathEntries) {
         if (null == sourcePathEntries || sourcePathEntries.isEmpty()) {
             throw new IllegalArgumentException("sourcePathEntries");
         }
@@ -88,14 +88,14 @@ public abstract class ConversionBatch {
      *
      * @param source iterator of classPathEntries instances
      */
-    public void setclassPathEntries(String... classPathEntries) {
+    public void setClassPathEntries(String... classPathEntries) {
         if (null == classPathEntries || 0 == classPathEntries.length) {
             throw new IllegalArgumentException("classPathEntries");
         }
         _classPathEntries = classPathEntries;
     }
 
-    public void setclassPathEntries(List<String> classPathEntries) {
+    public void setClassPathEntries(List<String> classPathEntries) {
         if (null != classPathEntries || !classPathEntries.isEmpty()) {
             _classPathEntries = classPathEntries.toArray(new String[classPathEntries.size()]);
         }

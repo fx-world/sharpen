@@ -66,7 +66,7 @@ public class JavaProjectCmd {
         }
     }
 
-    List<String> getAllCompilationUnits() throws JavaModelException {
+    List<String> getAllCompilationUnits() throws JavaModelException, IOException {
         List<String> units = new ArrayList<String>();
         for (String pathForsourcefile : sourceFolders) {
             if (!new File(pathForsourcefile).exists())
@@ -76,30 +76,29 @@ public class JavaProjectCmd {
         return units;
     }
 
-    void getAllfile(String projectPath, List<String> files) {
+    void getAllfile(String projectPath, List<String> files) throws IOException {
 
         File root = new File(projectPath);
         File[] list = root.listFiles();
 
         for (File f : list) {
             if (f.isDirectory()) {
-                getAllfile(f.getAbsolutePath(), files);
+                getAllfile(f.getCanonicalPath(), files);
             } else {
-                String fileName = f.getAbsoluteFile().getName();
+                String fileName = f.getCanonicalFile().getName();
 
                 if (fileName.substring(fileName.lastIndexOf(".") + 1).equalsIgnoreCase("java"))
-                    files.add(f.getAbsoluteFile().toString().replace("\\", "/"));
+                    files.add(f.getCanonicalPath().replace("\\", "/"));
             }
         }
     }
 
     public String createCompilationUnit(String packageName, String cuName, String source) throws IOException {
-        String pathForsourcefile = packageName;
-        File srcPath = new File(pathForsourcefile);
+        File srcPath = new File(packageName);
         if (!srcPath.exists()) {
             srcPath.mkdir();
         }
-        String sourcefileName = pathForsourcefile + "/" + cuName;
+        String sourcefileName = packageName + "/" + cuName;
         projectPath = packageName.substring(0, packageName.lastIndexOf("/src"));
         sourceFolders.add(projectPath + "/src");
         projectName = projectPath.substring(projectPath.lastIndexOf("/") + 1);

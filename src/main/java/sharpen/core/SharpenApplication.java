@@ -27,7 +27,6 @@ import sharpen.core.framework.ConsoleProgressMonitor;
 import sharpen.core.io.IO;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -123,8 +122,7 @@ public class SharpenApplication {
         try {
             convert();
         } finally {
-            System.out.println(
-                    "Conversion finished in " + (System.currentTimeMillis() - startTime) + "ms.");
+            System.out.println("Conversion finished in " + (System.currentTimeMillis() - startTime) + "ms.");
         }
     }
 
@@ -144,9 +142,9 @@ public class SharpenApplication {
         converter.setContinueOnError(_args.continueOnError);
         converter.setProgressMonitor(newProgressMonitor());
         converter.setTargetProject(targetFolder);
-        converter.setsourceFiles(units);
-        converter.setsourcePathEntries(project.getSourceFolders());
-        converter.setclassPathEntries(project.getclassPath());
+        converter.setSourceFiles(units);
+        converter.setSourcePathEntries(project.getSourceFolders());
+        converter.setClassPathEntries(project.getclassPath());
         converter.run();
     }
 

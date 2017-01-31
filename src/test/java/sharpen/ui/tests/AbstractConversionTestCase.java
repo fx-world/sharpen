@@ -114,10 +114,10 @@ public abstract class AbstractConversionTestCase {
         configuration.setSharpenNamespace("nonamespace");
 
         final SharpenConversionBatch converter = new SharpenConversionBatch(configuration);
-        converter.setsourceFiles(cu);
-        converter.setsourcePathEntries(sourceFilePath);
+        converter.setSourceFiles(cu);
+        converter.setSourcePathEntries(sourceFilePath);
         converter.setTargetProject(targetProject);
-        converter.setclassPathEntries(_project.getclassPath());
+        converter.setClassPathEntries(_project.getclassPath());
         converter.run();
 
         String targetDir = resource.getTargetDir();
@@ -243,7 +243,7 @@ public abstract class AbstractConversionTestCase {
 
         configuration.setSharpenNamespace("nonamespace");
         final SharpenConversionBatch converter = new SharpenConversionBatch(configuration);
-        converter.setsourceFiles(units);
+        converter.setSourceFiles(units);
         converter.setTargetProject(targetProject);
         converter.run();
 
