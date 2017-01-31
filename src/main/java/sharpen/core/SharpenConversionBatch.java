@@ -28,10 +28,10 @@ import sharpen.core.csharp.ast.CSCompilationUnit;
 import sharpen.core.framework.ASTResolver;
 import sharpen.core.framework.ConversionBatch;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.StringWriter;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 /**
  * Converts a set of java source files to c#.
@@ -75,6 +75,14 @@ public class SharpenConversionBatch extends ConversionBatch {
         CSCompilationUnit result = converter.run(ast);
         if (writer.getBuffer().length() > 0) {
             saveConvertedFile(source, result, writer);
+        }
+    }
+
+    @Override
+    protected void copySharpenCs() throws IOException {
+        if (new File(_targetProjectPath).exists()) {
+            InputStream stream = SharpenApplication.class.getClassLoader().getResourceAsStream("Sharpen.cs");
+            Files.copy(stream, Paths.get(_targetProjectPath, "Sharpen.cs"), StandardCopyOption.REPLACE_EXISTING);
         }
     }
 

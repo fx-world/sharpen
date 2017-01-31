@@ -148,7 +148,11 @@ public abstract class ConversionBatch {
                 }
             }
         }
+        if (!_progressMonitor.isCanceled()) {
+            copySharpenCs();
+        }
     }
+
 
     private void convertPair(final ASTResolver resolver, final CompilationUnitPair pair) throws CoreException, IOException {
         try {
@@ -160,6 +164,8 @@ public abstract class ConversionBatch {
     }
 
     protected abstract void convertCompilationUnit(ASTResolver resolver, String sourceFiles, CompilationUnit ast) throws CoreException, IOException;
+
+    protected abstract void copySharpenCs() throws IOException;
 
     private ArrayList<CompilationUnitPair> parseCompilationUnits() {
         final ArrayList<CompilationUnitPair> pairs = new ArrayList<CompilationUnitPair>(_sourceFiles.length);

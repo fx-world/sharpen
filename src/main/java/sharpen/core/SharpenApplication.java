@@ -27,6 +27,7 @@ import sharpen.core.framework.ConsoleProgressMonitor;
 import sharpen.core.io.IO;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -136,8 +137,7 @@ public class SharpenApplication {
         return deleteTargetProject(project);
     }
 
-    private void convertTo(JavaProjectCmd project)
-            throws IOException, CoreException, InterruptedException {
+    private void convertTo(JavaProjectCmd project) throws IOException, CoreException, InterruptedException {
         List<String> units = sortedByName(project.getAllCompilationUnits());
         String targetFolder = resetTargetFolder(project);
         SharpenConversionBatch converter = new SharpenConversionBatch(getConfiguration());
