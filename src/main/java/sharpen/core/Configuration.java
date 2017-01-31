@@ -398,6 +398,10 @@ public abstract class Configuration {
         mapMember(fromQualifiedName, new MemberMapping(null, MemberKind.Indexer));
     }
 
+    public void mapIndexerGetOr(String fromQualifiedName) {
+        mapMember(fromQualifiedName, new MemberMapping(null, MemberKind.IndexerGetOr));
+    }
+
     public void mapProperty(String fromQualifiedName, String to) {
         mapMember(fromQualifiedName, new MemberMapping(to, MemberKind.Property));
     }

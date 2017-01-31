@@ -29,4 +29,5 @@ public enum MemberKind {
     Method,
     Property,
     Indexer,
+    IndexerGetOr,
 }

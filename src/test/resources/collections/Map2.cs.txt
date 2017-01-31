@@ -8,7 +8,7 @@ namespace collections
 				<string, string>();
 			if (map.ContainsKey("foo"))
 			{
-				object value = map["foo"];
+				object value = map.GetOrNull("foo");
 			}
 			foreach (object value in map.Values)
 			{

@@ -87,6 +87,8 @@ public class CSharpBuilder extends ASTVisitor {
 
     private ITypeBinding _currentExpectedType;
 
+    private final Set<String> nullablePrimitivesVariables = new HashSet<>();
+
 
     protected NamingStrategy namingStrategy() {
         return _configuration.getNamingStrategy();
@@ -137,15 +139,13 @@ public class CSharpBuilder extends ASTVisitor {
 
     @Override
     public boolean visit(LineComment node) {
-        _compilationUnit.addComment(new CSLineComment(node.getStartPosition(), getText(node.getStartPosition(), node
-                .getLength())));
+        _compilationUnit.addComment(new CSLineComment(node.getStartPosition(), getText(node.getStartPosition(), node.getLength())));
         return false;
     }
 
     @Override
     public boolean visit(BlockComment node) {
-        _compilationUnit.addComment(new CSBlockComment(node.getStartPosition(), getText(node.getStartPosition(), node
-                .getLength())));
+        _compilationUnit.addComment(new CSBlockComment(node.getStartPosition(), getText(node.getStartPosition(), node.getLength())));
         return false;
     }
 
@@ -1568,6 +1568,8 @@ public class CSharpBuilder extends ASTVisitor {
     }
 
     public boolean visit(MethodDeclaration node) {
+        nullablePrimitivesVariables.clear();
+
         if (SharpenAnnotations.hasIgnoreAnnotation(node) || isRemoved(node)) {
             return false;
         }
@@ -2155,7 +2157,23 @@ public class CSharpBuilder extends ASTVisitor {
 
     private CSVariableDeclaration createVariableDeclaration(IVariableBinding binding, CSExpression initializer) {
         String name = binding.getName();
+        if (isGetOfNullableIndexer(initializer)) {
+            nullablePrimitivesVariables.add(binding.getKey());
+            CSTypeReference type = new CSTypeReference(mappedTypeName(binding.getType()) + "?");
+            return new CSVariableDeclaration(identifier(name), type, initializer);
+        }
         return new CSVariableDeclaration(identifier(name), mappedTypeReference(binding.getType()), initializer);
+    }
+
+    private boolean isGetOfNullableIndexer(CSExpression initializer) {
+        if (!(initializer instanceof CSMethodInvocationExpression)) {
+            return false;
+        }
+        CSNode expression = ((CSMethodInvocationExpression) initializer).expression();
+        if (!(expression instanceof CSReferenceExpression)) {
+            return false;
+        }
+        return ((CSReferenceExpression) expression).name().equals("GetOrNullable");
     }
 
     public boolean visit(ExpressionStatement node) {
@@ -3364,6 +3382,10 @@ public class CSharpBuilder extends ASTVisitor {
             processIndexerInvocation(node);
             return;
         }
+        if (mapping.kind == MemberKind.IndexerGetOr) {
+            processIndexerGetOr(node);
+            return;
+        }
 
         String name = mappedMethodName(binding);
         if (0 == name.length()) {
@@ -3454,6 +3476,21 @@ public class CSharpBuilder extends ASTVisitor {
         pushExpression(new CSIndexedExpression(mapIndexerTarget(node), mapExpression(singleArgument)));
     }
 
+    private void processIndexerGetOr(MethodInvocation node) {
+        ITypeBinding typeBinding = node.resolveTypeBinding();
+        if (typeBinding.isTypeVariable() || BindingUtils.isWildcard(typeBinding)) {
+            processIndexerGetter(node);
+            return;
+        }
+        if (BindingUtils.isPrimitiveBox(typeBinding)) {
+            final Expression singleArgument = (Expression) node.arguments().get(0);
+            pushExpression(new CSMethodInvocationExpression(new CSMemberReferenceExpression(mapIndexerTarget(node), "GetOrNullable"), mapExpression(singleArgument)));
+        } else {
+            final Expression singleArgument = (Expression) node.arguments().get(0);
+            pushExpression(new CSMethodInvocationExpression(new CSMemberReferenceExpression(mapIndexerTarget(node), "GetOrNull"), mapExpression(singleArgument)));
+        }
+    }
+
     private CSExpression mapIndexerTarget(MethodInvocation node) {
         if (node.getExpression() == null) {
             return new CSThisExpression();
@@ -3527,6 +3564,10 @@ public class CSharpBuilder extends ASTVisitor {
             ident = _resolver.resolveRename(b, ident);
             IVariableBinding vb = b instanceof IVariableBinding ? (IVariableBinding) b : null;
             if (vb != null) {
+                if (nullablePrimitivesVariables.contains(b.getKey()) && shouldUnboxNullablePrimitive(node)) {
+                    pushExpression(new CSMemberReferenceExpression(new CSReferenceExpression(ident), "Value"));
+                    return false;
+                }
                 ITypeBinding vbType = vb.getType();
                 if ("java.lang.Class".equals(qualifiedName(vbType)) && vbType.getTypeArguments().length > 0 && !vbType.getTypeArguments()[0].getName().equals("?")) {
                     pushExpression(new CSTypeofExpression(genericRuntimeTypeIdiomType(vbType)));
@@ -3546,6 +3587,54 @@ public class CSharpBuilder extends ASTVisitor {
             pushExpression(new CSReferenceExpression(ident));
         }
         return false;
+    }
+
+    private boolean shouldUnboxNullablePrimitive(SimpleName node) {
+        ASTNode parent = node.getParent();
+
+        if (parent instanceof InfixExpression) {
+            InfixExpression infix = (InfixExpression) parent;
+            if (isNullCheck(infix)) {
+                return false;
+            }
+            if (isStringConcat(infix)) {
+                return false;
+            }
+        }
+        if (parent instanceof MethodInvocation) {
+            MethodInvocation methodInvocation = (MethodInvocation) parent;
+            int argumentIndex = findMethodInvocationArgumentIndex(methodInvocation, node);
+            IMethodBinding b = methodInvocation.resolveMethodBinding();
+            ITypeBinding argumentType = b.getParameterTypes()[argumentIndex];
+            if (!BindingUtils.isPrimitive(argumentType) && !BindingUtils.isPrimitiveBox(argumentType)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isNullCheck(InfixExpression infix) {
+        return (infix.getOperator() == InfixExpression.Operator.EQUALS || infix.getOperator() == InfixExpression.Operator.NOT_EQUALS) &&
+                (infix.getLeftOperand() instanceof NullLiteral || infix.getRightOperand() instanceof NullLiteral);
+    }
+
+    private boolean isStringConcat(InfixExpression infix) {
+        if (infix.getOperator() != InfixExpression.Operator.PLUS) {
+            return false;
+        }
+        return "java.lang.String".equals(infix.getLeftOperand().resolveTypeBinding().getQualifiedName()) ||
+                "java.lang.String".equals(infix.getRightOperand().resolveTypeBinding().getQualifiedName());
+    }
+
+    private int findMethodInvocationArgumentIndex(MethodInvocation invocation, SimpleName node) {
+        List arguments = invocation.arguments();
+        for (int i = 0; i < arguments.size(); i++) {
+            Object o = arguments.get(i);
+            if (o instanceof SimpleName && o == node) {
+                return i;
+            }
+        }
+        throw new RuntimeException("Could not find argument " + node + " in " + invocation);
     }
 
     private void addStatement(CSStatement statement) {

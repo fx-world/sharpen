@@ -39,7 +39,8 @@ public class CollectionConversionTestCase extends AbstractConversionTestCase {
         runResourceTestCase("Set");
     }
 
-    @Test @Ignore // generic an raw Map has different containsKey mapping - ContainsKey and Contains
+    @Test
+    @Ignore // generic an raw Map has different containsKey mapping - ContainsKey and Contains
     public void testMap1() throws Throwable {
         runResourceTestCase("Map1");
     }
@@ -47,6 +48,11 @@ public class CollectionConversionTestCase extends AbstractConversionTestCase {
     @Test
     public void testMap2() throws Throwable {
         runResourceTestCase("Map2");
+    }
+
+    @Test
+    public void testMapGetNullability() throws Throwable {
+        runResourceTestCase(newConfigurationEgyptian(), "collections/MapGetNullability");
     }
 
     @Test

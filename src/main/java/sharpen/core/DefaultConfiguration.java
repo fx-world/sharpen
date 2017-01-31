@@ -186,9 +186,9 @@ public class DefaultConfiguration extends Configuration {
         mapProperty("java.util.Map.values", "Values");
         mapProperty("java.util.Map.keySet", "Keys");
 
-        mapIndexer("java.util.Dictionary.get");
+        mapIndexerGetOr("java.util.Dictionary.get");
         mapIndexer("java.util.Dictionary.put");
-        mapIndexer("java.util.Map.get");
+        mapIndexerGetOr("java.util.Map.get");
         mapIndexer("java.util.Map.put");
 
         //  jdk 1.0 collection framework

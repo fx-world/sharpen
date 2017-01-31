@@ -265,4 +265,28 @@ public class BindingUtils {
         return type.getName().contains("?") || (!type.isAnonymous() && type.getName().equals(""));
     }
 
+    public static boolean isPrimitive(ITypeBinding type) {
+        String name = type.getQualifiedName();
+        return name.equals("boolean") ||
+                name.equals("int") ||
+                name.equals("char") ||
+                name.equals("short") ||
+                name.equals("int") ||
+                name.equals("long") ||
+                name.equals("float") ||
+                name.equals("double");
+    }
+
+    public static boolean isPrimitiveBox(ITypeBinding type) {
+        String name = type.getQualifiedName();
+        return name.equals("java.lang.Boolean") ||
+                name.equals("java.lang.Byte") ||
+                name.equals("java.lang.Character") ||
+                name.equals("java.lang.Short") ||
+                name.equals("java.lang.Integer") ||
+                name.equals("java.lang.Long") ||
+                name.equals("java.lang.Float") ||
+                name.equals("java.lang.Double");
+    }
+
 }
