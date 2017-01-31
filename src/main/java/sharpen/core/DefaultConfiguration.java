@@ -80,6 +80,8 @@ public class DefaultConfiguration extends Configuration {
         mapType("java.util.function.Function<,>", "System.Func");
         mapMethod("java.util.function.Function.apply", "Invoke");
 
+        ignoreAnnotation("java.lang.Override");
+
         setUpPrimitiveWrappers();
     }
 

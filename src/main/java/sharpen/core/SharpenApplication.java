@@ -257,6 +257,10 @@ public class SharpenApplication {
         for (Configuration.NameMapping mapping : _args.typeMappings) {
             configuration.mapType(mapping.from, mapping.to);
         }
+
+        for (String ignoredAnnotation : _args.ignoredAnnotations) {
+            configuration.ignoreAnnotation(ignoredAnnotation);
+        }
         return configuration;
     }
 

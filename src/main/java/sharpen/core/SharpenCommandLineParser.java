@@ -158,6 +158,8 @@ class SharpenCommandLineParser extends CommandLineParser {
             _cmdLine.help = true;
         } else if (areEqual(arg, "-egyptianBrackets")) {
             _cmdLine.egyptianBrackets = true;
+        } else if (areEqual(arg, "-ignoreAnnotation")) {
+            _cmdLine.ignoredAnnotations.add(consumeNext());
         } else {
             System.out.println("Unknown arg:" + arg);
             _cmdLine.help = true;

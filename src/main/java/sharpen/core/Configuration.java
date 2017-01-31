@@ -130,6 +130,8 @@ public abstract class Configuration {
 
     private final Map<String, String> _mappedMethodToMacro = new HashMap<String, String>();
 
+    private final Set<String> _ignoredAnnotations = new HashSet<String>();
+
     public Configuration(String runtimeTypeName) {
 
         _runtimeTypeName = runtimeTypeName;
@@ -559,7 +561,11 @@ public abstract class Configuration {
     }
 
     public boolean isIgnoredAnnotation(String typeName) {
-        return typeName.equals("java.lang.Override");
+        return _ignoredAnnotations.contains(typeName);
+    }
+
+    public void ignoreAnnotation(String typeName) {
+        _ignoredAnnotations.add(typeName);
     }
 
     public void conditionalCompilation(Map<String, String> conditionalCompilation) {

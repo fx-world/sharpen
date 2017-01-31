@@ -21,10 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 package sharpen.core;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SharpenCommandLine {
 
@@ -72,17 +69,18 @@ public class SharpenCommandLine {
     public int maxColumns = 80;
     public String project;
     public String projectPath;
-    final public List<String> classpath = new ArrayList<String>();
-    final public List<String> sourceFolders = new ArrayList<String>();
-    final public List<Configuration.NameMapping> namespaceMappings = new ArrayList<Configuration.NameMapping>();
-    final public List<Configuration.NameMapping> typeMappings = new ArrayList<Configuration.NameMapping>();
-    final public Map<String, Configuration.MemberMapping> memberMappings = new HashMap<String, Configuration.MemberMapping>();
+    public final List<String> classpath = new ArrayList<String>();
+    public final List<String> sourceFolders = new ArrayList<String>();
+    public final List<Configuration.NameMapping> namespaceMappings = new ArrayList<Configuration.NameMapping>();
+    public final List<Configuration.NameMapping> typeMappings = new ArrayList<Configuration.NameMapping>();
+    public final Map<String, Configuration.MemberMapping> memberMappings = new HashMap<String, Configuration.MemberMapping>();
+    public final Set<String> ignoredAnnotations = new HashSet<>();
     public boolean nativeInterfaces;
     public boolean separateInterfaceConstants;
     public boolean organizeUsings;
     public boolean paramCountFileNames;
-    final public List<String> fullyQualifiedTypes = new ArrayList<String>();
-    final public List<String> partialTypes = new ArrayList<String>();
+    public final List<String> fullyQualifiedTypes = new ArrayList<String>();
+    public final List<String> partialTypes = new ArrayList<String>();
     public String headerFile;
     public String xmldoc;
     public final List<Configuration.NameMapping> eventMappings = new ArrayList<Configuration.NameMapping>();
