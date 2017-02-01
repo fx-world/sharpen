@@ -115,6 +115,11 @@ public class GenericsTestCase extends AbstractConversionTestCase {
     }
 
     @Test
+    public void testGenericTypeReference() throws Throwable {
+        runResourceTestCase(newConfigurationNativeType(), "generics/GenericTypeReference");
+    }
+
+    @Test
     public void testGenericMapWildcard() throws Throwable {
         runResourceTestCase(newConfigurationEgyptian(), "generics/GenericMapWildcard");
     }
@@ -123,4 +128,15 @@ public class GenericsTestCase extends AbstractConversionTestCase {
     protected void runResourceTestCase(String resourceName) throws IOException, CoreException {
         super.runResourceTestCase("generics/" + resourceName);
     }
+
+    protected Configuration newConfigurationNativeType() {
+        Configuration configuration = newConfiguration();
+        configuration.setMaxColumns(500);
+        configuration.enableIndentStyleEgyptianBrackets();
+        configuration.setIndentString(Configuration.INDENT_4_SPACES);
+        configuration.enableNativeTypeSystem();
+        configuration.enableOrganizeUsings();
+        return configuration;
+    }
+
 }

@@ -4128,6 +4128,14 @@ public class CSharpBuilder extends ASTVisitor {
         for (ITypeBinding arg : type.getTypeArguments()) {
             typeRef.addTypeArgument(mappedTypeReference(arg));
         }
+
+        // to convert expressions like Map.class to typeof(Map<,>)
+        if (type.getTypeArguments().length == 0 && declaration instanceof TypeDeclaration && !((TypeDeclaration)declaration).typeParameters().isEmpty()) {
+            for (Object o : ((TypeDeclaration) declaration).typeParameters()) {
+                typeRef.addTypeArgument(new CSTypeReference(""));
+            }
+        }
+
         return typeRef;
     }
 
