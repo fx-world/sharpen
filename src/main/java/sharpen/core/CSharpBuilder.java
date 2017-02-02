@@ -956,12 +956,12 @@ public class CSharpBuilder extends ASTVisitor {
             return;
 
         MethodDeclaration method = (MethodDeclaration) bodyDecl;
-        mapThrownExceptions(method.thrownExceptions(), member);
+        mapThrownExceptions(method.thrownExceptionTypes(), member);
     }
 
     private void mapThrownExceptions(List thrownExceptions, CSMember member) {
         for (Object exception : thrownExceptions) {
-            mapThrownException((Name) exception, member);
+            mapThrownException(((SimpleType) exception).getName(), member);
         }
     }
 
@@ -2510,21 +2510,21 @@ public class CSharpBuilder extends ASTVisitor {
      * string[2], new string[2], new string[2] } }"
      */
     private CSArrayCreationExpression unfoldMultiArrayCreation(ArrayCreation node) {
-        return unfoldMultiArray((ArrayType) node.getType().getComponentType(), node.dimensions(), 0);
+        return unfoldMultiArray(node.getType().getElementType(), node.getType().getDimensions() - 1, node.dimensions(), 0);
     }
 
-    private CSArrayCreationExpression unfoldMultiArray(ArrayType type, List dimensions, int dimensionIndex) {
-        final CSArrayCreationExpression expression = new CSArrayCreationExpression(mappedTypeReference(type));
+    private CSArrayCreationExpression unfoldMultiArray(Type type, int typeDimension, List dimensions, int dimensionIndex) {
+        final CSArrayCreationExpression expression = new CSArrayCreationExpression(mappedArrayReference(type, typeDimension));
         expression.initializer(new CSArrayInitializerExpression());
         int length = resolveIntValue(dimensions.get(dimensionIndex));
         if (dimensionIndex < lastIndex(dimensions) - 1) {
             for (int i = 0; i < length; ++i) {
                 expression.initializer().addExpression(
-                        unfoldMultiArray((ArrayType) type.getComponentType(), dimensions, dimensionIndex + 1));
+                        unfoldMultiArray(type, typeDimension - 1, dimensions, dimensionIndex + 1));
             }
         } else {
             Expression innerLength = (Expression) dimensions.get(dimensionIndex + 1);
-            CSTypeReferenceExpression innerType = mappedTypeReference(type.getComponentType());
+            CSTypeReferenceExpression innerType = mappedArrayReference(type, typeDimension - 1);
             for (int i = 0; i < length; ++i) {
                 expression.initializer().addExpression(
                         new CSArrayCreationExpression(innerType, mapExpression(innerLength)));
@@ -2542,8 +2542,7 @@ public class CSharpBuilder extends ASTVisitor {
     }
 
     private CSArrayCreationExpression mapSingleArrayCreation(ArrayCreation node) {
-        CSArrayCreationExpression expression = new CSArrayCreationExpression(mappedTypeReference(componentType(node
-                .getType())));
+        CSArrayCreationExpression expression = new CSArrayCreationExpression(mappedArrayReference(node.getType().getElementType(), node.getType().getDimensions() - 1));
         if (!node.dimensions().isEmpty()) {
             expression.length(mapExpression((Expression) node.dimensions().get(0)));
         }
@@ -2580,10 +2579,6 @@ public class CSharpBuilder extends ASTVisitor {
 
     private boolean isImplicitelyTypedArrayInitializer(ArrayInitializer node) {
         return !(node.getParent() instanceof ArrayCreation);
-    }
-
-    public ITypeBinding componentType(ArrayType type) {
-        return type.getComponentType().resolveBinding();
     }
 
     @Override
@@ -4069,6 +4064,14 @@ public class CSharpBuilder extends ASTVisitor {
 
     protected CSTypeReferenceExpression mappedTypeReference(Type type) {
         return mappedTypeReference(type.resolveBinding());
+    }
+
+    protected CSTypeReferenceExpression mappedArrayReference(Type type, int dimension) {
+        ITypeBinding binding = type.resolveBinding();
+        if (dimension > 0) {
+            binding = binding.createArrayType(dimension);
+        }
+        return mappedTypeReference(binding);
     }
 
     private CSTypeReferenceExpression mappedMacroTypeReference(ITypeBinding typeUsage, final TypeDeclaration typeDeclaration) {
