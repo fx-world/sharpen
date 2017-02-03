@@ -4269,6 +4269,28 @@ public class CSharpBuilder extends ASTVisitor {
         super.endVisit(node);
     }
 
+    @Override public boolean visit(LambdaExpression node) {
+        List<CSVariableDeclaration> args = new ArrayList<>();
+        for (Object param : node.parameters()) {
+            IVariableBinding variableBinding = ((VariableDeclarationFragment) param).resolveBinding();
+            args.add(new CSVariableDeclaration(variableBinding.getName(), mappedTypeReference(variableBinding.getType())));
+        }
+        CSNode body;
+        if (node.getBody() instanceof Expression) {
+            body = mapExpression((Expression)node.getBody());
+        } else if (node.getBody() instanceof Block) {
+            CSBlock block = new CSBlock();
+            block.setNoNewLine(true);
+            visitBlock(block, node.getBody());
+            body = block;
+        } else {
+            notImplemented(node);
+            return false;
+        }
+        pushExpression(new CSLambdaExpression(args, body));
+        return false;
+    }
+
     boolean isBlockInsideBlock(Block node) {
         return node.getParent() instanceof Block;
     }

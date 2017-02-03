@@ -80,6 +80,13 @@ public class DefaultConfiguration extends Configuration {
         mapType("java.util.function.Function<,>", "System.Func");
         mapMethod("java.util.function.Function.apply", "Invoke");
 
+        mapType("java.util.function.Supplier<>", "System.Func");
+        mapMethod("java.util.function.Supplier.get", "Invoke");
+        mapType("java.util.function.Consumer<>", "System.Action");
+        mapMethod("java.util.function.Consumer.accept", "Invoke");
+        mapType("java.util.function.BiConsumer<,>", "System.Action");
+        mapMethod("java.util.function.BiConsumer.accept", "Invoke");
+
         ignoreAnnotation("java.lang.Override");
 
         setUpPrimitiveWrappers();

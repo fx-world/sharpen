@@ -28,6 +28,7 @@ import java.util.List;
 public class CSBlock extends CSStatement {
 
     private List<CSStatement> _statements = new ArrayList<CSStatement>();
+    private boolean noNewLine;
 
     public boolean isEmpty() {
         return _statements.isEmpty();
@@ -68,5 +69,13 @@ public class CSBlock extends CSStatement {
 
     public void addStatement(int index, CSStatement stmt) {
         _statements.add(index, stmt);
+    }
+
+    public boolean isNoNewLine() {
+        return noNewLine;
+    }
+
+    public void setNoNewLine(boolean noNewLine) {
+        this.noNewLine = noNewLine;
     }
 }

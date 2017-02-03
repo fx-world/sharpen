@@ -414,9 +414,17 @@ public class CSharpPrinter extends CSVisitor {
     }
 
     public void visit(CSBlock node) {
-        enterBody();
-        visitList(node.statements());
-        leaveBody();
+        if (node.isEmpty() && node.isNoNewLine()) {
+            write("{ }");
+        } else {
+            enterBody();
+            visitList(node.statements());
+            if (node.isNoNewLine()) {
+                leaveBodyNoNewLine();
+            } else {
+                leaveBody();
+            }
+        }
     }
 
     public void visit(CSDeclarationStatement node) {
@@ -922,6 +930,13 @@ public class CSharpPrinter extends CSVisitor {
         writeLine(node.label() + ": ;");
     }
 
+    @Override public void visit(CSLambdaExpression lambda) {
+        write("(");
+        writeCommaSeparatedList(lambda.getArgs());
+        write(") => ");
+        lambda.getBody().accept(this);
+    }
+
     @Override
     public void visit(CSDocTextOverlay node) {
         writeXmlDoc(node.text());
@@ -1144,6 +1159,11 @@ public class CSharpPrinter extends CSVisitor {
     protected void leaveBody() {
         outdent();
         writeIndentedLine("}");
+    }
+
+    protected void leaveBodyNoNewLine() {
+        outdent();
+        writeIndented("}");
     }
 
     class CSharpTypeReferenceVisitor extends CSVisitor {

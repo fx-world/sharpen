@@ -248,4 +248,7 @@ public class CSVisitor {
 
     public void visit(CSUsingStatement node) {
     }
+
+    public void visit(CSLambdaExpression lambda) {
+    }
 }
