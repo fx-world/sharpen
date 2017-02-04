@@ -269,6 +269,7 @@ public abstract class Configuration {
         mapType("java.lang.Class", "System.Type");
         mapType("java.lang.Class<>", "System.Type");
         mapJavaLangClassProperty("getName", "FullName");
+        mapJavaLangClassProperty("getSimpleName", "Name");
         mapJavaLangClassProperty("getSuperclass", "BaseType");
         mapJavaLangClassProperty("isArray", "IsArray");
         mapJavaLangClassProperty("isPrimitive", "IsPrimitive");

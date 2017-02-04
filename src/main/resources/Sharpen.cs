@@ -4,7 +4,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Sharpen {
-    public abstract class EnumBase {
+
+    public abstract class EnumBase : IComparable<EnumBase>, IComparable {
         private static readonly Dictionary<Type, EnumBase[]> VALUES_MAP = new Dictionary<Type, EnumBase[]>();
 
         private readonly int _ordinal;
@@ -27,8 +28,16 @@ namespace Sharpen {
             return _name;
         }
 
+        public int CompareTo(object obj) {
+            return CompareTo((EnumBase) obj);
+        }
+
+        public int CompareTo(EnumBase other) {
+            return this._ordinal - other._ordinal;
+        }
+
         public static bool IsEnum(Type t) {
-            return false;
+            return VALUES_MAP.ContainsKey(t);
         }
 
         protected static void RegisterValues<T>(EnumBase[] values) where T : EnumBase {
@@ -111,7 +120,7 @@ namespace Sharpen {
             list.Insert(index, value);
         }
 
-        public static T RemoveAtReturningValue <T>(this IList<T> list, int index) {
+        public static T RemoveAtReturningValue<T>(this IList<T> list, int index) {
             T value = list[index];
             list.RemoveAt(index);
             return value;
