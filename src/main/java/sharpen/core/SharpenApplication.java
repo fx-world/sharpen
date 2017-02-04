@@ -144,7 +144,7 @@ public class SharpenApplication {
         converter.setTargetProject(targetFolder);
         converter.setSourceFiles(units);
         converter.setSourcePathEntries(project.getSourceFolders());
-        converter.setClassPathEntries(project.getclassPath());
+        converter.setClassPathEntries(project.getClassPath());
         converter.run();
     }
 
@@ -256,7 +256,7 @@ public class SharpenApplication {
             configuration.mapType(mapping.from, mapping.to);
         }
 
-        for (String ignoredAnnotation : _args.ignoredAnnotations) {
+        for (String ignoredAnnotation : _args.ignoredTypes) {
             configuration.ignoreAnnotation(ignoredAnnotation);
         }
         return configuration;
@@ -285,7 +285,7 @@ public class SharpenApplication {
             jpCmd.setProjectPath(System.getProperty("user.dir"));
         }
         jpCmd.setSourceFolders(_args.sourceFolders);
-        jpCmd.setclassPath(_args.classpath);
+        jpCmd.setClassPath(_args.classpath);
         return jpCmd;
     }
 

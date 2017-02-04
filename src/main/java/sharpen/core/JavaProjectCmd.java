@@ -16,13 +16,6 @@ public class JavaProjectCmd {
     private String projectPath;
     private List<String> classPath = new ArrayList<String>();
 
-
-    public JavaProjectCmd(String args) {
-        sourceFolders.add(args);
-        projectPath = args.substring(0, args.lastIndexOf("/"));
-        projectName = projectPath.substring(projectPath.lastIndexOf("/") + 1);
-    }
-
     public JavaProjectCmd() {
         projectPath = "";
         projectName = "";
@@ -56,27 +49,27 @@ public class JavaProjectCmd {
         this.projectPath = projectPath;
     }
 
-    public List<String> getclassPath() {
+    public List<String> getClassPath() {
         return classPath;
     }
 
-    public void setclassPath(Iterable<String> classPaths) {
+    public void setClassPath(Iterable<String> classPaths) {
         for (String cPath : classPaths) {
             classPath.add(cPath);
         }
     }
 
-    List<String> getAllCompilationUnits() throws JavaModelException, IOException {
+    public List<String> getAllCompilationUnits() throws JavaModelException, IOException {
         List<String> units = new ArrayList<String>();
-        for (String pathForsourcefile : sourceFolders) {
-            if (!new File(pathForsourcefile).exists())
-                throw new IllegalArgumentException("'" + pathForsourcefile + "' not found.");
-            getAllfile(pathForsourcefile, units);
+        for (String pathForSourceFile : sourceFolders) {
+            if (!new File(pathForSourceFile).exists())
+                throw new IllegalArgumentException("'" + pathForSourceFile + "' not found.");
+            getAllfile(pathForSourceFile, units);
         }
         return units;
     }
 
-    void getAllfile(String projectPath, List<String> files) throws IOException {
+    private void getAllfile(String projectPath, List<String> files) throws IOException {
 
         File root = new File(projectPath);
         File[] list = root.listFiles();
@@ -87,8 +80,9 @@ public class JavaProjectCmd {
             } else {
                 String fileName = f.getCanonicalFile().getName();
 
-                if (fileName.substring(fileName.lastIndexOf(".") + 1).equalsIgnoreCase("java"))
+                if (fileName.substring(fileName.lastIndexOf(".") + 1).equalsIgnoreCase("java")) {
                     files.add(f.getCanonicalPath().replace("\\", "/"));
+                }
             }
         }
     }

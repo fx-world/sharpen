@@ -82,7 +82,7 @@ public class UnclassifiedConversionTestCase extends AbstractConversionTestCase {
         String jar = JarUtilities.createJar(BindingTestCaseSubject.class, BindingTestCaseSubject.Foo.class, BindingTestCaseSubject.Baz.class);
         List<String> classJar = new ArrayList<String>();
         classJar.add(jar);
-        _project.setclassPath(classJar);
+        _project.setClassPath(classJar);
 
         Configuration conf = newPascalCaseIdentifiersConfiguration();
         conf.mapMethod(BindingTestCaseSubject.Foo.class.getCanonicalName() + ".bar", "Mapped");

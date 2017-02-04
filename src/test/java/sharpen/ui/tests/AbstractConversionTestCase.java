@@ -117,7 +117,7 @@ public abstract class AbstractConversionTestCase {
         converter.setSourceFiles(cu);
         converter.setSourcePathEntries(sourceFilePath);
         converter.setTargetProject(targetProject);
-        converter.setClassPathEntries(_project.getclassPath());
+        converter.setClassPathEntries(_project.getClassPath());
         converter.run();
 
         String targetDir = resource.getTargetDir();

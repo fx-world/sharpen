@@ -37,7 +37,7 @@ public class CustomConfigurationTestCase extends AbstractConversionTestCase {
         _configJars.add(configPath.toString());
         configPath = createConfigurationJar(NoPublicConstructorConfiguration.class);
         _configJars.add(configPath.toString());
-        _project.setclassPath(_configJars);
+        _project.setClassPath(_configJars);
 
         _progressMonitor = new IProgressMonitor() {
             @Override
