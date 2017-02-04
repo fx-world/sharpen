@@ -25,4 +25,12 @@ public class MappingsTestCase extends AbstractConversionTestCase {
         runResourceTestCase(configuration, "mappings/RenameParentChildMethods");
     }
 
+    @Test
+    public void testIgnoreAndRename() throws Throwable {
+        Configuration configuration = newConfigurationEgyptian();
+        configuration.ignoreType("mappings.IgnoreAndRename.ReplaceWithHandWrittenClass");
+        configuration.mapType("mappings.IgnoreAndRename.ReplaceWithHandWrittenClass", "RenamedReplaceWithHandWrittenClass");
+        runResourceTestCase(configuration, "mappings/IgnoreAndRename");
+    }
+
 }

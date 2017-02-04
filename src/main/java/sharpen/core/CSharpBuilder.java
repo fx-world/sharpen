@@ -329,17 +329,13 @@ public class CSharpBuilder extends ASTVisitor {
     }
 
     private boolean processIgnoredType(AbstractTypeDeclaration node) {
-        if (!hasIgnoreOrRemoveAnnotation(node)) {
+        if (!SharpenAnnotations.hasIgnoreAnnotation(node) && !hasRemoveAnnotation(node) && !_configuration.isIgnoredType(qualifiedName(node.resolveBinding()))) {
             return false;
         }
         if (isMainType(node)) {
             compilationUnit().ignore(true);
         }
         return true;
-    }
-
-    private boolean hasIgnoreOrRemoveAnnotation(AbstractTypeDeclaration node) {
-        return SharpenAnnotations.hasIgnoreAnnotation(node) || hasRemoveAnnotation(node);
     }
 
     private void processNonStaticNestedTypeDeclaration(AbstractTypeDeclaration node) {
@@ -1498,7 +1494,7 @@ public class CSharpBuilder extends ASTVisitor {
     }
 
     private boolean isIgnoredAnnotation(Annotation m) {
-        return _configuration.isIgnoredAnnotation(qualifiedName(m.resolveAnnotationBinding().getAnnotationType()));
+        return _configuration.isIgnoredType(qualifiedName(m.resolveAnnotationBinding().getAnnotationType()));
     }
 
     private void mapMarkerAnnotation(MarkerAnnotation annotation, CSMember member) {

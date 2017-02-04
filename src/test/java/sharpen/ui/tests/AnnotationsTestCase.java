@@ -22,7 +22,7 @@ public class AnnotationsTestCase extends AbstractConversionTestCase {
     @Test
     public void testIgnoredAnnotation() throws IOException, CoreException {
         Configuration configuration = newConfigurationEgyptian();
-        configuration.ignoreAnnotation("annotations.IgnoreThisAnnotation");
+        configuration.ignoreType("annotations.IgnoreThisAnnotation");
         runResourceTestCase(configuration, "annotations/IgnoredAnnotations");
     }
 

@@ -256,8 +256,8 @@ public class SharpenApplication {
             configuration.mapType(mapping.from, mapping.to);
         }
 
-        for (String ignoredAnnotation : _args.ignoredTypes) {
-            configuration.ignoreAnnotation(ignoredAnnotation);
+        for (String ignoredType : _args.ignoredTypes) {
+            configuration.ignoreType(ignoredType);
         }
         return configuration;
     }

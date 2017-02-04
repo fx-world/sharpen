@@ -41,7 +41,7 @@ public class ConfigurationTestCase {
     @Test
     public void testIgnoredAnnotationsByDefault() {
 
-        assertTrue(_configuration.isIgnoredAnnotation("java.lang.Override"));
+        assertTrue(_configuration.isIgnoredType("java.lang.Override"));
     }
 
     @Test
