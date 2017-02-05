@@ -492,5 +492,16 @@ public class UnclassifiedConversionTestCase extends AbstractConversionTestCase {
     public void testFieldMapping() throws Throwable {
         runResourceTestCase("FieldMapping");
     }
+
+    @Test
+    public void testForDoubleDeclaration() throws Throwable {
+        runResourceTestCase("For3");
+    }
+
+    @Test
+    public void testForDoubleInitialization() throws Throwable {
+        runResourceTestCase("For4");
+    }
+
 }
 
