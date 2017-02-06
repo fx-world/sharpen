@@ -124,6 +124,11 @@ public class GenericsTestCase extends AbstractConversionTestCase {
         runResourceTestCase(newConfigurationEgyptian(), "generics/GenericMapWildcard");
     }
 
+    @Test
+    public void testGenericArrays() throws Throwable {
+        runResourceTestCase(newConfigurationNativeType(), "generics/GenericArrays");
+    }
+
     @Override
     protected void runResourceTestCase(String resourceName) throws IOException, CoreException {
         super.runResourceTestCase("generics/" + resourceName);
