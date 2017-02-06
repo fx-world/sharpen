@@ -2506,7 +2506,12 @@ public class CSharpBuilder extends ASTVisitor {
      * string[2], new string[2], new string[2] } }"
      */
     private CSArrayCreationExpression unfoldMultiArrayCreation(ArrayCreation node) {
-        return unfoldMultiArray(node.getType().getElementType(), node.getType().getDimensions() - 1, node.dimensions(), 0);
+        ArrayType type = node.getType();
+        if (type.getElementType().resolveBinding().isRawType() && node.getParent() instanceof CastExpression) {
+            // convert explicit casts for raw array creation to generic array creation
+            type = (ArrayType) ((CastExpression) node.getParent()).getType();
+        }
+        return unfoldMultiArray(type.getElementType(), type.getDimensions() - 1, node.dimensions(), 0);
     }
 
     private CSArrayCreationExpression unfoldMultiArray(Type type, int typeDimension, List dimensions, int dimensionIndex) {
