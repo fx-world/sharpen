@@ -2538,7 +2538,14 @@ public class CSharpBuilder extends ASTVisitor {
     }
 
     private CSArrayCreationExpression mapSingleArrayCreation(ArrayCreation node) {
-        CSArrayCreationExpression expression = new CSArrayCreationExpression(mappedArrayReference(node.getType().getElementType(), node.getType().getDimensions() - 1));
+        ArrayType type = node.getType();
+
+        if (type.getElementType().resolveBinding().isRawType() && node.getParent() instanceof CastExpression) {
+            // convert explicit casts for raw array creation to generic array creation
+            type = (ArrayType) ((CastExpression) node.getParent()).getType();
+        }
+
+        CSArrayCreationExpression expression = new CSArrayCreationExpression(mappedArrayReference(type.getElementType(), type.getDimensions() - 1));
         if (!node.dimensions().isEmpty()) {
             expression.length(mapExpression((Expression) node.dimensions().get(0)));
         }
