@@ -129,6 +129,11 @@ public class GenericsTestCase extends AbstractConversionTestCase {
         runResourceTestCase(newConfigurationNativeType(), "generics/GenericArrays");
     }
 
+    @Test
+    public void testNullTypeVariable() throws Throwable {
+        runResourceTestCase(newConfigurationNativeType(), "generics/NullTypeVariable");
+    }
+
     @Override
     protected void runResourceTestCase(String resourceName) throws IOException, CoreException {
         super.runResourceTestCase("generics/" + resourceName);

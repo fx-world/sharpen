@@ -2466,7 +2466,17 @@ public class CSharpBuilder extends ASTVisitor {
     }
 
     public boolean visit(NullLiteral node) {
-        pushExpression(new CSNullLiteralExpression());
+        if (node.getParent() instanceof CastExpression && ((CastExpression) node.getParent()).getType().resolveBinding().isTypeVariable()) {
+            pushExpression(
+                    new CSPrefixExpression("default",
+                            new CSParenthesizedExpression(
+                                    new CSTypeReference(mappedTypeName(((CastExpression) node.getParent()).getType().resolveBinding()))
+                            )
+                    )
+            );
+        } else {
+            pushExpression(new CSNullLiteralExpression());
+        }
         return false;
     }
 
