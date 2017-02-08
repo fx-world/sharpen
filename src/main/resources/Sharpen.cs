@@ -57,9 +57,10 @@ namespace Sharpen {
     }
 
     public class System {
+        public static readonly DateTime EPOCH = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         public static long CurrentTimeMillis() {
-            return DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+            return (long) (DateTime.UtcNow - EPOCH).TotalMilliseconds;
         }
 
     }
