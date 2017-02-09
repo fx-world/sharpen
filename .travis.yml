@@ -5,11 +5,6 @@ before_install:
 - travis/before_install.sh
 script: mvn -DfinalName=sharpen test -q
 
-notifications:
-  email:
-    recipients:
-    - nathanael.jones@gmail.com
-    on_success: always
 deploy:
   provider: releases
   api_key:
