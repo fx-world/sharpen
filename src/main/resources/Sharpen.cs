@@ -59,6 +59,14 @@ namespace Sharpen {
     public class System {
         public static readonly DateTime EPOCH = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
+        public static int Compare(int x, int y) {
+            return (x < y) ? -1 : ((x == y) ? 0 : 1);
+        }
+
+        public static int Compare(long x, long y) {
+            return (x < y) ? -1 : ((x == y) ? 0 : 1);
+        }
+
         public static long CurrentTimeMillis() {
             return (long) (DateTime.UtcNow - EPOCH).TotalMilliseconds;
         }

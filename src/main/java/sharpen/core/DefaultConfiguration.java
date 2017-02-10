@@ -42,6 +42,8 @@ public class DefaultConfiguration extends Configuration {
         mapType("java.lang.Comparable", "System.IComparable");
         mapType("java.lang.Comparable<>", "System.IComparable");
         mapMethod("java.lang.Comparable.compareTo", "CompareTo");
+        mapMethod("java.lang.Integer.compare", sharpenNamespace() + ".System.Compare");
+        mapMethod("java.lang.Long.compare", sharpenNamespace() + ".System.Compare");
 
         mapType("java.util.Date", "System.DateTime");
 
@@ -153,6 +155,7 @@ public class DefaultConfiguration extends Configuration {
         mapType("java.util.Comparator<>", "System.Collections.Generic.IComparer");
         mapMethod("java.util.Comparator.compare", "Compare");
         mapMethod("java.util.Collections.sort", "Sort");
+        mapMethod("java.util.List.sort", "Sort");
         mapMethod("java.util.Collections.binarySearch", "BinarySearch");
 
         mapProperty("java.util.Collection.size", "Count");
