@@ -14,43 +14,34 @@ namespace formattings {
                 }
                 if (field1 % 2 == 0) {
                     field2 += 2;
-                }
-                else if (field1 % 3 == 0) {
+                } else if (field1 % 3 == 0) {
                     field2 += 3;
-                }
-                else if (field1 % 4 == 0) {
+                } else if (field1 % 4 == 0) {
                     if (field2 == 1) {
                         field2 += 4;
-                    }
-                    else if (field2 == 2) {
+                    } else if (field2 == 2) {
                         field2 += 5;
-                    }
-                    else {
+                    } else {
                         field2 += 6;
                     }
-                }
-                else {
+                } else {
                     field2 += 7;
                 }
             }
             for (long i = 0; i < field2; i++) {
                 if (i % 100 == 0) {
                     field1++;
-                }
-                else {
+                } else {
                     field2--;
                 }
             }
             try {
                 do {
                     field1--;
-                }
-                while (field1 > 10);
-            }
-            catch (System.Exception e) {
+                } while (field1 > 10);
+            } catch (System.Exception e) {
                 System.Console.Out.WriteLine(e);
-            }
-            finally {
+            } finally {
                 System.Console.Out.WriteLine("done");
             }
             foreach (int v in System.Linq.Enumerable.ToList(new [] {1, 2, 3})) {
@@ -60,12 +51,10 @@ namespace formattings {
                         System.Console.Out.WriteLine("a");
                         break;
                     }
-
                     case 2: {
                         System.Console.Out.WriteLine("b");
                         break;
                     }
-
                     default: {
                         System.Console.Out.WriteLine(string.Empty);
                         break;
@@ -84,6 +73,25 @@ namespace formattings {
 
         public virtual void setField3(string field3) {
             this.field3 = field3;
+        }
+
+        public virtual void methodTryCatch1() {
+            try {
+                System.Console.Out.WriteLine(1);
+            } catch (System.Exception) {
+                System.Console.Out.WriteLine(2);
+            }
+        }
+
+        public virtual void methodTryCatch2() {
+            try {
+                System.Console.Out.WriteLine(1);
+            } catch (System.Exception) {
+                System.Console.Out.WriteLine(2);
+            } catch {
+                System.Console.Out.WriteLine(3);
+            }
+            System.Console.Out.WriteLine(4);
         }
 
         private class InnerClass {

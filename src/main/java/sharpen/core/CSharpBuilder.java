@@ -2285,7 +2285,9 @@ public class CSharpBuilder extends ASTVisitor {
         for (Object o : node.catchClauses()) {
             CatchClause clause = (CatchClause) o;
             if (!_configuration.isIgnoredExceptionType(qualifiedName(clause.getException().getType().resolveBinding()))) {
-                stmt.addCatchClause(mapCatchClause(clause));
+                CSCatchClause catchClause = mapCatchClause(clause);
+                catchClause.parent(stmt);
+                stmt.addCatchClause(catchClause);
             }
         }
         if (null != node.getFinally()) {
@@ -4318,7 +4320,6 @@ public class CSharpBuilder extends ASTVisitor {
             body = mapExpression((Expression)node.getBody());
         } else if (node.getBody() instanceof Block) {
             CSBlock block = new CSBlock();
-            block.setNoNewLine(true);
             visitBlock(block, node.getBody());
             body = block;
         } else {

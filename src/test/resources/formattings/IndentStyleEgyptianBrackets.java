@@ -1,5 +1,6 @@
 package formattings;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 public class IndentStyleEgyptianBrackets {
@@ -78,6 +79,25 @@ public class IndentStyleEgyptianBrackets {
 
     public void setField3(String field3) {
         this.field3 = field3;
+    }
+
+    public void methodTryCatch1() {
+        try {
+            System.out.println(1);
+        } catch (Exception e) {
+            System.out.println(2);
+        }
+    }
+
+    public void methodTryCatch2() {
+        try {
+            System.out.println(1);
+        } catch (Exception e) {
+            System.out.println(2);
+        } catch (Throwable e) {
+            System.out.println(3);
+        }
+        System.out.println(4);
     }
 
     private static class InnerClass {
