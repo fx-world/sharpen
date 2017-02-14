@@ -28,8 +28,11 @@ public class MappingsTestCase extends AbstractConversionTestCase {
     @Test
     public void testIgnoreAndRename() throws Throwable {
         Configuration configuration = newConfigurationEgyptian();
-        configuration.ignoreType("mappings.IgnoreAndRename.ReplaceWithHandWrittenClass");
-        configuration.mapType("mappings.IgnoreAndRename.ReplaceWithHandWrittenClass", "RenamedReplaceWithHandWrittenClass");
+        configuration.enableOrganizeUsings();
+        configuration.ignoreType("mappings.IgnoreAndRename.ReplaceWithHandWrittenClass1");
+        configuration.mapType("mappings.IgnoreAndRename.ReplaceWithHandWrittenClass1", "renamednamespace.RenamedReplaceWithHandWrittenClass1");
+        configuration.ignoreType("mappings.IgnoreAndRename.ReplaceWithHandWrittenClass2");
+        configuration.mapType("mappings.IgnoreAndRename.ReplaceWithHandWrittenClass2<>", "renamednamespace.RenamedReplaceWithHandWrittenClass2");
         runResourceTestCase(configuration, "mappings/IgnoreAndRename");
     }
 
