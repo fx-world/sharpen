@@ -93,7 +93,6 @@ public class CSharpBuilder extends ASTVisitor {
 
     private final Set<String> nullablePrimitivesVariables = new HashSet<>();
 
-
     protected NamingStrategy namingStrategy() {
         return _configuration.getNamingStrategy();
     }
@@ -295,6 +294,45 @@ public class CSharpBuilder extends ASTVisitor {
         return builder;
     }
 
+    private CSTypeDeclaration staticType(TypeDeclaration node) {
+        CSTypeDeclaration type = null;
+        if (node.getParent() instanceof CompilationUnit) {
+            CSTypeDeclaration found = null;
+            for (CSType t : _compilationUnit.types()) {
+                if (t instanceof CSTypeDeclaration && t.name().equals(node.getName().toString()) && ((CSTypeDeclaration) t).typeParameters().isEmpty()) {
+                    found = (CSTypeDeclaration) t;
+                    break;
+                }
+            }
+            if (found != null) {
+                type = found;
+            } else {
+                type = new CSClass(node.getName().toString(), CSClassModifier.Static);
+                type.visibility(CSVisibility.Public);
+                _compilationUnit.addType(type);
+            }
+        } else if (node.getParent() instanceof TypeDeclaration) {
+            CSTypeDeclaration parent = staticType((TypeDeclaration) node.getParent());
+            CSTypeDeclaration found = null;
+            for (CSMember member : parent.members()) {
+                if (member instanceof CSTypeDeclaration && member.name().equals(node.getName().toString()) && ((CSTypeDeclaration) member).typeParameters().isEmpty()) {
+                    found = (CSTypeDeclaration) member;
+                    break;
+                }
+            }
+            if (found != null) {
+                type = found;
+            } else {
+                type = new CSClass(node.getName().toString(), CSClassModifier.Static);
+                type.visibility(CSVisibility.Public);
+                parent.addMember(type);
+            }
+        } else {
+            unsupportedConstruct(node, "Unexpected parrent:" + node.getParent());
+        }
+        return type;
+    }
+
     public boolean visit(final TypeDeclaration node) {
 
         if (processIgnoredType(node)) {
@@ -317,8 +355,13 @@ public class CSharpBuilder extends ASTVisitor {
                         processNonStaticNestedTypeDeclaration(node);
                         return;
                     }
-
-                    new CSharpBuilder(CSharpBuilder.this).processTypeDeclaration(node);
+                    if (binding.isNested() && isStatic(binding) && hasStaticHelpersAnnotation(node.getParent())) {
+                        CSharpBuilder builder = new CSharpBuilder(CSharpBuilder.this);
+                        builder._currentType = staticType((TypeDeclaration) node.getParent());
+                        builder.processTypeDeclaration(node);
+                    } else {
+                        new CSharpBuilder(CSharpBuilder.this).processTypeDeclaration(node);
+                    }
                 }
             });
         } finally {
@@ -879,7 +922,7 @@ public class CSharpBuilder extends ASTVisitor {
             if (iface.resolveBinding() == serializable) {
                 continue;
             }
-            type.addBaseType(mappedTypeReference(iface));
+            type.addBaseType(mappedTypeReference(iface, false));
         }
 
         if (!type.isInterface() && node.resolveBinding().isSubTypeCompatible(serializable)) {
@@ -1458,6 +1501,9 @@ public class CSharpBuilder extends ASTVisitor {
                 enclosing = _currentAuxillaryType;
             }
 
+            if (isStatic(field) && hasStaticHelpersAnnotation(node.getParent())) {
+                enclosing = staticType((TypeDeclaration) node.getParent());
+            }
             enclosing.addMember(field);
         }
 
@@ -1619,6 +1665,10 @@ public class CSharpBuilder extends ASTVisitor {
         return _configuration.isRemoved(qualifiedName(binding));
     }
 
+    private boolean hasStaticHelpersAnnotation(ASTNode node) {
+        return node instanceof BodyDeclaration && containsJavadoc((BodyDeclaration) node, SharpenAnnotations.SHARPEN_STATIC_HELPERS);
+    }
+
     public static boolean containsJavadoc(BodyDeclaration node, final String tag) {
         return JavadocUtility.containsJavadoc(node, tag);
     }
@@ -1688,7 +1738,7 @@ public class CSharpBuilder extends ASTVisitor {
     private CSProperty newPropertyFor(MethodDeclaration node, final String propName) {
         final CSTypeReferenceExpression propertyType = isGetter(node)
                 ? mappedReturnType(node)
-                : mappedTypeReference(lastParameter(node).getType());
+                : mappedTypeReference(lastParameter(node).getType(), false);
         return new CSProperty(propName, propertyType);
     }
 
@@ -1782,7 +1832,11 @@ public class CSharpBuilder extends ASTVisitor {
 
     private void mapMethodParts(MethodDeclaration node, CSMethodBase method) {
 
-        _currentType.addMember(method);
+        if (isStatic(method) && hasStaticHelpersAnnotation(node.getParent())) {
+            staticType((TypeDeclaration) node.getParent()).addMember(method);
+        } else {
+            _currentType.addMember(method);
+        }
 
         method.startPosition(node.getStartPosition());
         method.isVarArgs(node.isVarargs());
@@ -1904,7 +1958,7 @@ public class CSharpBuilder extends ASTVisitor {
         IMethodBinding overriden = getOverridedMethod(node);
         if (overriden != null)
             return mappedTypeReference(overriden.getReturnType());
-        return mappedTypeReference(node.getReturnType2());
+        return mappedTypeReference(node.getReturnType2(), false);
     }
 
     private void processEventDeclaration(MethodDeclaration node) {
@@ -2789,7 +2843,7 @@ public class CSharpBuilder extends ASTVisitor {
     }
 
     public boolean visit(CastExpression node) {
-        pushExpression(new CSCastExpression(mappedTypeReference(node.getType()), mapExpression(node.getExpression())));
+        pushExpression(new CSCastExpression(mappedTypeReference(node.getType(), false), mapExpression(node.getExpression())));
         // Make all byte casts unchecked
         if (node.getType().resolveBinding().getName().equals("byte"))
             pushExpression(new CSUncheckedExpression(popExpression()));
@@ -3044,7 +3098,7 @@ public class CSharpBuilder extends ASTVisitor {
             return false;
         }
 
-        pushTypeOfExpression(mappedTypeReference(node.getType()));
+        pushTypeOfExpression(mappedTypeReference(node.getType(), true));
         return false;
     }
 
@@ -3260,7 +3314,7 @@ public class CSharpBuilder extends ASTVisitor {
 
     private void mapTypeArguments(CSMethodInvocationExpression mie, MethodInvocation node) {
         for (Object o : node.typeArguments()) {
-            mie.addTypeArgument(mappedTypeReference((Type) o));
+            mie.addTypeArgument(mappedTypeReference((Type) o, false));
         }
     }
 
@@ -4141,8 +4195,8 @@ public class CSharpBuilder extends ASTVisitor {
         return defaultVisibility;
     }
 
-    protected CSTypeReferenceExpression mappedTypeReference(Type type) {
-        return mappedTypeReference(type.resolveBinding());
+    protected CSTypeReferenceExpression mappedTypeReference(Type type, boolean forTypeOf) {
+        return mappedTypeReference(type.resolveBinding(), false, forTypeOf);
     }
 
     protected CSTypeReferenceExpression mappedArrayReference(Type type, int dimension) {
@@ -4174,14 +4228,14 @@ public class CSharpBuilder extends ASTVisitor {
     }
 
     protected CSTypeReferenceExpression mappedTypeReference(ITypeBinding type) {
-        return mappedTypeReference(type, false);
+        return mappedTypeReference(type, false, false);
     }
 
     protected CSTypeReferenceExpression mappedAuxillaryTypeReference(ITypeBinding type) {
-        return mappedTypeReference(type, true);
+        return mappedTypeReference(type, true, false);
     }
 
-    protected CSTypeReferenceExpression mappedTypeReference(ITypeBinding type, boolean auxillary) {
+    protected CSTypeReferenceExpression mappedTypeReference(ITypeBinding type, boolean auxillary, boolean forTypeOf) {
         if (auxillary && !type.isInterface()) {
             throw new IllegalArgumentException("Auxillary types are only available for interfaces.");
         }
@@ -4212,7 +4266,7 @@ public class CSharpBuilder extends ASTVisitor {
         }
 
         // to convert expressions like Map.class to typeof(Map<,>)
-        if (type.getTypeArguments().length == 0 && declaration instanceof TypeDeclaration && !((TypeDeclaration)declaration).typeParameters().isEmpty()) {
+        if (forTypeOf && type.getTypeArguments().length == 0 && declaration instanceof TypeDeclaration && !((TypeDeclaration)declaration).typeParameters().isEmpty()) {
             for (Object o : ((TypeDeclaration) declaration).typeParameters()) {
                 typeRef.addTypeArgument(new CSTypeReference(""));
             }
