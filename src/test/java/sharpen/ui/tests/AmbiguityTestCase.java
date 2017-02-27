@@ -15,7 +15,11 @@ public class AmbiguityTestCase extends AbstractConversionTestCase {
 
     @Test
     public void testFieldAndMethodWithSameName() throws Throwable {
-        runBatchConverterTestCase(getConfiguration(), "ambiguity/AnotherClassUsingFieldAndMethodWithSameName", "ambiguity/FieldAndMethodWithSameName");
+        runBatchConverterTestCase(getConfiguration(),
+                "ambiguity/AnotherClassUsingFieldAndMethodWithSameName",
+                "ambiguity/FieldAndMethodWithSameName",
+                "ambiguity/LocalVariablesWithSameName"
+        );
     }
 
 }
