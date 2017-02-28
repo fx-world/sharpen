@@ -84,6 +84,8 @@ public class SharpenAnnotations {
 
     static final String SHARPEN_ATTRIBUTE = "@sharpen.attribute";
 
+    static final String SHARPEN_STATIC_HELPERS = "@sharpen.static.helpers";
+
     public static boolean hasIgnoreAnnotation(BodyDeclaration node) {
         return JavadocUtility.containsJavadoc(node, SHARPEN_IGNORE);
     }

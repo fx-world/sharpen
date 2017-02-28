@@ -104,7 +104,6 @@ public class GenericsTestCase extends AbstractConversionTestCase {
     }
 
     @Test
-    @Ignore
     public void testNested() throws Throwable {
         runResourceTestCase("GenericNested");
     }

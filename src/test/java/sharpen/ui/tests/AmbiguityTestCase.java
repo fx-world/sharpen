@@ -18,6 +18,7 @@ public class AmbiguityTestCase extends AbstractConversionTestCase {
         runBatchConverterTestCase(getConfiguration(),
                 "ambiguity/AnotherClassUsingFieldAndMethodWithSameName",
                 "ambiguity/FieldAndMethodWithSameName",
+                "ambiguity/FieldAndMethodWithSameNameGeneric",
                 "ambiguity/LocalVariablesWithSameName"
         );
     }

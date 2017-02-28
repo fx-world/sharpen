@@ -23,6 +23,7 @@ package sharpen.core.framework;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,9 @@ public class DefaultASTResolver implements ASTResolver {
 
     @Override
     public String resolveRename(IBinding binding, String originalName) {
+        if (binding instanceof IVariableBinding) {
+            binding = ((IVariableBinding) binding).getVariableDeclaration();
+        }
         return renamingMap.getOrDefault(binding.getKey(), originalName);
     }
 
