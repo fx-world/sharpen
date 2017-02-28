@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace Sharpen {
 
@@ -100,6 +101,19 @@ namespace Sharpen {
                 result = 31 * result + element.GetHashCode();
             }
             return result;
+        }
+
+        public static string ToString<T>(T[] a) {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("[");
+            for (var i = 0; i < a.Length; i++) {
+                if (i > 0) {
+                    sb.Append(", ");
+                }
+                sb.Append(a[i]);
+            }
+            sb.Append("]");
+            return sb.ToString();
         }
     }
 

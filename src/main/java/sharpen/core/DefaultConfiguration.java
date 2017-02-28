@@ -182,6 +182,12 @@ public class DefaultConfiguration extends Configuration {
         mapMethodToMacro("java.util.Collections.emptyList", "new System.Collections.Generic.List<$type_0>()");
         mapMethodToMacro("java.util.Collections.emptySet", "new System.Collections.Generic.HashSet<$type_0>()");
 
+        mapMethod("java.util.Arrays.equals", "Sharpen.Arrays.Equals");
+        mapMethod("java.util.Arrays.fill", "Sharpen.Arrays.Fill");
+        mapMethod("java.util.Arrays.copyOf", "Sharpen.Arrays.CopyOf");
+        mapMethod("java.util.Arrays.hashCode", "Sharpen.Arrays.HashCode");
+        mapMethod("java.util.Arrays.toString", "Sharpen.Arrays.ToString");
+
         mapMethod("java.util.Collection.addAll", collectionRuntimeMethod("AddAll"));
         mapMethod("java.util.Collection.toArray", collectionRuntimeMethod("ToArray"));
 
