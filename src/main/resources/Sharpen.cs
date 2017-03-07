@@ -117,6 +117,19 @@ namespace Sharpen {
         }
     }
 
+    public static class Collections {
+
+        public static V Remove<K, V>(IDictionary<K, V> map, K key) {
+            V result;
+            if (map.TryGetValue(key, out result)) {
+                map.Remove(key);
+                return result;
+            }
+            return default(V);
+        }
+
+    }
+
     public static class Runtime {
         public static string substring(string s, int from, int to) {
             return s.Substring(from, to - from);
