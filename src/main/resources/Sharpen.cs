@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -128,11 +129,28 @@ namespace Sharpen {
             return default(V);
         }
 
+        public static void AddAll<T>(ICollection<T> collection, IEnumerable<T> items) {
+            foreach (var item in items) {
+                collection.Add(item);
+            }
+        }
+
+        public static T[] ToArray<T>(ICollection<T> collection, T[] array) {
+            int i = 0;
+            foreach (var item in collection) {
+                array[i++] = item;
+            }
+            return array;
+        }
     }
 
     public static class Runtime {
         public static string substring(string s, int from, int to) {
             return s.Substring(from, to - from);
+        }
+
+        public static FieldInfo[] GetDeclaredFields(Type clazz) {
+            return clazz.GetFields(BindingFlags.DeclaredOnly);
         }
     }
 
