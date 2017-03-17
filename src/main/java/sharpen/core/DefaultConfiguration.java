@@ -130,9 +130,10 @@ public class DefaultConfiguration extends Configuration {
             mapType("java.lang.Iterable", "System.Collections.IEnumerable");
             mapType("java.lang.Iterable<>", "System.Collections.Generic.IEnumerable");
         }
+        mapType("java.util.HashSet", "System.Collections.Generic.HashSet<object>");
         mapType("java.util.HashSet<>", "System.Collections.Generic.HashSet");
 
-        mapType("java.util.Map", "System.Collections.Generic.IDictionary<object, object>");
+        mapType("java.util.Map", "System.Collections.IDictionary");
         mapType("java.util.Map<,>", "System.Collections.Generic.IDictionary");
         mapType("java.util.Map.Entry", "System.Collections.DictionaryEntry");
         mapType("java.util.Map.Entry<,>", "System.Collections.Generic.KeyValuePair");
@@ -141,9 +142,9 @@ public class DefaultConfiguration extends Configuration {
         mapType("java.util.TreeMap", "System.Collections.Generic.SortedDictionary<object, object>");
         mapType("java.util.TreeMap<,>", "System.Collections.Generic.SortedDictionary");
         mapType("java.util.SortedMap<,>", "System.Collections.Generic.SortedDictionary");
-        mapType("java.util.List", "System.Collections.Generic.IList<object>");
+        mapType("java.util.List", "System.Collections.IList");
         mapType("java.util.List<>", "System.Collections.Generic.IList");
-        mapType("java.util.ArrayList", "System.Collections.Generic.List<>");
+        mapType("java.util.ArrayList", "System.Collections.Generic.List<object>");
         mapType("java.util.ArrayList<>", "System.Collections.Generic.List");
         mapType("java.util.LinkedList", "System.Collections.Generic.LinkedList<>");
         mapType("java.util.LinkedList<>", "System.Collections.Generic.LinkedList");

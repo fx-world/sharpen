@@ -18,8 +18,7 @@ namespace collections
 
 	public class EntrySet1
 	{
-		internal static void printAll(System.Collections.Generic.IDictionary<object, object>
-			 items)
+		internal static void printAll(System.Collections.IDictionary items)
 		{
 			foreach (object entry in items)
 			{

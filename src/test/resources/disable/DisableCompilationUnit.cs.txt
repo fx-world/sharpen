@@ -7,7 +7,7 @@ namespace disable
 	{
 		private void foo()
 		{
-			List<> arrayList = new List<>();
+			List<object> arrayList = new List<object>();
 		}
 
 		private void bar()

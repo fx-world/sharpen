@@ -1,7 +1,7 @@
 namespace collections
 {
 	[System.Serializable]
-	internal class CollectionToArray : System.Collections.Generic.List<>
+	internal class CollectionToArray : System.Collections.Generic.List<object>
 	{
 		public override object[] toArray()
 		{

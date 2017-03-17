@@ -5,8 +5,7 @@ namespace generics
 		internal static void run()
 		{
 			// unqualified gets mapped to System.Collections
-			System.Collections.Generic.IList<object> l1 = new System.Collections.Generic.List<>
-				();
+			System.Collections.IList l1 = new System.Collections.Generic.List<object>();
 			unqualified(l1);
 			// qualified gets mapped to System.Collections.Generic
 			System.Collections.Generic.IList<string> l2 = new System.Collections.Generic.List

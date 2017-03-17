@@ -4,13 +4,12 @@ namespace collections
 	{
 		internal static void test()
 		{
-			System.Collections.Generic.IList<object> l = new System.Collections.Generic.LinkedList<>
-				();
+			System.Collections.IList l = new System.Collections.Generic.LinkedList<>();
 			if (l.Count > 0)
 			{
 				object value = l[0];
 			}
-			System.Collections.Generic.List<> arrayList = new System.Collections.Generic.List<>
+			System.Collections.Generic.List<object> arrayList = new System.Collections.Generic.List<object>
 				();
 			Sharpen.Collections.AddAll(arrayList, l);
 			Sharpen.Collections.ToArray(arrayList, new object[arrayList.Count]);
