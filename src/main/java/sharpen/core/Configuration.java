@@ -259,7 +259,7 @@ public abstract class Configuration {
         mapProperty("java.lang.reflect.InvocationTargetException.getTargetException", "InnerException");
         mapType("java.lang.IllegalAccessException", "System.MemberAccessException");
 
-//		mapType("java.lang.reflect.Array", "System.Array");
+//      mapType("java.lang.reflect.Array", "System.Array");
         mapMethod("java.lang.reflect.Array.getLength", runtimeMethod("GetArrayLength"));
         mapMethod("java.lang.reflect.Array.get", runtimeMethod("GetArrayValue"));
         mapMethod("java.lang.reflect.Array.set", runtimeMethod("SetArrayValue"));
@@ -269,7 +269,7 @@ public abstract class Configuration {
         mapType("java.lang.Class", "System.Type");
         mapType("java.lang.Class<>", "System.Type");
         mapJavaLangClassProperty("getName", "FullName");
-        mapJavaLangClassProperty("getSimpleName", "Name");
+        mapJavaLangClassMethod("getSimpleName", "GetSimpleName");
         mapJavaLangClassProperty("getSuperclass", "BaseType");
         mapJavaLangClassProperty("isArray", "IsArray");
         mapJavaLangClassProperty("isPrimitive", "IsPrimitive");

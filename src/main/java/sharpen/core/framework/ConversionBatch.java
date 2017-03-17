@@ -24,6 +24,7 @@ public abstract class ConversionBatch {
 
     private final ASTParser _parser;
     private boolean _continueOnError;
+    private boolean _copySharpenCs;
 
     public ConversionBatch() {
         _parser = ASTParser.newParser(AST.JLS8);
@@ -43,6 +44,10 @@ public abstract class ConversionBatch {
 
     public void setContinueOnError(boolean continueOnError) {
         this._continueOnError = continueOnError;
+    }
+
+    public void setCopySharpenCs(boolean copySharpenCs) {
+        this._copySharpenCs = copySharpenCs;
     }
 
     /**
@@ -148,7 +153,7 @@ public abstract class ConversionBatch {
                 }
             }
         }
-        if (!_progressMonitor.isCanceled()) {
+        if (_copySharpenCs && !_progressMonitor.isCanceled()) {
             copySharpenCs();
         }
     }

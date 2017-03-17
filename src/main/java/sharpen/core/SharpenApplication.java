@@ -140,6 +140,7 @@ public class SharpenApplication {
         String targetFolder = resetTargetFolder(project);
         SharpenConversionBatch converter = new SharpenConversionBatch(getConfiguration());
         converter.setContinueOnError(_args.continueOnError);
+        converter.setCopySharpenCs(_args.copySharpenCs);
         converter.setProgressMonitor(newProgressMonitor());
         converter.setTargetProject(targetFolder);
         converter.setSourceFiles(units);

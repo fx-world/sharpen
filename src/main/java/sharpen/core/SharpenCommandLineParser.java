@@ -107,6 +107,8 @@ class SharpenCommandLineParser extends CommandLineParser {
             _cmdLine.organizeUsings = true;
         } else if (areEqual(arg, "-continueOnError")) {
             _cmdLine.continueOnError = true;
+        } else if (areEqual(arg, "-copySharpenCs")) {
+            _cmdLine.copySharpenCs = Boolean.parseBoolean(consumeNext());
         } else if (areEqual(arg, "-fullyQualify")) {
             _cmdLine.fullyQualifiedTypes.add(consumeNext());
         } else if (areEqual(arg, "-namespaceMapping")) {

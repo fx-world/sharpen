@@ -149,6 +149,12 @@ namespace Sharpen {
             return s.Substring(from, to - from);
         }
 
+        public static string GetSimpleName(this Type t) {
+            string name = t.Name;
+            int index = name.IndexOf('`');
+            return index == -1 ? name : name.Substring(0, index);
+        }
+
         public static FieldInfo[] GetDeclaredFields(Type clazz) {
             return clazz.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Instance);
         }
