@@ -301,6 +301,20 @@ public abstract class Configuration {
         removeMethod("java.lang.reflect.AccessibleObject.setAccessible");
         mapType("java.lang.reflect.Constructor", "System.Reflection.ConstructorInfo");
 
+        mapMethod("java.lang.reflect.Field.getType", "GetType");
+        mapMethodToMacro("java.lang.reflect.Member.getModifiers", "$expression.Attributes");
+        mapMethodToMacro("java.lang.reflect.Modifier.isPublic", "Sharpen.Runtime.HasAttribute($arg_0, FieldAttributes.Public)");
+        mapMethodToMacro("java.lang.reflect.Modifier.isPrivate", "Sharpen.Runtime.HasAttribute($arg_0, FieldAttributes.Private)");
+        mapMethodToMacro("java.lang.reflect.Modifier.isStatic", "Sharpen.Runtime.HasAttribute($arg_0, FieldAttributes.Static)");
+        mapMethodToMacro("java.lang.reflect.Field.getBoolean", "(bool) $expression.GetValue($arg_0)");
+        mapMethodToMacro("java.lang.reflect.Field.getByte", "(byte) $expression.GetValue($arg_0)");
+        mapMethodToMacro("java.lang.reflect.Field.getChar", "(char) $expression.GetValue($arg_0)");
+        mapMethodToMacro("java.lang.reflect.Field.getShort", "(short) $expression.GetValue($arg_0)");
+        mapMethodToMacro("java.lang.reflect.Field.getInt", "(int) $expression.GetValue($arg_0)");
+        mapMethodToMacro("java.lang.reflect.Field.getLong", "(long) $expression.GetValue($arg_0)");
+        mapMethodToMacro("java.lang.reflect.Field.getFloat", "(float) $expression.GetValue($arg_0)");
+        mapMethodToMacro("java.lang.reflect.Field.getDouble", "(double) $expression.GetValue($arg_0)");
+
         mapMethod("java.lang.String.valueOf", "ToString");
         mapMethodToMacro("java.lang.Class.cast", "(($type)$arguments)");
     }

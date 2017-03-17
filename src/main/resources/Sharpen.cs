@@ -150,7 +150,11 @@ namespace Sharpen {
         }
 
         public static FieldInfo[] GetDeclaredFields(Type clazz) {
-            return clazz.GetFields(BindingFlags.DeclaredOnly);
+            return clazz.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Instance);
+        }
+
+        public static bool HasAttribute(FieldAttributes attributes, FieldAttributes flag) {
+            return (attributes & flag) != 0;
         }
     }
 
