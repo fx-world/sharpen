@@ -212,7 +212,20 @@ public class CSharpBuilder extends ASTVisitor {
 
     @Override
     public boolean visit(AnnotationTypeDeclaration node) {
-        // TODO: SHA-51
+        if (processIgnoredType(node)) {
+            return false;
+        }
+
+        try {
+            my(NameScope.class).enterTypeDeclaration(node);
+            _ignoreExtends.using(ignoreExtends(node), new Runnable() {
+                public void run() {
+                    new CSharpBuilder(CSharpBuilder.this).processTypeDeclaration(node);
+                }
+            });
+        } finally {
+            my(NameScope.class).leaveTypeDeclaration(node);
+        }
         return false;
     }
 
@@ -689,7 +702,7 @@ public class CSharpBuilder extends ASTVisitor {
     }
 
     private CSTypeDeclaration mapTypeDeclaration(AbstractTypeDeclaration node) {
-        if (!(node instanceof TypeDeclaration) && !(node instanceof EnumDeclaration)) {
+        if (!(node instanceof TypeDeclaration) && !(node instanceof EnumDeclaration) && !(node instanceof AnnotationTypeDeclaration)) {
             unsupportedConstruct(node, "Cannot map type declaration for node.");
         }
 
@@ -703,7 +716,7 @@ public class CSharpBuilder extends ASTVisitor {
     }
 
     private CSTypeDeclaration mapAuxillaryTypeDeclaration(AbstractTypeDeclaration node) {
-        if (!(node instanceof TypeDeclaration) && !(node instanceof EnumDeclaration)) {
+        if (!(node instanceof TypeDeclaration) && !(node instanceof EnumDeclaration) && !(node instanceof AnnotationTypeDeclaration)) {
             unsupportedConstruct(node, "Cannot map auxillary type declaration for node.");
         }
 
@@ -772,7 +785,7 @@ public class CSharpBuilder extends ASTVisitor {
         }
 
         CSClassModifier modifier;
-        if (node instanceof TypeDeclaration) {
+        if (node instanceof TypeDeclaration || node instanceof AnnotationTypeDeclaration) {
             modifier = mapClassModifier(node.getModifiers());
         } else if (node instanceof EnumDeclaration) {
             modifier = CSClassModifier.Sealed;
@@ -845,6 +858,11 @@ public class CSharpBuilder extends ASTVisitor {
             return;
         }
 
+        if (node instanceof AnnotationTypeDeclaration) {
+            type.addBaseType(new CSTypeReference("System.Attribute"));
+            return;
+        }
+
         if (!(node instanceof TypeDeclaration)) {
             return;
         }
@@ -892,7 +910,7 @@ public class CSharpBuilder extends ASTVisitor {
     }
 
     private boolean handledExtends(AbstractTypeDeclaration node, CSTypeDeclaration type) {
-        if (!(node instanceof TypeDeclaration) && !(node instanceof EnumDeclaration)) {
+        if (!(node instanceof TypeDeclaration) && !(node instanceof EnumDeclaration) && !(node instanceof AnnotationTypeDeclaration)) {
             unsupportedConstruct(node, "Cannot handle extends for type node.");
         }
 
@@ -911,6 +929,8 @@ public class CSharpBuilder extends ASTVisitor {
             superInterfaceTypes = ((TypeDeclaration) node).superInterfaceTypes();
         } else if (node instanceof EnumDeclaration) {
             superInterfaceTypes = ((EnumDeclaration) node).superInterfaceTypes();
+        } else if (node instanceof AnnotationTypeDeclaration) {
+            superInterfaceTypes = Collections.emptyList();
         } else {
             unsupportedConstruct(node, "cannot map super interfaces for type node");
             throw new UnsupportedOperationException("shouldn't be reachable");
@@ -935,7 +955,7 @@ public class CSharpBuilder extends ASTVisitor {
     }
 
     private void mapMembers(AbstractTypeDeclaration node, CSTypeDeclaration type, CSTypeDeclaration auxillaryType) {
-        if (!(node instanceof TypeDeclaration) && !(node instanceof EnumDeclaration)) {
+        if (!(node instanceof TypeDeclaration) && !(node instanceof EnumDeclaration) && !(node instanceof AnnotationTypeDeclaration)) {
             unsupportedConstruct(node, "Cannot map members for node.");
         }
 
@@ -4266,7 +4286,7 @@ public class CSharpBuilder extends ASTVisitor {
         }
 
         // to convert expressions like Map.class to typeof(Map<,>)
-        if (forTypeOf && type.getTypeArguments().length == 0 && declaration instanceof TypeDeclaration && !((TypeDeclaration)declaration).typeParameters().isEmpty()) {
+        if (forTypeOf && type.getTypeArguments().length == 0 && declaration instanceof TypeDeclaration && !((TypeDeclaration) declaration).typeParameters().isEmpty()) {
             for (Object o : ((TypeDeclaration) declaration).typeParameters()) {
                 typeRef.addTypeArgument(new CSTypeReference(""));
             }
@@ -4412,7 +4432,7 @@ public class CSharpBuilder extends ASTVisitor {
         }
         CSNode body;
         if (node.getBody() instanceof Expression) {
-            body = mapExpression((Expression)node.getBody());
+            body = mapExpression((Expression) node.getBody());
         } else if (node.getBody() instanceof Block) {
             CSBlock block = new CSBlock();
             visitBlock(block, node.getBody());

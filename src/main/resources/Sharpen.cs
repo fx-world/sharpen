@@ -162,6 +162,15 @@ namespace Sharpen {
         public static bool HasAttribute(FieldAttributes attributes, FieldAttributes flag) {
             return (attributes & flag) != 0;
         }
+
+        public static CustomAttributeData GetCustomAttribute(FieldInfo field, Type attributeType) {
+            foreach (var a in CustomAttributeData.GetCustomAttributes(field)) {
+                if (a.Constructor.DeclaringType == attributeType) {
+                    return a;
+                }
+            }
+            return null;
+        }
     }
 
     public class IdentityHashMap<K, V> : Dictionary<K, V> {
