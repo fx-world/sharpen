@@ -21,7 +21,7 @@ public class PreConvertVisitor extends ASTVisitor {
                 VariableDeclarationFragment fragment = (VariableDeclarationFragment) item;
                 String fieldName = fragment.getName().getIdentifier();
                 if (ASTUtility.hasMethodWithName(node, fieldName)) {
-                    renamingMap.put(fragment.getName().resolveBinding().getKey(), "_" + fieldName);
+                    renamingMap.put(fragment.getName().resolveBinding().getKey(), "__" + fieldName);
                 }
             }
         }
