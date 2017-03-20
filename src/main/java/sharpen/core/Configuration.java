@@ -162,6 +162,7 @@ public abstract class Configuration {
         mapProperty("java.lang.AbstractStringBuilder.setLength", "Length");
 
         mapMethod("java.lang.String.intern", "string.Intern");
+        mapMethod("java.lang.String.contains", "Contains");
         mapMethod("java.lang.String.indexOf", "IndexOf");
         mapMethod("java.lang.String.lastIndexOf", "LastIndexOf");
         mapMethod("java.lang.String.trim", "Trim");

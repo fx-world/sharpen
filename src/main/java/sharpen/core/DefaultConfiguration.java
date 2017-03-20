@@ -244,6 +244,7 @@ public class DefaultConfiguration extends Configuration {
         // JUnit 4
         mapNamespace("org.junit", "NUnit.Framework");
         mapMethod("org.junit.Assert.assertEquals", "NUnit.Framework.Assert.AreEqual");
+        mapMethod("org.junit.Assert.assertNotEquals", "NUnit.Framework.Assert.AreNotEqual");
         mapMethod("org.junit.Assert.assertTrue", "NUnit.Framework.Assert.IsTrue");
         mapMethod("org.junit.Assert.assertFalse", "NUnit.Framework.Assert.IsFalse");
         mapMethod("org.junit.Assert.assertNotNull", "NUnit.Framework.Assert.IsNotNull");
