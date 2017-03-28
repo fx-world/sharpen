@@ -76,6 +76,7 @@ public class DefaultConfiguration extends Configuration {
         mapMethod("java.lang.Math.atan2", "System.Math.Atan2");
         mapMethod("java.lang.Math.signum", "System.Math.Sign");
         mapMethod("java.lang.Math.sqrt", "System.Math.Sqrt");
+        mapMethod("java.lang.Math.floorDiv", sharpenNamespace() + ".System.FloorDiv");
 
         mapMethod("length", "Length");    // see qualifiedName(IVariableBinding)
 

@@ -73,6 +73,14 @@ namespace Sharpen {
             return (long) (DateTime.UtcNow - EPOCH).TotalMilliseconds;
         }
 
+        public static int FloorDiv(int x, int y) {
+            int r = x / y;
+            if ((x ^ y) < 0 && (r * y != x)) {
+                r--;
+            }
+            return r;
+        }
+
     }
 
     public class Arrays {
