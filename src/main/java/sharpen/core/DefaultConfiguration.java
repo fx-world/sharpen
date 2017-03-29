@@ -79,6 +79,7 @@ public class DefaultConfiguration extends Configuration {
         mapMethod("java.lang.Math.cos", "System.Math.Cos");
         mapMethod("java.lang.Math.sin", "System.Math.Sin");
         mapMethod("java.lang.Math.floorDiv", sharpenNamespace() + ".System.FloorDiv");
+        mapMethod("java.lang.Integer.highestOneBit", sharpenNamespace() + ".System.HighestOneBit");
 
         mapMethod("length", "Length");    // see qualifiedName(IVariableBinding)
 

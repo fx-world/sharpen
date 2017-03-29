@@ -81,6 +81,15 @@ namespace Sharpen {
             return r;
         }
 
+        public static int HighestOneBit(int i) {
+            uint u = (uint)i;
+            u |= (u >>  1);
+            u |= (u >>  2);
+            u |= (u >>  4);
+            u |= (u >>  8);
+            u |= (u >>  16);
+            return (int)(u - (u >> 1));
+        }
     }
 
     public class Arrays {
