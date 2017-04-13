@@ -195,6 +195,7 @@ public class DefaultConfiguration extends Configuration {
         mapMethod("java.util.Arrays.toString", "Sharpen.Arrays.ToString");
 
         mapMethod("java.util.Collection.addAll", collectionRuntimeMethod("AddAll"));
+        mapMethod("java.util.Map.putAll", collectionRuntimeMethod("PutAll"));
         mapMethod("java.util.Collection.toArray", collectionRuntimeMethod("ToArray"));
 
         if (mapIteratorToEnumerator()) {

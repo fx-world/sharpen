@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -82,13 +81,13 @@ namespace Sharpen {
         }
 
         public static int HighestOneBit(int i) {
-            uint u = (uint)i;
-            u |= (u >>  1);
-            u |= (u >>  2);
-            u |= (u >>  4);
-            u |= (u >>  8);
-            u |= (u >>  16);
-            return (int)(u - (u >> 1));
+            uint u = (uint) i;
+            u |= (u >> 1);
+            u |= (u >> 2);
+            u |= (u >> 4);
+            u |= (u >> 8);
+            u |= (u >> 16);
+            return (int) (u - (u >> 1));
         }
     }
 
@@ -144,6 +143,13 @@ namespace Sharpen {
                 return result;
             }
             return default(V);
+        }
+
+        public static void PutAll<CK, CV, IK, IV>(IDictionary<CK, CV> collection, IDictionary<IK, IV> items)
+            where IK : CK where IV : CV {
+            foreach (var e in items) {
+                collection.Add(e.Key, e.Value);
+            }
         }
 
         public static void AddAll<T>(ICollection<T> collection, IEnumerable<T> items) {
