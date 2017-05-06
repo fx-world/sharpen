@@ -637,7 +637,8 @@ public class CSharpBuilder extends ASTVisitor {
         CSArrayInitializerExpression arrayInitializerExpression = new CSArrayInitializerExpression();
         for (Object o : enumNode.enumConstants()) {
             EnumConstantDeclaration constantDeclaration = (EnumConstantDeclaration) o;
-            arrayInitializerExpression.addExpression(new CSReferenceExpression(constantDeclaration.getName().getIdentifier()));
+            String constantIdentifier = fieldName(constantDeclaration);
+            arrayInitializerExpression.addExpression(new CSReferenceExpression(constantIdentifier));
         }
 
         CSArrayCreationExpression arrayCreationExpression = new CSArrayCreationExpression(enumType);
