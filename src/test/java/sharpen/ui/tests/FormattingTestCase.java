@@ -13,6 +13,14 @@ public class FormattingTestCase extends AbstractConversionTestCase {
         return newConfigurationEgyptian();
     }
 
+    protected Configuration getPascalCasePlusConfiguration() {
+        return newPascalCasePlusConfiguration();
+    }
+
+    protected Configuration getPascalCaseIdentifiersConfiguration() {
+        return newPascalCaseIdentifiersConfiguration();
+    }
+
     @Override
     protected void runResourceTestCase(Configuration configuration, String resourceName) throws IOException, CoreException {
         super.runResourceTestCase(configuration, "formattings/" + resourceName);
@@ -21,6 +29,8 @@ public class FormattingTestCase extends AbstractConversionTestCase {
     @Test
     public void testIntentStyleEgyptianBrackets() throws Throwable {
         runResourceTestCase("IndentStyleEgyptianBrackets");
+        runResourceTestCase(getPascalCasePlusConfiguration(), "IndentStylePascalCasePlus");
+        runResourceTestCase(getPascalCaseIdentifiersConfiguration(), "IndentStylePascalCaseIdentifiers");
     }
 
 }
