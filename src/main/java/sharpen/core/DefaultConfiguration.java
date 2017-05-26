@@ -94,6 +94,7 @@ public class DefaultConfiguration extends Configuration {
         mapMethod("java.util.function.BiConsumer.accept", "Invoke");
 
         ignoreType("java.lang.Override");
+        ignoreType("java.lang.annotation.Inherited");
 
         setUpPrimitiveWrappers();
     }

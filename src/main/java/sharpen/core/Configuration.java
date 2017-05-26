@@ -317,6 +317,7 @@ public abstract class Configuration {
         mapMethodToMacro("java.lang.reflect.Field.getFloat", "(float) $expression.GetValue($arg_0)");
         mapMethodToMacro("java.lang.reflect.Field.getDouble", "(double) $expression.GetValue($arg_0)");
         mapMethodToMacro("java.lang.reflect.Field.getAnnotation", "Sharpen.Runtime.GetCustomAttribute($expression, $arg_0)");
+        mapMethodToMacro("java.lang.reflect.AnnotatedElement.getAnnotation", "Sharpen.Runtime.GetCustomAttribute($expression, $arg_0)");
 
         mapMethod("java.lang.String.valueOf", "ToString");
         mapMethodToMacro("java.lang.Class.cast", "(($type)$arguments)");

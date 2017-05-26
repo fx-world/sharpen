@@ -4,6 +4,7 @@ namespace annotations
 	{
 	}
 
+	[annotations.Indexed]
 	internal class Annotated
 	{
 		[annotations.Indexed]

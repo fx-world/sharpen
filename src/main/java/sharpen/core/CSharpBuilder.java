@@ -408,6 +408,7 @@ public class CSharpBuilder extends ASTVisitor {
 
     protected CSTypeDeclaration processTypeDeclaration(AbstractTypeDeclaration node) {
         CSTypeDeclaration type = mapTypeDeclaration(node);
+        mapAnnotations(node, type);
         CSTypeDeclaration auxillaryType = mapAuxillaryTypeDeclaration(node);
 
         processDisabledType(node, isMainType(node) ? _compilationUnit : type);
