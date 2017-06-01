@@ -208,6 +208,7 @@ public class DefaultConfiguration extends Configuration {
             mapProperty("java.util.Iterator.next", "Current");
         }
         mapMethod("java.util.Map.remove", collectionRuntimeMethod("Remove"));
+        mapMethod("java.util.Map.put", collectionRuntimeMethod("Put"));
         mapMethod("java.util.Map.containsKey", "ContainsKey");
         mapMethod("java.util.Map.entrySet", "");
         mapProperty("java.util.Map.Entry.getKey", "Key");
@@ -218,7 +219,6 @@ public class DefaultConfiguration extends Configuration {
         mapIndexerGetOr("java.util.Dictionary.get");
         mapIndexer("java.util.Dictionary.put");
         mapIndexerGetOr("java.util.Map.get");
-        mapIndexer("java.util.Map.put");
 
         //  jdk 1.0 collection framework
         mapType("java.util.Vector", "System.Collections.ArrayList");

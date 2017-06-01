@@ -136,6 +136,15 @@ namespace Sharpen {
 
     public static class Collections {
 
+        public static V Put<K, V>(IDictionary<K, V> map, K key, V value) {
+            V result;
+            if (!map.TryGetValue(key, out result)) {
+                result = default(V);
+            }
+            map[key] = value;
+            return result;
+        }
+
         public static V Remove<K, V>(IDictionary<K, V> map, K key) {
             V result;
             if (map.TryGetValue(key, out result)) {

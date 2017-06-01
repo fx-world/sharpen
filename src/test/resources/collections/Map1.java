@@ -1,8 +1,8 @@
 package collections;
 
-public class Map2 {
+public class Map1 {
 	static void test() {
-		java.util.Map<String, String> map = new java.util.HashMap<>();
+		java.util.Map map = new java.util.HashMap();
 		if (map.containsKey("foo")) {
 			Object value = map.get("foo");
 		}

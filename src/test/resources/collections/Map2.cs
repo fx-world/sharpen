@@ -17,7 +17,14 @@ namespace collections
 			{
 			}
 			object removed = Sharpen.Collections.Remove(map, "foo");
-			map["foo"] = "bar";
+			Sharpen.Collections.Put(map, "foo", "bar");
+			string evicted = Sharpen.Collections.Put(map, "foo", "bar2");
+		}
+
+		internal static string putEvict(System.Collections.Generic.IDictionary<string, string
+			> map)
+		{
+			return Sharpen.Collections.Put(map, "a", "b");
 		}
 
 		internal static System.Collections.IDictionary genericSortedMap()
