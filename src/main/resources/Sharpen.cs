@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -135,6 +136,12 @@ namespace Sharpen {
     }
 
     public static class Collections {
+
+        public static object Put(IDictionary map, object key, object value) {
+            object result = map.Contains(key) ? map[key] : null;
+            map[key] = value;
+            return result;
+        }
 
         public static V Put<K, V>(IDictionary<K, V> map, K key, V value) {
             V result;
