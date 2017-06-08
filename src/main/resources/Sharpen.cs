@@ -1,13 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Sharpen {
-
     public abstract class EnumBase : IComparable<EnumBase>, IComparable {
+
         private static readonly Dictionary<Type, EnumBase[]> VALUES_MAP = new Dictionary<Type, EnumBase[]>();
 
         private readonly int _ordinal;
@@ -46,7 +47,7 @@ namespace Sharpen {
             VALUES_MAP[typeof(T)] = values;
         }
 
-        public static EnumBase[] GetEnumValue(Type enumType) {
+        public static EnumBase[] GetEnumValues(Type enumType) {
             EnumBase[] result;
             if (VALUES_MAP.TryGetValue(enumType, out result)) {
                 return result;
@@ -56,9 +57,14 @@ namespace Sharpen {
             }
         }
 
+        public static T GetByName<T>(string name) where T : EnumBase {
+            return name == null ? null : (T) VALUES_MAP[typeof(T)].FirstOrDefault(val => val.name() == name);
+        }
+
     }
 
     public class System {
+
         public static readonly DateTime EPOCH = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         public static int Compare(int x, int y) {
@@ -90,9 +96,11 @@ namespace Sharpen {
             u |= (u >> 16);
             return (int) (u - (u >> 1));
         }
+
     }
 
     public class Arrays {
+
         public static void Fill<T>(T[] a, T val) {
             Fill(a, 0, a.Length, val);
         }
@@ -133,6 +141,7 @@ namespace Sharpen {
             sb.Append("]");
             return sb.ToString();
         }
+
     }
 
     public static class Collections {
@@ -181,9 +190,11 @@ namespace Sharpen {
             }
             return array;
         }
+
     }
 
     public static class Runtime {
+
         public static string substring(string s, int from, int to) {
             return s.Substring(from, to - from);
         }
@@ -210,14 +221,18 @@ namespace Sharpen {
             }
             return null;
         }
+
     }
 
     public class IdentityHashMap<K, V> : Dictionary<K, V> {
+
         public IdentityHashMap() : base(new IdentityEqualityComparer<K>()) {
         }
+
     }
 
     public class IdentityEqualityComparer<T> : IEqualityComparer<T> {
+
         public bool Equals(T x, T y) {
             return ReferenceEquals(x, y);
         }
@@ -225,9 +240,11 @@ namespace Sharpen {
         public int GetHashCode(T obj) {
             return RuntimeHelpers.GetHashCode(obj);
         }
+
     }
 
     public static class Lists {
+
         public static void Add<T>(this IList<T> list, int index, T value) {
             list.Insert(index, value);
         }
@@ -237,6 +254,7 @@ namespace Sharpen {
             list.RemoveAt(index);
             return value;
         }
+
     }
 
     public static class Maps {
@@ -257,5 +275,4 @@ namespace Sharpen {
         }
 
     }
-
 }
