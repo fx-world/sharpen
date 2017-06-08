@@ -57,8 +57,15 @@ namespace Sharpen {
             }
         }
 
+        public static T FindByName<T>(string name) where T : EnumBase {
+            return name == null ? null : (T) GetEnumValues(typeof(T)).FirstOrDefault(val => val.name() == name);
+        }
+
         public static T GetByName<T>(string name) where T : EnumBase {
-            return name == null ? null : (T) VALUES_MAP[typeof(T)].FirstOrDefault(val => val.name() == name);
+            if (name == null) {
+                throw new ArgumentNullException("name");
+            }
+            return (T) GetEnumValues(typeof(T)).First(val => val.name() == name);
         }
 
     }
