@@ -2932,17 +2932,18 @@ public class CSharpBuilder extends ASTVisitor {
     }
 
     public boolean visit(InstanceofExpression node) {
-        if (node.getRightOperand().resolveBinding().getTypeDeclaration().isGenericType()) {
+        CSTypeReferenceExpression rightExp = mappedTypeReference(node.getRightOperand().resolveBinding(), false, true);
+        if (rightExp instanceof CSTypeReference && !((CSTypeReference) rightExp).typeArguments().isEmpty()) {
             CSMethodInvocationExpression mie = new CSMethodInvocationExpression(new CSReferenceExpression(
                     methodName(_configuration.getRuntimeTypeName() + ".InstanceOf")
             ));
             mie.addArgument(mapExpression(node.getLeftOperand()));
-            mie.addArgument(new CSTypeofExpression(mappedTypeReference(node.getRightOperand().resolveBinding(), false, true)));
+            mie.addArgument(new CSTypeofExpression(rightExp));
             pushExpression(mie);
         } else {
             pushExpression(new CSInfixExpression("is",
                     mapExpression(node.getLeftOperand()),
-                    mappedTypeReference(node.getRightOperand().resolveBinding())
+                    rightExp
             ));
         }
         return false;

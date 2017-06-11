@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 
 namespace generics {
     public class GenericTypeReference<T> {
@@ -14,6 +15,9 @@ namespace generics {
             }
             if (o is string) {
                 System.Console.Out.WriteLine("3");
+            }
+            if (o is IList) {
+                System.Console.Out.WriteLine("4");
             }
         }
     }

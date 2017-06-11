@@ -16,6 +16,9 @@ public class GenericTypeReference<T> {
         if (o instanceof String) {
             System.out.println("3");
         }
+        if (o instanceof List) {
+            System.out.println("4");
+        }
     }
 
 }
