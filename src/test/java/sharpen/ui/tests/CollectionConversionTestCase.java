@@ -61,6 +61,11 @@ public class CollectionConversionTestCase extends AbstractConversionTestCase {
     }
 
     @Test
+    public void testList2() throws Throwable {
+        runResourceTestCase(newConfigurationEgyptian(), "collections/List2");
+    }
+
+    @Test
     public void testEntrySet() throws Throwable {
         runResourceTestCase("EntrySet1");
     }

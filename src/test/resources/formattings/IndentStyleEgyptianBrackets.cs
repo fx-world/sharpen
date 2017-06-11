@@ -44,7 +44,7 @@ namespace formattings {
             } finally {
                 System.Console.Out.WriteLine("done");
             }
-            foreach (int v in System.Linq.Enumerable.ToList(new [] {1, 2, 3})) {
+            foreach (int v in Sharpen.Arrays.AsList(1, 2, 3)) {
                 System.Console.Out.WriteLine(v);
                 switch (v) {
                     case 1: {

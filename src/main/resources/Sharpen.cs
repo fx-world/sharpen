@@ -108,6 +108,10 @@ namespace Sharpen {
 
     public class Arrays {
 
+        public static List<T> AsList<T>(params T[] a) {
+            return a.ToList();
+        }
+
         public static void Fill<T>(T[] a, T val) {
             Fill(a, 0, a.Length, val);
         }
@@ -188,6 +192,10 @@ namespace Sharpen {
             foreach (var item in items) {
                 collection.Add(item);
             }
+        }
+
+        public static T[] ToArray<T>(ICollection<T> collection) {
+            return ToArray(collection, new T[collection.Count]);
         }
 
         public static T[] ToArray<T>(ICollection<T> collection, T[] array) {

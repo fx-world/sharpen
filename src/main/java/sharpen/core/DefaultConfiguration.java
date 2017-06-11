@@ -177,12 +177,15 @@ public class DefaultConfiguration extends Configuration {
         mapMethod("java.util.Collection.add", "Add");
         mapMethod("java.util.List.add", "Add");
         mapMethod("java.util.List.remove", "RemoveAtReturningValue");
+        mapMethod("java.util.Deque.addFirst", "AddFirst");
+        mapMethod("java.util.Deque.addLast", "AddLast");
+        mapMethod("java.util.Deque.removeFirst", "RemoveFirst");
+        mapMethod("java.util.Deque.removeLast", "RemoveLast");
 
         mapMethod("java.util.Collections.max", "System.Linq.Enumerable.Max");
         mapMethod("java.util.Collections.min", "System.Linq.Enumerable.Min");
         mapMethodToMacro("java.util.Map.isEmpty", "($expression.Count == 0)");
         mapMethodToMacro("java.util.Collection.isEmpty", "($expression.Count == 0)");
-        mapMethodToMacro("java.util.Arrays.asList", "System.Linq.Enumerable.ToList(new [] {$arguments})");
         mapMethodToMacro("java.util.Collections.singletonList", "System.Linq.Enumerable.ToList(new [] {$arg_0})");
         mapMethodToMacro("java.util.Collections.singletonMap", "new System.Collections.Generic.Dictionary<$type_0, $type_1>(){{$arg_0, $arg_1}}");
         mapMethodToMacro("java.util.Collections.emptyMap", "new System.Collections.Generic.Dictionary<$type_0, $type_1>()");
@@ -191,6 +194,7 @@ public class DefaultConfiguration extends Configuration {
 
         mapMethod("java.util.Arrays.equals", "Sharpen.Arrays.Equals");
         mapMethod("java.util.Arrays.fill", "Sharpen.Arrays.Fill");
+        mapMethod("java.util.Arrays.asList", "Sharpen.Arrays.AsList");
         mapMethod("java.util.Arrays.copyOf", "Sharpen.Arrays.CopyOf");
         mapMethod("java.util.Arrays.hashCode", "Sharpen.Arrays.HashCode");
         mapMethod("java.util.Arrays.toString", "Sharpen.Arrays.ToString");
