@@ -210,6 +210,14 @@ namespace Sharpen {
 
     public static class Runtime {
 
+        public static bool InstanceOf(object o, Type t) {
+            if (o == null) {
+                return false;
+            }
+            var objectType = o.GetType();
+            return objectType.BaseType != null ? objectType.BaseType.IsInstanceOfType(t) : objectType.IsInstanceOfType(t);
+        }
+
         public static string substring(string s, int from, int to) {
             return s.Substring(from, to - from);
         }
