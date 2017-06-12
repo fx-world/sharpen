@@ -1,7 +1,8 @@
 namespace collections
 {
 	[System.Serializable]
-	internal abstract class MyMap : System.Collections.Generic.Dictionary<object, object>
+	internal abstract class MyMap : System.Collections.Generic.Dictionary<object, object
+		>
 	{
 		public override System.Collections.Generic.HashSet<object> entrySet()
 		{

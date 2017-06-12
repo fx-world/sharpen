@@ -1,24 +1,19 @@
 package generics;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GenericTypeReference<T> {
     private static final Class myclass = GenericTypeReference.class;
 
-    public static void main(Object[] args) {
-        Object o = args[0];
+    public static void test(Object o) {
         if (o.getClass() == GenericTypeReference.class) {
             System.out.println("1");
         }
-        if (o instanceof GenericTypeReference) {
-            System.out.println("2");
-        }
-        if (o instanceof String) {
-            System.out.println("3");
-        }
-        if (o instanceof List) {
-            System.out.println("4");
-        }
+        System.out.println(GenericTypeReference.class);
+        System.out.println(List.class);
+        System.out.println(ArrayList.class);
+        System.out.println(Enum.class);
     }
 
 }

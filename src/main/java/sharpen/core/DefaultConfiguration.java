@@ -151,7 +151,7 @@ public class DefaultConfiguration extends Configuration {
         mapType("java.util.List<>", "System.Collections.Generic.IList");
         mapType("java.util.ArrayList", "System.Collections.Generic.List<object>");
         mapType("java.util.ArrayList<>", "System.Collections.Generic.List");
-        mapType("java.util.LinkedList", "System.Collections.Generic.LinkedList<>");
+        mapType("java.util.LinkedList", "System.Collections.Generic.LinkedList<object>");
         mapType("java.util.LinkedList<>", "System.Collections.Generic.LinkedList");
         mapType("java.util.Stack", "System.Collections.Stack");
 

@@ -78,4 +78,18 @@ public class CSTypeReference extends CSTypeReferenceExpression implements CSType
         }
     }
 
+    public static CSTypeReference parseGeneric(String mappedTypeName) {
+        int start = mappedTypeName.indexOf("<");
+        int end = mappedTypeName.lastIndexOf(">");
+        if (start < 0 || end < 0) {
+            return new CSTypeReference(mappedTypeName);
+        }
+        CSTypeReference typeReference = new CSTypeReference(mappedTypeName.substring(0, start));
+        String generics = mappedTypeName.substring(start + 1, end);
+        for (String genericType : generics.split(",")) {
+            typeReference.addTypeArgument(new CSTypeReference(genericType.trim()));
+        }
+        return typeReference;
+    }
+
 }

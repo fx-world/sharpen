@@ -2712,7 +2712,8 @@ public class CSharpBuilder extends ASTVisitor {
         return false;
     }
 
-    @Override public void endVisit(EnhancedForStatement node) {
+    @Override
+    public void endVisit(EnhancedForStatement node) {
         popScope();
     }
 
@@ -2754,7 +2755,8 @@ public class CSharpBuilder extends ASTVisitor {
         return false;
     }
 
-    @Override public void endVisit(ForStatement node) {
+    @Override
+    public void endVisit(ForStatement node) {
         popScope();
     }
 
@@ -4290,7 +4292,7 @@ public class CSharpBuilder extends ASTVisitor {
             return new CSTypeReference(type.getName() + "Constants");
         }
 
-        final CSTypeReference typeRef = new CSTypeReference(mappedTypeName(type));
+        CSTypeReference typeRef = CSTypeReference.parseGeneric(mappedTypeName(type));
         if (BindingUtils.isJavaLangClass(type)) {
             return typeRef;
         }
@@ -4300,8 +4302,11 @@ public class CSharpBuilder extends ASTVisitor {
         }
 
         // to convert expressions like Map.class to typeof(Map<,>)
-        if (forTypeOf && type.getTypeArguments().length == 0 && declaration instanceof TypeDeclaration && !((TypeDeclaration) declaration).typeParameters().isEmpty()) {
-            for (Object o : ((TypeDeclaration) declaration).typeParameters()) {
+        if (forTypeOf && type.getTypeArguments().length == 0 && type.getTypeDeclaration().getTypeParameters().length > 0
+                && !_configuration.isTypeMappedToNonGenericCollection(type.getQualifiedName())
+                && !type.getQualifiedName().equals("java.lang.Enum")) {
+            typeRef = new CSTypeReference(typeRef.typeName());
+            for (Object ignored : type.getTypeDeclaration().getTypeParameters()) {
                 typeRef.addTypeArgument(new CSTypeReference(""));
             }
         }
@@ -4438,7 +4443,8 @@ public class CSharpBuilder extends ASTVisitor {
         super.endVisit(node);
     }
 
-    @Override public boolean visit(LambdaExpression node) {
+    @Override
+    public boolean visit(LambdaExpression node) {
         List<CSVariableDeclaration> args = new ArrayList<>();
         for (Object param : node.parameters()) {
             IVariableBinding variableBinding = ((VariableDeclarationFragment) param).resolveBinding();

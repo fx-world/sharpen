@@ -368,6 +368,11 @@ public abstract class Configuration {
         return _namingStrategy.namespace(mapped.substring(0, mapped.length() - 1));
     }
 
+    public boolean isTypeMappedToNonGenericCollection(String typeName) {
+        String mappedTypeName = mappedTypeName(typeName, typeName);
+        return mappedTypeName.startsWith("System.Collections.") && !mappedTypeName.startsWith("System.Collections.Generic.");
+    }
+
     public String mappedTypeName(String typeName, String defaultValue) {
         if (typeName.equals("java.lang.Enum")) {
             return baseEnumType();

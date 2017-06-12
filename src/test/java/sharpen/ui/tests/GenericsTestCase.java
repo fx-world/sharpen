@@ -119,6 +119,11 @@ public class GenericsTestCase extends AbstractConversionTestCase {
     }
 
     @Test
+    public void testGenericInstanceOf() throws Throwable {
+        runResourceTestCase(newConfigurationNativeType(), "generics/GenericInstanceOf");
+    }
+
+    @Test
     public void testGenericMapWildcard() throws Throwable {
         runResourceTestCase(newConfigurationEgyptian(), "generics/GenericMapWildcard");
     }
