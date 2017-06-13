@@ -24,7 +24,14 @@ namespace generics {
             System.Console.Out.WriteLine(Sharpen.Runtime.InstanceOf(o, typeof(StateReplicatorFullUpdate<>)));
             System.Console.Out.WriteLine(typeof(StateReplicatorFullUpdate<>));
             System.Console.Out.WriteLine(o is IList);
+            System.Console.Out.WriteLine(o is IDictionary);
+            System.Console.Out.WriteLine(Sharpen.Runtime.InstanceOf(o, typeof(HashSet<>)));
             System.Console.Out.WriteLine(Sharpen.Runtime.InstanceOf(o, typeof(List<>)));
+            System.Console.Out.WriteLine(Sharpen.Runtime.IsAssignableFrom(typeof(StateReplicatorFullUpdate<>), o.GetType()));
+            System.Console.Out.WriteLine(Sharpen.Runtime.IsAssignableFrom(typeof(IList), o.GetType()));
+            System.Console.Out.WriteLine(Sharpen.Runtime.IsAssignableFrom(typeof(IDictionary), o.GetType()));
+            System.Console.Out.WriteLine(Sharpen.Runtime.IsAssignableFrom(typeof(HashSet<>), o.GetType()));
+            System.Console.Out.WriteLine(Sharpen.Runtime.IsAssignableFrom(typeof(List<>), o.GetType()));
         }
 
         public static void test2(StateReplicatorServerMessage o) {

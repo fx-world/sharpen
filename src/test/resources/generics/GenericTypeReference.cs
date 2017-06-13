@@ -13,6 +13,8 @@ namespace generics {
             }
             System.Console.Out.WriteLine(typeof(GenericTypeReference<>));
             System.Console.Out.WriteLine(typeof(IList));
+            System.Console.Out.WriteLine(typeof(IDictionary));
+            System.Console.Out.WriteLine(typeof(HashSet<>));
             System.Console.Out.WriteLine(typeof(List<>));
             System.Console.Out.WriteLine(typeof(EnumBase));
         }

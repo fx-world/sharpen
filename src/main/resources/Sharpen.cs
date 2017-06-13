@@ -210,6 +210,16 @@ namespace Sharpen {
 
     public static class Runtime {
 
+        public static bool IsAssignableFrom(Type baseType, Type type) {
+            if (baseType.IsAssignableFrom(type)) {
+                return true;
+            }
+
+            var baseTypeGeneric = baseType.IsGenericType ? baseType.GetGenericTypeDefinition() : baseType;
+            var typeGeneric = type.IsGenericType ? type.GetGenericTypeDefinition() : type;
+            return baseTypeGeneric.IsAssignableFrom(typeGeneric);
+        }
+
         public static bool InstanceOf(object o, Type type) {
             if (o == null) {
                 return false;

@@ -285,7 +285,7 @@ public abstract class Configuration {
         mapJavaLangClassMethod("getDeclaredFields", runtimeMethod("GetDeclaredFields"));
         mapJavaLangClassMethod("getDeclaredMethod", runtimeMethod("GetDeclaredMethod"));
         mapJavaLangClassMethod("getDeclaredMethods", runtimeMethod("GetDeclaredMethods"));
-        mapJavaLangClassMethod("isAssignableFrom", "IsAssignableFrom");
+        mapJavaLangClassMethod("isAssignableFrom", runtimeMethod("IsAssignableFrom"));
 
         mapProperty("java.lang.reflect.Member.getName", "Name");
         mapProperty("java.lang.reflect.Member.getDeclaringClass", "DeclaringType");
@@ -321,6 +321,8 @@ public abstract class Configuration {
 
         mapMethod("java.lang.String.valueOf", "ToString");
         mapMethodToMacro("java.lang.Class.cast", "(($type)$arguments)");
+
+        mapType("java.lang.Thread", "System.Threading.Thread");
     }
 
     private void mapJavaLangClassProperty(String methodName, String propertyName) {
