@@ -1,4 +1,4 @@
-package sharpen.behaviour;
+package sharpen.integration;
 
 import org.junit.Test;
 
@@ -11,7 +11,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("ConstantConditions")
-public class BehaviourTest {
+// Integration tests could be run by comman:
+//  mvn integration-test -Pintegration -Dtest=**/integration/*
+public class IntegrationTest {
 
     @Test
     public void isInstanceOf() {

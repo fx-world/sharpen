@@ -1,21 +1,22 @@
+<!--suppress MavenModelInspection -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>sharpen</groupId>
-  <artifactId>sharpencore</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
+    <groupId>sharpen</groupId>
+    <artifactId>sharpencore</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
-  <name>sharpencore</name>
-  <url>https://github.com/imazen/sharpen</url>
+    <name>sharpencore</name>
+    <url>https://github.com/imazen/sharpen</url>
     <organization>
         <name>Imazen</name>
         <url>http://www.imazen.io</url>
     </organization>
     <licenses>
         <license>
-            <name>GPL 2 </name>
+            <name>GPL 2</name>
             <url>http://www.gnu.org/licenses/gpl-2.0.html</url>
             <distribution>repo</distribution>
             <comments>GPL 2 License</comments>
@@ -59,119 +60,156 @@
         <developerConnection>scm:git:github.com:imazen/sharpen.git</developerConnection>
         <url>https://github.com/imazen/sharpen</url>
     </scm>
-    <!--<distributionManagement>-->
-        <!--<downloadUrl>https://oss.sonatype.org/content/groups/public</downloadUrl>-->
-        <!--<repository>-->
-            <!--<id>oss.sonatype.org</id>-->
-            <!--<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>-->
-        <!--</repository>-->
-        <!--<snapshotRepository>-->
-            <!--<id>oss.sonatype.org</id>-->
-            <!--<url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
-        <!--</snapshotRepository>-->
-        <!--<site>-->
-            <!--<id>parent.jcabi.com</id>-->
-            <!--<url>http://parent.jcabi.com/</url>-->
-        <!--</site>-->
-    <!--</distributionManagement>-->
 
-  <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <finalName>${project.artifactId}-${project.version}</finalName>
-  </properties>
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+    </properties>
 
-  <dependencies>
+    <dependencies>
 
-    <dependency>
-      <groupId>org.eclipse.jdt</groupId>
-      <artifactId>org.eclipse.jdt.core</artifactId>
-      <version>3.12.3</version>
-    </dependency>
+        <dependency>
+            <groupId>org.eclipse.jdt</groupId>
+            <artifactId>org.eclipse.jdt.core</artifactId>
+            <version>3.12.3</version>
+        </dependency>
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
-    </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
 
-  </dependencies>
+    </dependencies>
 
-  <build>
-    <finalName>${finalName}</finalName>
+    <build>
+        <finalName>${finalName}</finalName>
 
-    <plugins>
+        <plugins>
 
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifest>
-              <mainClass>sharpen.core.SharpenCmd</mainClass>
-            </manifest>
-          </archive>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
-        </configuration>
-        <executions>
-          <execution>
-            <id>make-assembly</id> <!-- this is used for inheritance merges -->
-            <phase>package</phase> <!-- bind to the packaging phase -->
-            <goals>
-            <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>sharpen.core.SharpenCmd</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <phase>package</phase> <!-- bind to the packaging phase -->
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-    </plugins>
+        </plugins>
 
-  </build>
+    </build>
 
-  <profiles>
-    <profile>
-        <!--
-        Static quality analysis with Qulice and other tools.
-        This profile is supposed to be activated in continuous
-        integration environment, right before the final approval
-        of the build. It runs a number of static code analysis
-        tools to validate and approve the quality of source
-        code and the SCM repository.
-        @see http://www.jcabi.com/jcabi-parent/profile-qulice.html
-        -->
-        <id>qulice</id>
-        <build>
-            <plugins>
-                <plugin>
-                    <!--
-                    Qulice-maven-plugin is a compound static analysis
-                    tool that aggregates Checkstyle, PMD, FindBugs,
-                    CodeNarc (for Groovy code) and a few other analyzers.
-                    Qulice also configures them correctly to enable the
-                    most important rules.
-                    @see http://www.qulice.com/qulice-maven-plugin/
-                    -->
-                    <groupId>com.qulice</groupId>
-                    <artifactId>qulice-maven-plugin</artifactId>
-                    <version>0.12</version>
-                    <executions>
-                        <execution>
-                            <id>sharpen-check</id>
-                            <phase>verify</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                            <configuration>
-                                <license>file:${basedir}/LICENSE.txt</license>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-            </plugins>
-        </build>
-    </profile>
-  </profiles>
+    <profiles>
+        <profile>
+            <!--
+            Static quality analysis with Qulice and other tools.
+            This profile is supposed to be activated in continuous
+            integration environment, right before the final approval
+            of the build. It runs a number of static code analysis
+            tools to validate and approve the quality of source
+            code and the SCM repository.
+            @see http://www.jcabi.com/jcabi-parent/profile-qulice.html
+            -->
+            <id>qulice</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <!--
+                        Qulice-maven-plugin is a compound static analysis
+                        tool that aggregates Checkstyle, PMD, FindBugs,
+                        CodeNarc (for Groovy code) and a few other analyzers.
+                        Qulice also configures them correctly to enable the
+                        most important rules.
+                        @see http://www.qulice.com/qulice-maven-plugin/
+                        -->
+                        <groupId>com.qulice</groupId>
+                        <artifactId>qulice-maven-plugin</artifactId>
+                        <version>0.12</version>
+                        <executions>
+                            <execution>
+                                <id>sharpen-check</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                                <configuration>
+                                    <license>file:${basedir}/LICENSE.txt</license>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>integration</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.8</version>
+                        <executions>
+                            <execution>
+                                <id>sharpen</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+
+                                        <echo message="Converting Java integration tests into C#"/>
+                                        <property name="compile_classpath" refid="maven.compile.classpath"/>
+                                        <java classname="sharpen.core.SharpenCmd" fork="true" dir="${project.basedir}/src/test" failonerror="true">
+                                            <classpath>
+                                                <pathelement path="${compile_classpath}"/>
+                                            </classpath>
+                                            <arg value="@integration-tests"/>
+                                            <arg value="-cp"/>
+                                            <arg value="${junit:junit:jar}"/>
+                                        </java>
+
+                                        <echo message="Compile converted C# tests"/>
+                                        <exec executable="mcs" failonerror="true">
+                                            <arg value="-target:library"/>
+                                            <arg value="-r:nunit.framework"/>
+                                            <arg value="-out:${project.build.directory}/UnityIntegrationTestsProject/Tests.dll"/>
+                                            <arg value="-recurse:${project.build.directory}/UnityIntegrationTestsProject/Assets/Scripts/*.cs"/>
+                                        </exec>pw
+
+                                        <echo message="Run converted C# tests"/>
+                                        <exec executable="nunit-console" failonerror="true">
+                                            <arg value="${project.build.directory}/UnityIntegrationTestsProject/Tests.dll"/>
+                                            <arg value="-xml:${project.build.directory}/UnityIntegrationTestsProject/TestsResult.xml"/>
+                                        </exec>
+
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

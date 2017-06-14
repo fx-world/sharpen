@@ -1,0 +1,13 @@
+integrationGenerator
+
+-srcFolder java/sharpen/integration
+-outputFolder ../../target/UnityIntegrationTestsProject/Assets/Scripts/Gen
+
+-junitConversion
+
+-organizeUsings
+-maxColumns 500
+-egyptianBrackets
+-nativeTypeSystem
+-indentWithSpaces
+-indentSize 4
