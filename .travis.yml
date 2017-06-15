@@ -8,6 +8,7 @@ script: mvn -DfinalName=sharpen integration-test -q -Pintegration
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y mono-complete
+  - sudo apt-get install -y nunit-console
 
 deploy:
   provider: releases
