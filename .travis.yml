@@ -3,7 +3,7 @@ jdk:
   - oraclejdk8
 mono:
   - 3.12.0
-script: mvn -DfinalName=sharpen integration-test -q -Pintegration
+script: mvn -DfinalName=sharpen test -q -Pintegration
 
 before_install:
   - sudo apt-get -qq update
