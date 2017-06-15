@@ -195,7 +195,7 @@
                                             <arg value="-r:nunit.framework"/>
                                             <arg value="-out:${project.build.directory}/UnityIntegrationTestsProject/Tests.dll"/>
                                             <arg value="-recurse:${project.build.directory}/UnityIntegrationTestsProject/Assets/Scripts/*.cs"/>
-                                        </exec>pw
+                                        </exec>
 
                                         <echo message="Run converted C# tests"/>
                                         <exec executable="nunit-console" failonerror="true">
