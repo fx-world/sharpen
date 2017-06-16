@@ -180,7 +180,7 @@
 
                                         <echo message="Converting Java integration tests into C#"/>
                                         <property name="compile_classpath" refid="maven.compile.classpath"/>
-                                        <java classname="sharpen.core.SharpenCmd" fork="true" dir="${project.basedir}/src/test" failonerror="true">
+                                        <java classname="sharpen.core.SharpenCmd" fork="true" dir="${project.basedir}/src/test">
                                             <classpath>
                                                 <pathelement path="${compile_classpath}"/>
                                             </classpath>
@@ -190,7 +190,7 @@
                                         </java>
 
                                         <echo message="Compile converted C# tests"/>
-                                        <exec executable="/usr/bin/mcs" failonerror="true">
+                                        <exec executable="mcs">
                                             <arg value="-target:library"/>
                                             <arg value="-r:nunit.framework"/>
                                             <arg value="-out:${project.build.directory}/UnityIntegrationTestsProject/Tests.dll"/>
@@ -198,7 +198,7 @@
                                         </exec>
 
                                         <echo message="Run converted C# tests"/>
-                                        <exec executable="/usr/bin/nunit-console" failonerror="true">
+                                        <exec executable="nunit-console">
                                             <arg value="${project.build.directory}/UnityIntegrationTestsProject/Tests.dll"/>
                                             <arg value="-xml:${project.build.directory}/UnityIntegrationTestsProject/TestsResult.xml"/>
                                         </exec>
