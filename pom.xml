@@ -192,7 +192,7 @@
                                         <echo message="Compile converted C# tests"/>
                                         <exec executable="mcs">
                                             <arg value="-target:library"/>
-                                            <arg value="-r:nunit.framework"/>
+                                            <arg value="-r:nunit.framework.dll"/>
                                             <arg value="-out:${project.build.directory}/UnityIntegrationTestsProject/Tests.dll"/>
                                             <arg value="-recurse:${project.build.directory}/UnityIntegrationTestsProject/Assets/Scripts/*.cs"/>
                                         </exec>
