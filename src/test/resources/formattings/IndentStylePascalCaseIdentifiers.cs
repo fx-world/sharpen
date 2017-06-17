@@ -186,14 +186,14 @@ namespace formattings
 			{
 			}
 
-			public static MyEnum1[] values()
+			public static MyEnum1[] Values()
 			{
 				return new MyEnum1[] { VALUE1, VALUE2, VALUE3 };
 			}
 
 			static MyEnum1()
 			{
-				RegisterValues<MyEnum1>(values());
+				RegisterValues<MyEnum1>(Values());
 			}
 		}
 	}

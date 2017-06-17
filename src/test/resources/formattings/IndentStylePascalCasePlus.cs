@@ -166,6 +166,7 @@ namespace Formattings
 			public virtual void Method2(long v)
 			{
 				field2 = v;
+				Formattings.IndentStylePascalCasePlus.MyEnum1.Values();
 			}
 		}
 
@@ -186,14 +187,14 @@ namespace Formattings
 			{
 			}
 
-			public static MyEnum1[] values()
+			public static MyEnum1[] Values()
 			{
 				return new MyEnum1[] { Value1, Value2, Value3 };
 			}
 
 			static MyEnum1()
 			{
-				RegisterValues<MyEnum1>(values());
+				RegisterValues<MyEnum1>(Values());
 			}
 		}
 	}
