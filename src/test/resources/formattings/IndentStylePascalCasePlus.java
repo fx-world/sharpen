@@ -118,6 +118,7 @@ public class IndentStylePascalCasePlus {
 
         public void method2(long v) {
             field2 = v;
+            MyEnum1.values();
         }
 
     }
