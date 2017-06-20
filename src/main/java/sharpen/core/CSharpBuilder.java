@@ -630,7 +630,7 @@ public class CSharpBuilder extends ASTVisitor {
     private void implementEnumValuesMethod(EnumDeclaration enumNode, CSTypeDeclaration type) {
         CSTypeReference enumType = new CSTypeReference(enumNode.getName().getIdentifier());
 
-        CSMethod method = new CSMethod("values");
+        CSMethod method = new CSMethod(methodName("values"));
         method.visibility(CSVisibility.Public);
         method.modifier(CSMethodModifier.Static);
         method.returnType(new CSArrayTypeReference(enumType, 1));
@@ -653,7 +653,7 @@ public class CSharpBuilder extends ASTVisitor {
         CSConstructor staticConstructor = new CSConstructor(CSConstructorModifier.Static);
         CSMethodInvocationExpression methodInvocationExpression = new CSMethodInvocationExpression(new CSReferenceExpression("RegisterValues"));
         methodInvocationExpression.addTypeArgument(new CSTypeReference(enumNode.getName().getIdentifier()));
-        methodInvocationExpression.addArgument(new CSMethodInvocationExpression(new CSReferenceExpression("values")));
+        methodInvocationExpression.addArgument(new CSMethodInvocationExpression(new CSReferenceExpression(methodName("values"))));
         staticConstructor.body().addStatement(methodInvocationExpression);
         type.addMember(staticConstructor);
     }
