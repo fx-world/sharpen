@@ -16,8 +16,8 @@ namespace collections {
             System.Collections.Generic.LinkedList<string> ll = new System.Collections.Generic.LinkedList<string>();
             ll.AddFirst("f1");
             ll.AddLast("l1");
-            ll.RemoveFirst();
-            ll.RemoveLast();
+            Sharpen.Collections.RemoveFirst(ll);
+            Sharpen.Collections.RemoveLast(ll);
             ll.Remove("1");
             System.Console.Out.WriteLine(ll);
         }

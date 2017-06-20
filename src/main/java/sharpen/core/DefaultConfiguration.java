@@ -179,8 +179,8 @@ public class DefaultConfiguration extends Configuration {
         mapMethod("java.util.List.remove", "RemoveAtReturningValue");
         mapMethod("java.util.Deque.addFirst", "AddFirst");
         mapMethod("java.util.Deque.addLast", "AddLast");
-        mapMethod("java.util.Deque.removeFirst", "RemoveFirst");
-        mapMethod("java.util.Deque.removeLast", "RemoveLast");
+        mapMethod("java.util.Deque.removeFirst", collectionRuntimeMethod("RemoveFirst"));
+        mapMethod("java.util.Deque.removeLast", collectionRuntimeMethod("RemoveLast"));
 
         mapMethod("java.util.Collections.max", "System.Linq.Enumerable.Max");
         mapMethod("java.util.Collections.min", "System.Linq.Enumerable.Min");

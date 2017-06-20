@@ -2,13 +2,9 @@ package sharpen.integration;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @SuppressWarnings("ConstantConditions")
 // Integration tests could be run by comman:
@@ -34,6 +30,34 @@ public class IntegrationTest {
         assertTrue(ArrayList.class.isAssignableFrom(list.getClass()));
         assertTrue(list.getClass().isAssignableFrom(ArrayList.class));
         assertFalse(LinkedList.class.isAssignableFrom(list.getClass()));
+    }
+
+    @Test
+    public void linkedList() {
+        LinkedList<String> list = new LinkedList<>();
+        list.addLast("1");
+        list.addLast("2");
+        list.addLast("3");
+        assertEquals(Arrays.asList("1", "2", "3"), list);
+
+        list.addFirst("0");
+        assertEquals(Arrays.asList("0", "1", "2", "3"), list);
+
+        assertEquals("0", list.removeFirst());
+        assertEquals("3", list.removeLast());
+        assertEquals(Arrays.asList("1", "2"), list);
+
+        list.clear();
+        try {
+            list.removeFirst();
+            fail();
+        } catch (RuntimeException expected) {
+        }
+        try {
+            list.removeLast();
+            fail();
+        } catch (RuntimeException expected) {
+        }
     }
 
 }

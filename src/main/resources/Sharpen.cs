@@ -181,6 +181,18 @@ namespace Sharpen {
             return default(V);
         }
 
+        public static T RemoveFirst<T>(LinkedList<T> linkedList) {
+            var result = linkedList.First.Value;
+            linkedList.RemoveFirst();
+            return result;
+        }
+
+        public static T RemoveLast<T>(LinkedList<T> linkedList) {
+            var result = linkedList.Last.Value;
+            linkedList.RemoveLast();
+            return result;
+        }
+
         public static void PutAll<CK, CV, IK, IV>(IDictionary<CK, CV> collection, IDictionary<IK, IV> items)
             where IK : CK where IV : CV {
             foreach (var e in items) {
