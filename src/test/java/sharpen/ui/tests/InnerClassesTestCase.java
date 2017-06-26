@@ -131,6 +131,11 @@ public class InnerClassesTestCase extends AbstractConversionTestCase {
         runResourceTestCase("AnonymousInnerClass1");
     }
 
+    @Test
+    public void testErasure() throws Throwable {
+        runResourceTestCase("AnonymousInnerClass14");
+    }
+
     @Override
     protected void runResourceTestCase(String resourceName) throws IOException, CoreException {
         super.runResourceTestCase("innerclasses/" + resourceName);

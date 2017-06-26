@@ -1,0 +1,20 @@
+package innerclasses;
+
+public class AnonymousInnerClass14<T> {
+
+    public abstract class EntityVisitor {
+        abstract void visit(int x);
+    }
+
+    void bee() {
+    }
+
+    void foo() {
+        EntityVisitor closure = new EntityVisitor() {
+            @Override public void visit(int x) {
+                AnonymousInnerClass14.this.bee();
+            }
+        };
+    }
+
+}

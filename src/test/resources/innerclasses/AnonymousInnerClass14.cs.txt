@@ -1,0 +1,43 @@
+namespace innerclasses
+{
+	public class AnonymousInnerClass14<T>
+	{
+		public abstract class EntityVisitor
+		{
+			internal abstract void visit(int x);
+
+			internal EntityVisitor(AnonymousInnerClass14<T> _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			private readonly AnonymousInnerClass14<T> _enclosing;
+		}
+
+		internal virtual void bee()
+		{
+		}
+
+		internal virtual void foo()
+		{
+			innerclasses.AnonymousInnerClass14.EntityVisitor closure = new _EntityVisitor_13(
+				this);
+		}
+
+		private sealed class _EntityVisitor_13 : innerclasses.AnonymousInnerClass14.EntityVisitor
+		{
+			public _EntityVisitor_13(AnonymousInnerClass14<T> _enclosing)
+				: base(_enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			internal override void visit(int x)
+			{
+				this._enclosing.bee();
+			}
+
+			private readonly AnonymousInnerClass14<T> _enclosing;
+		}
+	}
+}

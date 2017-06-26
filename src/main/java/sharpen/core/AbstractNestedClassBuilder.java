@@ -90,7 +90,7 @@ public abstract class AbstractNestedClassBuilder extends CSharpBuilder {
         CSExpression enclosing = new CSThisExpression();
         ITypeBinding binding = nestedTypeBinding();
         ITypeBinding to = enclosingClassBinding;
-        while (binding != to && (ignoreSuperclass || !isSuperclass(binding, to))) {
+        while (binding.getErasure() != to.getErasure() && (ignoreSuperclass || !isSuperclass(binding, to))) {
             requireEnclosingReference();
             enclosing = new CSMemberReferenceExpression(enclosing, "_enclosing");
             binding = binding.getDeclaringClass();
