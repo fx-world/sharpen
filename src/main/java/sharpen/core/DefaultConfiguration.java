@@ -78,8 +78,14 @@ public class DefaultConfiguration extends Configuration {
         mapMethod("java.lang.Math.sqrt", "System.Math.Sqrt");
         mapMethod("java.lang.Math.cos", "System.Math.Cos");
         mapMethod("java.lang.Math.sin", "System.Math.Sin");
+        mapMethod("java.lang.Math.log", "System.Math.Log");
+        mapMethod("java.lang.Math.tan", "System.Math.Tan");
+        mapMethod("java.lang.Math.atan", "System.Math.Atan");
+        mapMethod("java.lang.Math.sinh", "System.Math.Sinh");
         mapMethod("java.lang.Math.floorDiv", sharpenNamespace() + ".System.FloorDiv");
         mapMethod("java.lang.Integer.highestOneBit", sharpenNamespace() + ".System.HighestOneBit");
+        mapMethod("java.lang.Double.compare", "CompareTo");
+        mapMethod("java.lang.Double.doubleToLongBits", "System.BitConverter.DoubleToInt64Bits");
 
         mapMethod("length", "Length");    // see qualifiedName(IVariableBinding)
 
