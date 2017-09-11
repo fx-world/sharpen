@@ -194,6 +194,7 @@ public class DefaultConfiguration extends Configuration {
         mapMethodToMacro("java.util.Collection.isEmpty", "($expression.Count == 0)");
         mapMethodToMacro("java.util.Collections.singletonList", "System.Linq.Enumerable.ToList(new [] {$arg_0})");
         mapMethodToMacro("java.util.Collections.singletonMap", "new System.Collections.Generic.Dictionary<$type_0, $type_1>(){{$arg_0, $arg_1}}");
+        mapMethodToMacro("java.util.Collections.singleton", "new System.Collections.Generic.HashSet<$type_0>(){{$arg_0}}");
         mapMethodToMacro("java.util.Collections.emptyMap", "new System.Collections.Generic.Dictionary<$type_0, $type_1>()");
         mapMethodToMacro("java.util.Collections.emptyList", "new System.Collections.Generic.List<$type_0>()");
         mapMethodToMacro("java.util.Collections.emptySet", "new System.Collections.Generic.HashSet<$type_0>()");
