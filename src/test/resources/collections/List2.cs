@@ -8,6 +8,7 @@ namespace collections {
             al.Remove("2");
             al.RemoveAtReturningValue(1);
             Sharpen.Collections.AddAll(al, Sharpen.Arrays.AsList("5", "6", "7"));
+            al[0] = "1";
             System.Console.Out.WriteLine(al.Count);
             System.Console.Out.WriteLine((al.Count == 0));
             System.Console.Out.WriteLine(al.Contains("3"));

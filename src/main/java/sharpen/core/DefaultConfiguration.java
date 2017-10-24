@@ -182,6 +182,7 @@ public class DefaultConfiguration extends Configuration {
         mapMethod("java.util.Collection.remove", "Remove");
         mapMethod("java.util.Collection.add", "Add");
         mapMethod("java.util.List.add", "Add");
+        mapMethodToMacro("java.util.List.set", "$expression[$arg_0] = $arg_1");
         mapMethod("java.util.List.remove", "RemoveAtReturningValue");
         mapMethod("java.util.Deque.addFirst", "AddFirst");
         mapMethod("java.util.Deque.addLast", "AddLast");

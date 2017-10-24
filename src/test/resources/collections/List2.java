@@ -15,6 +15,7 @@ public class List2 {
         al.remove("2");
         al.remove(1);
         al.addAll(Arrays.asList("5", "6", "7"));
+        al.set(0, "1");
 
         System.out.println(al.size());
         System.out.println(al.isEmpty());
