@@ -102,6 +102,9 @@ public class DefaultConfiguration extends Configuration {
         ignoreType("java.lang.Override");
         ignoreType("java.lang.annotation.Inherited");
 
+        mapType("java.util.UUID", "System.Guid?");
+        mapMethodToMacro("java.util.UUID.fromString", "new System.Guid($arg_0)");
+
         setUpPrimitiveWrappers();
     }
 
