@@ -290,6 +290,50 @@ namespace Sharpen {
 
     }
 
+    public class UUID : IEquatable<UUID> {
+        private readonly long mostSigBits;
+        private readonly long leastSigBits;
+
+        public UUID(long mostSigBits, long leastSigBits) {
+            this.mostSigBits = mostSigBits;
+            this.leastSigBits = leastSigBits;
+        }
+
+        public long getMostSignificantBits() {
+            return mostSigBits;
+        }
+
+        public long getLeastSignificantBits() {
+            return leastSigBits;
+        }
+
+        public override string ToString() {
+            return (mostSigBits >> 32).ToString("x8") + "-" +
+                   (mostSigBits >> 16).ToString("x4") + "-" +
+                   mostSigBits.ToString("x4") + "-" +
+                   (leastSigBits >> 48).ToString("x4") + "-" +
+                   leastSigBits.ToString("x12");
+        }
+
+        public bool Equals(UUID other) {
+            return mostSigBits == other.mostSigBits && leastSigBits == other.leastSigBits;
+        }
+
+        public override bool Equals(object obj) {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((UUID) obj);
+        }
+
+        public override int GetHashCode() {
+            unchecked {
+                return (mostSigBits.GetHashCode() * 397) ^ leastSigBits.GetHashCode();
+            }
+        }
+    }
+
+
     public static class Lists {
 
         public static void Add<T>(this IList<T> list, int index, T value) {
