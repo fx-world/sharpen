@@ -330,7 +330,7 @@ namespace Sharpen {
         }
 
         public static bool operator ==(UUID first, UUID second) {
-            return ReferenceEquals(first, second) || !ReferenceEquals(first, null) && !ReferenceEquals(second, null) && first.mostSigBits == second.mostSigBits && first.leastSigBits == second.leastSigBits);
+            return ReferenceEquals(first, second) || !ReferenceEquals(first, null) && !ReferenceEquals(second, null) && first.mostSigBits == second.mostSigBits && first.leastSigBits == second.leastSigBits;
         }
 
         public static bool operator !=(UUID first, UUID second) {
