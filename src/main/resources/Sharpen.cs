@@ -308,11 +308,11 @@ namespace Sharpen {
         }
 
         public override string ToString() {
-            return (mostSigBits >> 32).ToString("x8") + "-" +
-                   (mostSigBits >> 16).ToString("x4") + "-" +
-                   mostSigBits.ToString("x4") + "-" +
-                   (leastSigBits >> 48).ToString("x4") + "-" +
-                   leastSigBits.ToString("x12");
+            return ((mostSigBits >> 32) & 0xFFFFFFFF).ToString("x8") + "-" +
+                   ((mostSigBits >> 16) & 0xFFFF).ToString("x4") + "-" +
+                   (mostSigBits & 0xFFFF).ToString("x4") + "-" +
+                   ((leastSigBits >> 48) & 0xFFFF).ToString("x4") + "-" +
+                   (leastSigBits & 0xFFFFFFFFFFFF).ToString("x12");
         }
 
         public bool Equals(UUID other) {
@@ -325,7 +325,8 @@ namespace Sharpen {
 
         public override int GetHashCode() {
             unchecked {
-                return (mostSigBits.GetHashCode() * 397) ^ leastSigBits.GetHashCode();
+                long hilo = mostSigBits ^ leastSigBits;
+                return ((int)(hilo >> 32)) ^ (int) hilo;
             }
         }
 
