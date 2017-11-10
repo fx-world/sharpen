@@ -316,14 +316,11 @@ namespace Sharpen {
         }
 
         public bool Equals(UUID other) {
-            return other != null && mostSigBits == other.mostSigBits && leastSigBits == other.leastSigBits;
+            return this == other;
         }
 
         public override bool Equals(object obj) {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
-            return Equals((UUID) obj);
+            return this == obj as UUID;
         }
 
         public override int GetHashCode() {
@@ -333,7 +330,7 @@ namespace Sharpen {
         }
 
         public static bool operator ==(UUID first, UUID second) {
-            return first == second || first != null && first.Equals(second);
+            return ReferenceEquals(first, second) || !ReferenceEquals(first, null) && !ReferenceEquals(second, null) && first.mostSigBits == second.mostSigBits && first.leastSigBits == second.leastSigBits);
         }
 
         public static bool operator !=(UUID first, UUID second) {
