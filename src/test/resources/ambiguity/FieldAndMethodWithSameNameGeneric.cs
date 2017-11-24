@@ -1,25 +1,25 @@
 namespace ambiguity {
     public class FieldAndMethodWithSameNameGeneric<T> {
         public virtual int getNow() {
-            return __now;
+            return now__;
         }
 
         public virtual void setNow(int now) {
-            this.__now = now;
+            this.now__ = now;
         }
 
-        public int __now;
+        public int now__;
 
         public virtual int now() {
-            return __now;
+            return now__;
         }
 
         public virtual void work() {
-            System.Console.Out.WriteLine("now: " + __now);
-            System.Console.Out.WriteLine("now: " + this.__now);
+            System.Console.Out.WriteLine("now: " + now__);
+            System.Console.Out.WriteLine("now: " + this.now__);
             System.Console.Out.WriteLine("now(): " + now());
-            __now = 100;
-            this.__now = 100;
+            now__ = 100;
+            this.now__ = 100;
         }
     }
 }
