@@ -75,6 +75,7 @@ public class SharpenCommandLine {
     public final List<Configuration.NameMapping> namespaceMappings = new ArrayList<Configuration.NameMapping>();
     public final List<Configuration.NameMapping> typeMappings = new ArrayList<Configuration.NameMapping>();
     public final Map<String, Configuration.MemberMapping> memberMappings = new HashMap<String, Configuration.MemberMapping>();
+    public final Map<String, String> methodMacroMapping = new HashMap<String, String>();
     public final Set<String> ignoredTypes = new HashSet<>();
     public boolean nativeInterfaces;
     public boolean separateInterfaceConstants;

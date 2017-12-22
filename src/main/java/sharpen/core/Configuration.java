@@ -365,6 +365,10 @@ public abstract class Configuration {
         _memberMappings.putAll(memberMappings);
     }
 
+    public void mapMethodMacros(Map<String, String> macroMappings) {
+        _mappedMethodToMacro.putAll(macroMappings);
+    }
+
     public String mappedNamespace(String namespace) {
         String mapped = applyNamespaceMappings(namespace + ".");
         return _namingStrategy.namespace(mapped.substring(0, mapped.length() - 1));

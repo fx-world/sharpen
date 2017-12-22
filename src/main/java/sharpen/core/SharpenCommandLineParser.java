@@ -130,6 +130,10 @@ class SharpenCommandLineParser extends CommandLineParser {
         } else if (areEqual(arg, "-indexerMapping")) {
             String from = consumeNext();
             _cmdLine.memberMappings.put(from, new Configuration.MemberMapping(null, MemberKind.Indexer));
+        } else if (areEqual(arg, "-methodMacroMapping")) {
+            String from = consumeNext();
+            String to = consumeNext();
+            _cmdLine.methodMacroMapping.put(from, to);
         } else if (areEqual(arg, "-makePartial")) {
             _cmdLine.partialTypes.add(consumeNext());
         } else if (areEqual(arg, "-runtimeTypeName")) {
