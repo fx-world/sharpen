@@ -72,7 +72,6 @@ public class DefaultConfiguration extends Configuration {
         mapMethod("java.lang.Math.atan2", "System.Math.Atan2");
         mapMethod("java.lang.Math.log10", "System.Math.Log10");
         mapMethod("java.lang.Math.pow", "System.Math.Pow");
-        mapMethod("java.lang.Math.round", "System.Math.Round");
         mapMethod("java.lang.Math.atan2", "System.Math.Atan2");
         mapMethod("java.lang.Math.signum", "System.Math.Sign");
         mapMethod("java.lang.Math.sqrt", "System.Math.Sqrt");
@@ -83,6 +82,7 @@ public class DefaultConfiguration extends Configuration {
         mapMethod("java.lang.Math.atan", "System.Math.Atan");
         mapMethod("java.lang.Math.sinh", "System.Math.Sinh");
         mapMethod("java.lang.Math.floorDiv", sharpenNamespace() + ".System.FloorDiv");
+        mapMethod("java.lang.Math.round", sharpenNamespace() + ".System.Round");
         mapMethod("java.lang.Integer.highestOneBit", sharpenNamespace() + ".System.HighestOneBit");
         mapMethod("java.lang.Double.compare", "CompareTo");
         mapMethod("java.lang.Double.doubleToLongBits", "System.BitConverter.DoubleToInt64Bits");
@@ -202,12 +202,12 @@ public class DefaultConfiguration extends Configuration {
         mapMethodToMacro("java.util.Collections.emptyList", "new System.Collections.Generic.List<$type_0>()");
         mapMethodToMacro("java.util.Collections.emptySet", "new System.Collections.Generic.HashSet<$type_0>()");
 
-        mapMethod("java.util.Arrays.equals", "Sharpen.Arrays.Equals");
-        mapMethod("java.util.Arrays.fill", "Sharpen.Arrays.Fill");
-        mapMethod("java.util.Arrays.asList", "Sharpen.Arrays.AsList");
-        mapMethod("java.util.Arrays.copyOf", "Sharpen.Arrays.CopyOf");
-        mapMethod("java.util.Arrays.hashCode", "Sharpen.Arrays.HashCode");
-        mapMethod("java.util.Arrays.toString", "Sharpen.Arrays.ToString");
+        mapMethod("java.util.Arrays.equals", sharpenNamespace() + ".Arrays.Equals");
+        mapMethod("java.util.Arrays.fill", sharpenNamespace() + ".Arrays.Fill");
+        mapMethod("java.util.Arrays.asList", sharpenNamespace() + ".Arrays.AsList");
+        mapMethod("java.util.Arrays.copyOf", sharpenNamespace() + ".Arrays.CopyOf");
+        mapMethod("java.util.Arrays.hashCode", sharpenNamespace() + ".Arrays.HashCode");
+        mapMethod("java.util.Arrays.toString", sharpenNamespace() + ".Arrays.ToString");
 
         mapMethod("java.util.Collection.addAll", collectionRuntimeMethod("AddAll"));
         mapMethod("java.util.Map.putAll", collectionRuntimeMethod("PutAll"));

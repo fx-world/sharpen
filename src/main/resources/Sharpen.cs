@@ -94,6 +94,14 @@ namespace Sharpen {
             return r;
         }
 
+        public static int Round(float v) {
+            return (int) Math.Floor(v + 0.5f);
+        }
+
+        public static long Round(double v) {
+            return (long) Math.Floor(v + 0.5d);
+        }
+
         public static int HighestOneBit(int i) {
             uint u = (uint) i;
             u |= (u >> 1);
@@ -326,7 +334,7 @@ namespace Sharpen {
         public override int GetHashCode() {
             unchecked {
                 long hilo = mostSigBits ^ leastSigBits;
-                return ((int)(hilo >> 32)) ^ (int) hilo;
+                return ((int) (hilo >> 32)) ^ (int) hilo;
             }
         }
 

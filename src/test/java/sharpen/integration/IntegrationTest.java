@@ -60,4 +60,24 @@ public class IntegrationTest {
         }
     }
 
+    @Test
+    public void mathRound() {
+        assertEquals(1, Math.round(1.4f));
+        assertEquals(1, Math.round(1.4));
+        assertEquals(2, Math.round(1.6f));
+        assertEquals(2, Math.round(1.6));
+        assertEquals(2, Math.round(1.5f));
+        assertEquals(2, Math.round(1.5));
+        assertEquals(3, Math.round(2.5f));
+        assertEquals(3, Math.round(2.5));
+        assertEquals(-1, Math.round(-1.4f));
+        assertEquals(-1, Math.round(-1.4));
+        assertEquals(-2, Math.round(-1.6f));
+        assertEquals(-2, Math.round(-1.6));
+        assertEquals(-1, Math.round(-1.5f));
+        assertEquals(-1, Math.round(-1.5));
+        assertEquals(-2, Math.round(-2.5f));
+        assertEquals(-2, Math.round(-2.5));
+    }
+
 }
