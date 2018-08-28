@@ -298,7 +298,7 @@ namespace Sharpen {
 
     }
 
-    public class UUID : IEquatable<UUID> {
+    public class UUID : IEquatable<UUID>, IComparable<UUID> {
         private readonly long mostSigBits;
         private readonly long leastSigBits;
 
@@ -336,6 +336,14 @@ namespace Sharpen {
                 long hilo = mostSigBits ^ leastSigBits;
                 return ((int) (hilo >> 32)) ^ (int) hilo;
             }
+        }
+
+        public int CompareTo(UUID other) {
+            return (mostSigBits < other.mostSigBits ? -1 :
+                (mostSigBits > other.mostSigBits ? 1 :
+                    (leastSigBits < other.leastSigBits ? -1 :
+                        (leastSigBits > other.leastSigBits ? 1 :
+                            0))));
         }
 
         public static bool operator ==(UUID first, UUID second) {
