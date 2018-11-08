@@ -9,6 +9,10 @@ public class StringMethods1
 		{
 			print(s.ToUpper());
 		}
+		else if ((s.Length == 0))
+		{
+			print("empty");
+		}
 		else
 		{
 			int j = s.Trim().LastIndexOf("foo") - s.Length;

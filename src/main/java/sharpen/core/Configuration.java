@@ -187,6 +187,7 @@ public abstract class Configuration {
         mapMethod("java.lang.String.String(byte[],java.lang.String)", runtimeMethod("getStringForBytes"));
         mapProperty("java.lang.String.length", "Length");
         mapProperty("java.lang.CharSequence.length", "Length");
+        mapMethodToMacro("java.lang.String.isEmpty", "($expression.Length == 0)");
     }
 
     protected void setUpIoMappings() {
