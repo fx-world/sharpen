@@ -176,11 +176,13 @@ public class CSharpBuilder extends ASTVisitor {
         return _compilationUnit;
     }
 
-    public boolean visit(ImportDeclaration node) {
+    @Override
+	public boolean visit(ImportDeclaration node) {
         return false;
     }
 
-    public boolean visit(final EnumDeclaration node) {
+    @Override
+	public boolean visit(final EnumDeclaration node) {
         if (processIgnoredType(node)) {
             return false;
         }
@@ -188,7 +190,8 @@ public class CSharpBuilder extends ASTVisitor {
         try {
             my(NameScope.class).enterTypeDeclaration(node);
             _ignoreExtends.using(ignoreExtends(node), new Runnable() {
-                public void run() {
+                @Override
+				public void run() {
                     final ITypeBinding binding = node.resolveBinding();
                     if (!binding.isNested()) {
                         processTypeDeclaration(node);
@@ -219,7 +222,8 @@ public class CSharpBuilder extends ASTVisitor {
         try {
             my(NameScope.class).enterTypeDeclaration(node);
             _ignoreExtends.using(ignoreExtends(node), new Runnable() {
-                public void run() {
+                @Override
+				public void run() {
                     new CSharpBuilder(CSharpBuilder.this).processTypeDeclaration(node);
                 }
             });
@@ -241,7 +245,8 @@ public class CSharpBuilder extends ASTVisitor {
         return false;
     }
 
-    public boolean visit(final LabeledStatement node) {
+    @Override
+	public boolean visit(final LabeledStatement node) {
         String identifier = node.getLabel().getIdentifier();
         _currentContinueLabel = new CSLabelStatement(continueLabel(identifier));
         try {
@@ -261,7 +266,8 @@ public class CSharpBuilder extends ASTVisitor {
         return identifier + "_continue";
     }
 
-    public boolean visit(SuperFieldAccess node) {
+    @Override
+	public boolean visit(SuperFieldAccess node) {
         String name = mappedFieldName(node);
         if (null == node.getQualifier()) {
             pushExpression(new CSMemberReferenceExpression(new CSBaseExpression(), name));
@@ -271,7 +277,8 @@ public class CSharpBuilder extends ASTVisitor {
         return false;
     }
 
-    public boolean visit(MemberRef node) {
+    @Override
+	public boolean visit(MemberRef node) {
         notImplemented(node);
         return false;
     }
@@ -286,7 +293,8 @@ public class CSharpBuilder extends ASTVisitor {
         throw new IllegalArgumentException(sourceInformation(node) + ": " + node.toString());
     }
 
-    public boolean visit(PackageDeclaration node) {
+    @Override
+	public boolean visit(PackageDeclaration node) {
         _compilationUnit.setPackagePosition(node.getStartPosition());
         String namespace = node.getName().toString();
         _compilationUnit.namespace(mappedNamespace(namespace));
@@ -295,7 +303,8 @@ public class CSharpBuilder extends ASTVisitor {
         return false;
     }
 
-    public boolean visit(AnonymousClassDeclaration node) {
+    @Override
+	public boolean visit(AnonymousClassDeclaration node) {
         CSAnonymousClassBuilder builder = mapAnonymousClass(node);
         pushExpression(builder.createConstructorInvocation());
         return false;
@@ -346,7 +355,8 @@ public class CSharpBuilder extends ASTVisitor {
         return type;
     }
 
-    public boolean visit(final TypeDeclaration node) {
+    @Override
+	public boolean visit(final TypeDeclaration node) {
 
         if (processIgnoredType(node)) {
             return false;
@@ -356,7 +366,8 @@ public class CSharpBuilder extends ASTVisitor {
             my(NameScope.class).enterTypeDeclaration(node);
 
             _ignoreExtends.using(ignoreExtends(node), new Runnable() {
-                public void run() {
+                @Override
+				public void run() {
 
                     final ITypeBinding binding = node.resolveBinding();
                     if (!binding.isNested()) {
@@ -1004,7 +1015,8 @@ public class CSharpBuilder extends ASTVisitor {
 
     private void mapDocumentation(final BodyDeclaration bodyDecl, final CSMember member) {
         my(PreserveFullyQualifiedNamesState.class).using(true, new Runnable() {
-            public void run() {
+            @Override
+			public void run() {
                 if (processDocumentationOverlay(member)) {
                     return;
                 }
@@ -1212,7 +1224,7 @@ public class CSharpBuilder extends ASTVisitor {
         TagElement element = javadocTagFor(node, SharpenAnnotations.SHARPEN_PARTIAL);
         if (null == element)
             return;
-        ((CSTypeDeclaration) member).partial(true);
+        member.partial(true);
     }
 
     private TagElement javadocTagFor(PackageDeclaration node, final String withName) {
@@ -1499,7 +1511,8 @@ public class CSharpBuilder extends ASTVisitor {
         return new CSDocTextNode(node.toString());
     }
 
-    public boolean visit(FieldDeclaration node) {
+    @Override
+	public boolean visit(FieldDeclaration node) {
         if (SharpenAnnotations.hasIgnoreAnnotation(node)) {
             return false;
         }
@@ -1624,7 +1637,8 @@ public class CSharpBuilder extends ASTVisitor {
         return node.getName().toString().equals("finalize");
     }
 
-    public boolean visit(Initializer node) {
+    @Override
+	public boolean visit(Initializer node) {
         if (Modifier.isStatic(node.getModifiers())) {
             CSConstructor ctor = new CSConstructor(CSConstructorModifier.Static);
             _currentType.addMember(ctor);
@@ -1635,7 +1649,8 @@ public class CSharpBuilder extends ASTVisitor {
         return false;
     }
 
-    public boolean visit(MethodDeclaration node) {
+    @Override
+	public boolean visit(MethodDeclaration node) {
         nullablePrimitivesVariables.clear();
 
         if (SharpenAnnotations.hasIgnoreAnnotation(node) || isRemoved(node)) {
@@ -2172,7 +2187,8 @@ public class CSharpBuilder extends ASTVisitor {
                 : new CSThisExpression();
     }
 
-    public boolean visit(ConstructorInvocation node) {
+    @Override
+	public boolean visit(ConstructorInvocation node) {
         addChainedConstructorInvocation(new CSThisExpression(), node.arguments());
         return false;
     }
@@ -2183,7 +2199,8 @@ public class CSharpBuilder extends ASTVisitor {
         ((CSConstructor) _currentMethod).chainedConstructorInvocation(cie);
     }
 
-    public boolean visit(SuperConstructorInvocation node) {
+    @Override
+	public boolean visit(SuperConstructorInvocation node) {
         if (null != node.getExpression()) {
             notImplemented(node);
         }
@@ -2205,13 +2222,15 @@ public class CSharpBuilder extends ASTVisitor {
         _currentBlock = saved;
     }
 
-    public boolean visit(VariableDeclarationExpression node) {
+    @Override
+	public boolean visit(VariableDeclarationExpression node) {
         pushExpression(new CSDeclarationExpression(createVariableDeclaration((VariableDeclarationFragment) node
                 .fragments().get(0))));
         return false;
     }
 
-    public boolean visit(VariableDeclarationStatement node) {
+    @Override
+	public boolean visit(VariableDeclarationStatement node) {
         for (Object f : node.fragments()) {
             VariableDeclarationFragment variable = (VariableDeclarationFragment) f;
             CSVariableDeclaration variableDeclaration = createVariableDeclaration(variable);
@@ -2265,7 +2284,8 @@ public class CSharpBuilder extends ASTVisitor {
         return ((CSReferenceExpression) expression).name().equals("GetOrNullable");
     }
 
-    public boolean visit(ExpressionStatement node) {
+    @Override
+	public boolean visit(ExpressionStatement node) {
         if (isRemovedMethodInvocation(node.getExpression())) {
             return false;
         }
@@ -2285,7 +2305,8 @@ public class CSharpBuilder extends ASTVisitor {
 
     }
 
-    public boolean visit(IfStatement node) {
+    @Override
+	public boolean visit(IfStatement node) {
         Expression expression = node.getExpression();
 
         Object constValue = constValue(expression);
@@ -2340,9 +2361,11 @@ public class CSharpBuilder extends ASTVisitor {
         return null;
     }
 
-    public boolean visit(final WhileStatement node) {
+    @Override
+	public boolean visit(final WhileStatement node) {
         consumeContinueLabel(new Function<CSBlock>() {
-            public CSBlock apply() {
+            @Override
+			public CSBlock apply() {
                 CSWhileStatement stmt = new CSWhileStatement(node.getStartPosition(), mapExpression(node.getExpression()));
                 visitBlock(stmt.body(), node.getBody());
                 addStatement(stmt);
@@ -2352,9 +2375,11 @@ public class CSharpBuilder extends ASTVisitor {
         return false;
     }
 
-    public boolean visit(final DoStatement node) {
+    @Override
+	public boolean visit(final DoStatement node) {
         consumeContinueLabel(new Function<CSBlock>() {
-            public CSBlock apply() {
+            @Override
+			public CSBlock apply() {
                 CSDoStatement stmt = new CSDoStatement(node.getStartPosition(), mapExpression(node.getExpression()));
                 visitBlock(stmt.body(), node.getBody());
                 addStatement(stmt);
@@ -2364,7 +2389,8 @@ public class CSharpBuilder extends ASTVisitor {
         return false;
     }
 
-    public boolean visit(TryStatement node) {
+    @Override
+	public boolean visit(TryStatement node) {
         CSTryStatement stmt = new CSTryStatement(node.getStartPosition());
         CSBlock body = stmt.body();
         for (Object resource : node.resources()) {
@@ -2432,7 +2458,8 @@ public class CSharpBuilder extends ASTVisitor {
         return "java.lang.Throwable".equals(qualifiedName(declaringClass));
     }
 
-    public boolean visit(ThrowStatement node) {
+    @Override
+	public boolean visit(ThrowStatement node) {
         addStatement(mapThrowStatement(node));
         return false;
     }
@@ -2452,7 +2479,8 @@ public class CSharpBuilder extends ASTVisitor {
         return ((SimpleName) exception).resolveBinding() == _currentExceptionVariable;
     }
 
-    public boolean visit(BreakStatement node) {
+    @Override
+	public boolean visit(BreakStatement node) {
         SimpleName labelName = node.getLabel();
         if (labelName != null) {
             addStatement(new CSGotoStatement(node.getStartPosition(), breakLabel(labelName.getIdentifier())));
@@ -2462,7 +2490,8 @@ public class CSharpBuilder extends ASTVisitor {
         return false;
     }
 
-    public boolean visit(ContinueStatement node) {
+    @Override
+	public boolean visit(ContinueStatement node) {
         SimpleName labelName = node.getLabel();
         if (labelName != null) {
             addStatement(new CSGotoStatement(node.getStartPosition(), continueLabel(labelName.getIdentifier())));
@@ -2472,19 +2501,22 @@ public class CSharpBuilder extends ASTVisitor {
         return false;
     }
 
-    public boolean visit(SynchronizedStatement node) {
+    @Override
+	public boolean visit(SynchronizedStatement node) {
         CSLockStatement stmt = new CSLockStatement(node.getStartPosition(), mapExpression(node.getExpression()));
         visitBlock(stmt.body(), node.getBody());
         addStatement(stmt);
         return false;
     }
 
-    public boolean visit(ReturnStatement node) {
+    @Override
+	public boolean visit(ReturnStatement node) {
         addStatement(new CSReturnStatement(node.getStartPosition(), mapExpression(node.getExpression())));
         return false;
     }
 
-    public boolean visit(NumberLiteral node) {
+    @Override
+	public boolean visit(NumberLiteral node) {
 
         String token = node.getToken();
         CSExpression literal = new CSNumberLiteralExpression(token);
@@ -2516,7 +2548,8 @@ public class CSharpBuilder extends ASTVisitor {
                 expression)));
     }
 
-    public boolean visit(StringLiteral node) {
+    @Override
+	public boolean visit(StringLiteral node) {
         String value = node.getLiteralValue();
         if (value != null && value.length() == 0) {
             pushExpression(new CSReferenceExpression("string.Empty"));
@@ -2550,7 +2583,8 @@ public class CSharpBuilder extends ASTVisitor {
         return s.toString();
     }
 
-    public boolean visit(CharacterLiteral node) {
+    @Override
+	public boolean visit(CharacterLiteral node) {
         CSExpression expr = new CSCharLiteralExpression(node.getEscapedValue());
         if (expectingType("byte")) {
             expr = new CSCastExpression(new CSTypeReference("byte"), new CSParenthesizedExpression(
@@ -2564,7 +2598,8 @@ public class CSharpBuilder extends ASTVisitor {
         return (_currentExpectedType != null && _currentExpectedType.getName().equals(name));
     }
 
-    public boolean visit(NullLiteral node) {
+    @Override
+	public boolean visit(NullLiteral node) {
         if (node.getParent() instanceof CastExpression && ((CastExpression) node.getParent()).getType().resolveBinding().isTypeVariable()) {
             pushExpression(
                     new CSPrefixExpression("default",
@@ -2579,22 +2614,26 @@ public class CSharpBuilder extends ASTVisitor {
         return false;
     }
 
-    public boolean visit(BooleanLiteral node) {
+    @Override
+	public boolean visit(BooleanLiteral node) {
         pushExpression(new CSBoolLiteralExpression(node.booleanValue()));
         return false;
     }
 
-    public boolean visit(ThisExpression node) {
+    @Override
+	public boolean visit(ThisExpression node) {
         pushExpression(new CSThisExpression());
         return false;
     }
 
-    public boolean visit(ArrayAccess node) {
+    @Override
+	public boolean visit(ArrayAccess node) {
         pushExpression(new CSIndexedExpression(mapExpression(node.getArray()), mapExpression(node.getIndex())));
         return false;
     }
 
-    public boolean visit(ArrayCreation node) {
+    @Override
+	public boolean visit(ArrayCreation node) {
         ITypeBinding saved = pushExpectedType(node.getType().getElementType().resolveBinding());
         if (node.dimensions().size() > 1) {
             if (null != node.getInitializer()) {
@@ -2648,7 +2687,19 @@ public class CSharpBuilder extends ASTVisitor {
     }
 
     private int resolveIntValue(Object expression) {
-        return ((Number) ((Expression) expression).resolveConstantExpressionValue()).intValue();
+        int result = 0;
+        
+        if (expression != null) {
+        	Number constantNumber = (Number) ((Expression) expression).resolveConstantExpressionValue();
+			
+        	if (constantNumber != null) {
+        		result = constantNumber.intValue();
+        	} else {
+        		System.err.println("constant number null");
+        	}
+        }
+        
+        return result;
     }
 
     private CSArrayCreationExpression mapSingleArrayCreation(ArrayCreation node) {
@@ -2671,7 +2722,8 @@ public class CSharpBuilder extends ASTVisitor {
         return (CSArrayInitializerExpression) mapExpression(node.getInitializer());
     }
 
-    public boolean visit(ArrayInitializer node) {
+    @Override
+	public boolean visit(ArrayInitializer node) {
         if (isImplicitelyTypedArrayInitializer(node)) {
             CSArrayCreationExpression ace = new CSArrayCreationExpression(mappedTypeReference(node.resolveTypeBinding()
                     .getComponentType()));
@@ -2717,10 +2769,12 @@ public class CSharpBuilder extends ASTVisitor {
         popScope();
     }
 
-    public boolean visit(final ForStatement node) {
+    @Override
+	public boolean visit(final ForStatement node) {
         pushScope();
         consumeContinueLabel(new Function<CSBlock>() {
-            public CSBlock apply() {
+            @Override
+			public CSBlock apply() {
                 ArrayList<CSExpression> initializers = new ArrayList<CSExpression>();
                 for (Object i : node.initializers()) {
                     if (i instanceof VariableDeclarationExpression) {
@@ -2782,7 +2836,8 @@ public class CSharpBuilder extends ASTVisitor {
                 || stmt instanceof CSContinueStatement;
     }
 
-    public boolean visit(SwitchStatement node) {
+    @Override
+	public boolean visit(SwitchStatement node) {
         _currentContinueLabel = null;
         CSBlock saved = _currentBlock;
 
@@ -2866,7 +2921,8 @@ public class CSharpBuilder extends ASTVisitor {
         return false;
     }
 
-    public boolean visit(CastExpression node) {
+    @Override
+	public boolean visit(CastExpression node) {
         pushExpression(new CSCastExpression(mappedTypeReference(node.getType(), false), mapExpression(node.getExpression())));
         // Make all byte casts unchecked
         if (node.getType().resolveBinding().getName().equals("byte"))
@@ -2874,7 +2930,8 @@ public class CSharpBuilder extends ASTVisitor {
         return false;
     }
 
-    public boolean visit(PrefixExpression node) {
+    @Override
+	public boolean visit(PrefixExpression node) {
         CSExpression expr;
         expr = new CSPrefixExpression(node.getOperator().toString(), mapExpression(node.getOperand()));
         if (expectingType("byte") && node.getOperator() == PrefixExpression.Operator.MINUS) {
@@ -2884,12 +2941,14 @@ public class CSharpBuilder extends ASTVisitor {
         return false;
     }
 
-    public boolean visit(PostfixExpression node) {
+    @Override
+	public boolean visit(PostfixExpression node) {
         pushExpression(new CSPostfixExpression(node.getOperator().toString(), mapExpression(node.getOperand())));
         return false;
     }
 
-    public boolean visit(InfixExpression node) {
+    @Override
+	public boolean visit(InfixExpression node) {
 
         CSExpression left = mapExpression(node.getLeftOperand());
         CSExpression right = mapExpression(node.getRightOperand());
@@ -2922,18 +2981,21 @@ public class CSharpBuilder extends ASTVisitor {
         }
     }
 
-    public boolean visit(ParenthesizedExpression node) {
+    @Override
+	public boolean visit(ParenthesizedExpression node) {
         pushExpression(new CSParenthesizedExpression(mapExpression(node.getExpression())));
         return false;
     }
 
-    public boolean visit(ConditionalExpression node) {
+    @Override
+	public boolean visit(ConditionalExpression node) {
         pushExpression(new CSConditionalExpression(mapExpression(node.getExpression()), mapExpression(node
                 .getThenExpression()), mapExpression(node.getElseExpression())));
         return false;
     }
 
-    public boolean visit(InstanceofExpression node) {
+    @Override
+	public boolean visit(InstanceofExpression node) {
         CSTypeReferenceExpression rightExp = mappedTypeReference(node.getRightOperand().resolveBinding(), false, true);
         if (rightExp instanceof CSTypeReference && !((CSTypeReference) rightExp).typeArguments().isEmpty()) {
             CSMethodInvocationExpression mie = new CSMethodInvocationExpression(new CSReferenceExpression(
@@ -3009,7 +3071,8 @@ public class CSharpBuilder extends ASTVisitor {
         return false;
     }
 
-    public boolean visit(Assignment node) {
+    @Override
+	public boolean visit(Assignment node) {
         Expression lhs = node.getLeftHandSide();
         Expression rhs = node.getRightHandSide();
         ITypeBinding lhsType = lhs.resolveTypeBinding();
@@ -3072,7 +3135,8 @@ public class CSharpBuilder extends ASTVisitor {
         return false;
     }
 
-    public boolean visit(ClassInstanceCreation node) {
+    @Override
+	public boolean visit(ClassInstanceCreation node) {
         if (null != node.getAnonymousClassDeclaration()) {
             node.getAnonymousClassDeclaration().accept(this);
             return false;
@@ -3127,7 +3191,8 @@ public class CSharpBuilder extends ASTVisitor {
         return false;
     }
 
-    public boolean visit(TypeLiteral node) {
+    @Override
+	public boolean visit(TypeLiteral node) {
 
         if (isReferenceToRemovedType(node.getType())) {
             pushExpression(new CSRemovedExpression(node.toString()));
@@ -3160,7 +3225,8 @@ public class CSharpBuilder extends ASTVisitor {
         pushExpression(mie);
     }
 
-    public boolean visit(MethodInvocation node) {
+    @Override
+	public boolean visit(MethodInvocation node) {
 
         IMethodBinding binding = originalMethodBinding(node.resolveMethodBinding());
         Configuration.MemberMapping mapping = mappingForInvocation(binding);
@@ -3174,7 +3240,8 @@ public class CSharpBuilder extends ASTVisitor {
         return false;
     }
 
-    public boolean visit(SuperMethodInvocation node) {
+    @Override
+	public boolean visit(SuperMethodInvocation node) {
         if (null != node.getQualifier()) {
             notImplemented(node);
         }
@@ -3685,7 +3752,8 @@ public class CSharpBuilder extends ASTVisitor {
         mie.addArgument(mapExpression(expectedType, arg));
     }
 
-    public boolean visit(FieldAccess node) {
+    @Override
+	public boolean visit(FieldAccess node) {
         String name = mappedFieldName(node);
         name = _resolver.resolveRename(node.resolveFieldBinding(), name);
         if (null == node.getExpression()) {
@@ -3719,7 +3787,8 @@ public class CSharpBuilder extends ASTVisitor {
         return identifier(node.getName());
     }
 
-    public boolean visit(SimpleName node) {
+    @Override
+	public boolean visit(SimpleName node) {
         if (isTypeReference(node)) {
             pushTypeReference(node.resolveTypeBinding());
         } else if (_currentExpression == null) {
@@ -3822,7 +3891,8 @@ public class CSharpBuilder extends ASTVisitor {
         return IBinding.TYPE == binding.getKind();
     }
 
-    public boolean visit(QualifiedName node) {
+    @Override
+	public boolean visit(QualifiedName node) {
         if (isTypeReference(node)) {
             pushTypeReference(node.resolveTypeBinding());
         } else {
@@ -4400,7 +4470,8 @@ public class CSharpBuilder extends ASTVisitor {
         warning(node, "unresolved type binding for node: " + node);
     }
 
-    public boolean visit(CompilationUnit node) {
+    @Override
+	public boolean visit(CompilationUnit node) {
         return true;
     }
 

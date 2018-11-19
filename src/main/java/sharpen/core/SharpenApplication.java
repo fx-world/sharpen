@@ -96,7 +96,7 @@ public class SharpenApplication {
                 String key = Integer.toString(i);
                 System.out.println();
                 System.out.println(prop.getProperty(key));
-                if (i % 5 == 0) {
+                if (i % 5 == 0 && console != null) {
                     console.readLine();
                 }
             }
@@ -266,7 +266,8 @@ public class SharpenApplication {
 
     private List<String> sortedByName(List<String> units) {
         Collections.sort(units, new Comparator<String>() {
-            public int compare(String o1, String o2) {
+            @Override
+			public int compare(String o1, String o2) {
                 return o1.compareTo(o2);
             }
         });
